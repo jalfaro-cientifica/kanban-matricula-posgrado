@@ -242,12 +242,8 @@ module.exports = async function handler(req, res) {
         });
       }
 
-      // Verify password
-      // If DB is offline and it's a seed account, accept incoming password or default password
-      const isSeed = seedUsers.some(s => s.email === cleanEmail);
-      const isPasswordMatch = (foundUser.passwordHash === incomingHash) || (!db && isSeed);
-
-      if (!isPasswordMatch) {
+      // STRICT PASSWORD VERIFICATION - Error if hash does not match
+      if (foundUser.passwordHash !== incomingHash) {
         return res.status(401).json({
           error: 'Contraseña incorrecta. Por favor verifica tus credenciales.'
         });
