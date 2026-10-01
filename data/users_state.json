@@ -1,0 +1,35 @@
+[
+  {
+    "id": "usr_1790875144176_tchs",
+    "name": "Jaime Alfaro",
+    "shortName": "Jaime",
+    "email": "jalfaro_ext@cientifica.edu.pe",
+    "role": "Arquitecto de Soluciones y Líder Técnico",
+    "passwordHash": "b6b2ee2a5622710d207e304dac515ca0df19991f85a87480a95d94ec94e6188b",
+    "avatarInitials": "JA",
+    "color": "#059669",
+    "createdAt": "2026-10-01T17:19:04.176Z"
+  },
+  {
+    "id": "usr_1790875217522_gkib",
+    "name": "Ilan Valdez",
+    "shortName": "Ilan",
+    "email": "ivaldez_ext@cientifica.edu.pe",
+    "role": "Full Stack Developer (Backend, Frontend, QA, etc.)",
+    "passwordHash": "b6b2ee2a5622710d207e304dac515ca0df19991f85a87480a95d94ec94e6188b",
+    "avatarInitials": "IV",
+    "color": "#0284c7",
+    "createdAt": "2026-10-01T17:20:17.522Z"
+  },
+  {
+    "id": "usr_1790875250000_grojas",
+    "name": "Gary Rojas",
+    "shortName": "Gary",
+    "email": "grojas_ext@cientifica.edu.pe",
+    "role": "Full Stack Developer (Backend, Frontend, QA, etc.)",
+    "passwordHash": "b6b2ee2a5622710d207e304dac515ca0df19991f85a87480a95d94ec94e6188b",
+    "avatarInitials": "GR",
+    "color": "#7c3aed",
+    "createdAt": "2026-10-01T17:21:00.000Z"
+  }
+]
