@@ -2004,26 +2004,26 @@
     "track": "Full Stack Developer",
     "column": "inprogress",
     "source": "Excel Fila 3 (Expandido a S1)",
-    "desc": "Relevamiento integral de particularidades de Posgrado (Maestr�a en bloque sin selecci�n vs Doctorado con selecci�n en portal vs Pregrado). Definici�n formal de calendario T-15, T-5, T-0, T+7 y reglas de corte de deudas.",
+    "desc": "Relevamiento integral de particularidades de Posgrado (Maestría en bloque sin selección vs Doctorado con selección en portal vs Pregrado). Definición formal de calendario T-15, T-5, T-0, T+7 y reglas de corte de deudas.",
     "files": "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n01_Contexto_Matricula_Posgrado.md\nMatriz_Casos_Uso_Posgrado.xlsx",
     "subtasks": [
       {
-        "title": "Mapeo comparativo de reglas de negocio: Pregrado vs Maestr�a (bloque) vs Doctorado",
+        "title": "Mapeo comparativo de reglas de negocio: Pregrado vs Maestría (bloque) vs Doctorado",
         "hours": 2.5,
         "completed": true
       },
       {
-        "title": "Definici�n t�cnica de precondiciones T-15 (programaci�n cerrada) y T-5 (actas cerradas)",
+        "title": "Definición técnica de precondiciones T-15 (programación cerrada) y T-5 (actas cerradas)",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Validaci�n de pol�ticas financieras de deuda para habilitaci�n autom�tica vs retenci�n",
+        "title": "Validación de políticas financieras de deuda para habilitación automática vs retención",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Elaboraci�n de matriz de 15 casos de uso funcionales y criterios de aceptaci�n QA",
+        "title": "Elaboración de matriz de 15 casos de uso funcionales y criterios de aceptación QA",
         "hours": 2.5,
         "completed": false
       }
@@ -2032,7 +2032,7 @@
   {
     "id": "TSK-02",
     "code": "M1-S1-CAR",
-    "title": "Implementaci�n de Carga de Horarios y Turnos desde Portal (BO)",
+    "title": "Implementación de Carga de Horarios y Turnos desde Portal (BO)",
     "month": "Mes 1",
     "sprint": "Sprint 1",
     "hours": 10,
@@ -2040,16 +2040,16 @@
     "track": "Full Stack Developer",
     "column": "todo",
     "source": "Excel Fila 4",
-    "desc": "Construcci�n del m�dulo administrativo en Back Office para la importaci�n, validaci�n y persistencia masiva de la oferta horaria y turnos especiales de posgrado (fines de semana, intensivos, quincenales).",
+    "desc": "Construcción del módulo administrativo en Back Office para la importación, validación y persistencia masiva de la oferta horaria y turnos especiales de posgrado (fines de semana, intensivos, quincenales).",
     "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (massiveUpload)\nmiportal_cientifica_lumen/app/Models/OwnEnrollmentSchedule.php\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
     "subtasks": [
       {
-        "title": "Dise�o y migraci�n de base de datos para turnos posgrado (own_enrollment_schedule)",
+        "title": "Diseño y migración de base de datos para turnos posgrado (own_enrollment_schedule)",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Implementaci�n de parser Excel/CSV en Lumen con validaciones de campos cr�ticos",
+        "title": "Implementación de parser Excel/CSV en Lumen con validaciones de campos críticos",
         "hours": 3,
         "completed": false
       },
@@ -2059,12 +2059,12 @@
         "completed": false
       },
       {
-        "title": "Interfaz Angular en Back Office con feedback de validaci�n y resumen de carga",
+        "title": "Interfaz Angular en Back Office con feedback de validación y resumen de carga",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Pruebas de estr�s y logs de auditor�a (ScheduleLogs)",
+        "title": "Pruebas de estrés y logs de auditoría (ScheduleLogs)",
         "hours": 1,
         "completed": false
       }
@@ -2073,24 +2073,24 @@
   {
     "id": "TSK-03",
     "code": "M1-S1-LEAD",
-    "title": "Definici�n de Arquitectura, Contratos REST y Swagger",
+    "title": "Definición de Arquitectura, Contratos REST y Swagger",
     "month": "Mes 1",
     "sprint": "Sprint 1",
     "hours": 6,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "inprogress",
-    "source": "Asignaci�n Propia (Liderazgo)",
-    "desc": "Especificaci�n formal de contratos Swagger/OpenAPI entre Lumen, Angular y PeopleSoft; homologaci�n de tipos de datos, c�digos de programa de Posgrado y llaves de idempotencia.",
+    "source": "Asignación Propia (Liderazgo)",
+    "desc": "Especificación formal de contratos Swagger/OpenAPI entre Lumen, Angular y PeopleSoft; homologación de tipos de datos, códigos de programa de Posgrado y llaves de idempotencia.",
     "files": "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n02_Propuesta_Tecnica_Matricula_Posgrado.md\nSwagger / Postman Collection",
     "subtasks": [
       {
-        "title": "Modelado de interfaces REST y validaci�n de esquema JSON",
+        "title": "Modelado de interfaces REST y validación de esquema JSON",
         "hours": 3,
         "completed": true
       },
       {
-        "title": "Alineaci�n de est�ndares de desarrollo en paralelo con Ilan Valdez y Gary Rojas",
+        "title": "Alineación de estándares de desarrollo en paralelo con Ilan Valdez y Gary Rojas",
         "hours": 3,
         "completed": false
       }
@@ -2099,7 +2099,7 @@
   {
     "id": "TSK-04",
     "code": "M1-S2-BO",
-    "title": "Parametrizaci�n BO por Unidad Acad�mica: POSGRADO y PREGRADO",
+    "title": "Parametrización BO por Unidad Académica: POSGRADO y PREGRADO",
     "month": "Mes 1",
     "sprint": "Sprint 2",
     "hours": 5,
@@ -2107,16 +2107,16 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Excel Fila 5",
-    "desc": "Habilitar la segregaci�n estricta de par�metros en el Back Office entre PREGRADO y POSGRADO (Maestr�a y Doctorado), permitiendo ventanas, fechas y reglas desacopladas.",
+    "desc": "Habilitar la segregación estricta de parámetros en el Back Office entre PREGRADO y POSGRADO (Maestría y Doctorado), permitiendo ventanas, fechas y reglas desacopladas.",
     "files": "miportal_cientifica_lumen/app/Http/Controllers/EnrollmentEntryConfigController.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getConfigBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-entry-config/",
     "subtasks": [
       {
-        "title": "Actualizaci�n de tablas de configuraci�n para flag UNIDAD_ACADEMICA",
+        "title": "Actualización de tablas de configuración para flag UNIDAD_ACADEMICA",
         "hours": 1,
         "completed": false
       },
       {
-        "title": "Refactorizaci�n de endpoints getConfigBO / getAllEnrollmentConfig con filtro por unidad",
+        "title": "Refactorización de endpoints getConfigBO / getAllEnrollmentConfig con filtro por unidad",
         "hours": 1.5,
         "completed": false
       },
@@ -2126,7 +2126,7 @@
         "completed": false
       },
       {
-        "title": "Pruebas de regresi�n para asegurar que la configuraci�n de Pregrado no se altere",
+        "title": "Pruebas de regresión para asegurar que la configuración de Pregrado no se altere",
         "hours": 1,
         "completed": false
       }
@@ -2135,7 +2135,7 @@
   {
     "id": "TSK-05",
     "code": "M1-S2-DOC",
-    "title": "Desarrollo l�gica de Matr�cula Posgrado - Doctorado",
+    "title": "Desarrollo lógica de Matrícula Posgrado - Doctorado",
     "month": "Mes 1",
     "sprint": "Sprint 2",
     "hours": 5,
@@ -2143,26 +2143,26 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Excel Fila 8",
-    "desc": "Implementaci�n del flujo de selecci�n en portal para Doctorado, donde el estudiante mantiene capacidad de elecci�n de asignaturas, investigaci�n y turnos.",
+    "desc": "Implementación del flujo de selección en portal para Doctorado, donde el estudiante mantiene capacidad de elección de asignaturas, investigación y turnos.",
     "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/",
     "subtasks": [
       {
-        "title": "Servicio Lumen de consulta de oferta acad�mica filtrada para programas de Doctorado",
+        "title": "Servicio Lumen de consulta de oferta académica filtrada para programas de Doctorado",
         "hours": 1.5,
         "completed": false
       },
       {
-        "title": "Flujo de selecci�n en Angular para cursos de investigaci�n y cr�ditos electivos",
+        "title": "Flujo de selección en Angular para cursos de investigación y créditos electivos",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Validaci�n de colisiones de turnos y cupos disponibles en tiempo real",
+        "title": "Validación de colisiones de turnos y cupos disponibles en tiempo real",
         "hours": 1,
         "completed": false
       },
       {
-        "title": "Confirmaci�n y reserva de vacantes de Doctorado",
+        "title": "Confirmación y reserva de vacantes de Doctorado",
         "hours": 0.5,
         "completed": false
       }
@@ -2171,34 +2171,34 @@
   {
     "id": "TSK-06",
     "code": "M1-S2-ALU",
-    "title": "Parametrizaci�n POSGRADO en el lado del alumno y Guards",
+    "title": "Parametrización POSGRADO en el lado del alumno y Guards",
     "month": "Mes 1",
     "sprint": "Sprint 2",
     "hours": 10,
     "resource": "Gary Rojas",
     "track": "Full Stack Developer",
     "column": "backlog",
-    "source": "Excel Fila 6 (Expandido con navegaci�n)",
-    "desc": "Adaptaci�n del portal del alumno para detectar la unidad acad�mica del estudiante autenticado y activar el flujo diferenciado de Posgrado en lugar del est�ndar de Pregrado.",
+    "source": "Excel Fila 6 (Expandido con navegación)",
+    "desc": "Adaptación del portal del alumno para detectar la unidad académica del estudiante autenticado y activar el flujo diferenciado de Posgrado en lugar del estándar de Pregrado.",
     "files": "miportal_cientifica/src/app/student/pages/enrollment/dashboard-enroll/\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php",
     "subtasks": [
       {
-        "title": "Consumo de servicio de perfil y detecci�n de carrera/modalidad Posgrado en Angular",
+        "title": "Consumo de servicio de perfil y detección de carrera/modalidad Posgrado en Angular",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "L�gica de guard y redirecci�n hacia flujo espec�fico (Maestr�a vs Doctorado)",
+        "title": "Lógica de guard y redirección hacia flujo específico (Maestría vs Doctorado)",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Visualizaci�n de ventana de matr�cula, estatus de habilitaci�n y sem�foro de deudas",
+        "title": "Visualización de ventana de matrícula, estatus de habilitación y semáforo de deudas",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Pruebas funcionales con perfiles de prueba de Pregrado, Maestr�a y Doctorado",
+        "title": "Pruebas funcionales con perfiles de prueba de Pregrado, Maestría y Doctorado",
         "hours": 2,
         "completed": false
       }
@@ -2207,24 +2207,24 @@
   {
     "id": "TSK-07",
     "code": "M1-S2-LEAD",
-    "title": "Coordinaci�n de Entorno PeopleSoft y Alineaci�n con Posgrado",
+    "title": "Coordinación de Entorno PeopleSoft y Alineación con Posgrado",
     "month": "Mes 1",
     "sprint": "Sprint 2",
     "hours": 6,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "todo",
-    "source": "Asignaci�n Propia (Coordinaci�n)",
-    "desc": "Gesti�n con TI Central y DBAs de credenciales, certificados SSL y conectividad VPN para PeopleSoft Integration Broker; validaci�n de pol�ticas T-15/T-5 con Escuela de Posgrado.",
-    "files": "Tickets TI Central / Conexi�n VPN & Gateway PeopleSoft / Actas Reuni�n",
+    "source": "Asignación Propia (Coordinación)",
+    "desc": "Gestión con TI Central y DBAs de credenciales, certificados SSL y conectividad VPN para PeopleSoft Integration Broker; validación de políticas T-15/T-5 con Escuela de Posgrado.",
+    "files": "Tickets TI Central / Conexión VPN & Gateway PeopleSoft / Actas Reunión",
     "subtasks": [
       {
-        "title": "Gesti�n y pruebas de conectividad de credenciales PeopleSoft Integration Broker",
+        "title": "Gestión y pruebas de conectividad de credenciales PeopleSoft Integration Broker",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Alineaci�n y formalizaci�n de precondiciones T-15 y T-5 con Direcci�n de Posgrado",
+        "title": "Alineación y formalización de precondiciones T-15 y T-5 con Dirección de Posgrado",
         "hours": 3,
         "completed": false
       }
@@ -2233,7 +2233,7 @@
   {
     "id": "TSK-08",
     "code": "M2-S3-PS",
-    "title": "Integraci�n PeopleSoft Integration Broker & Idempotencia",
+    "title": "Integración PeopleSoft Integration Broker & Idempotencia",
     "month": "Mes 2",
     "sprint": "Sprint 3",
     "hours": 10,
@@ -2241,31 +2241,31 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Excel Fila 10",
-    "desc": "Conexi�n robusta e idempotente con PeopleSoft Integration Broker para asentar formalmente las matr�culas de Posgrado (CLASS_NBR, EMPLID, STRM), manejo de fallos y auditor�a.",
+    "desc": "Conexión robusta e idempotente con PeopleSoft Integration Broker para asentar formalmente las matrículas de Posgrado (CLASS_NBR, EMPLID, STRM), manejo de fallos y auditoría.",
     "files": "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (saveInPeople)",
     "subtasks": [
       {
-        "title": "Definici�n y mapeo de payloads XML/JSON de PeopleSoft Integration Broker para Posgrado",
+        "title": "Definición y mapeo de payloads XML/JSON de PeopleSoft Integration Broker para Posgrado",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Refactorizaci�n de saveInPeople para admitir estructuras y planes de estudio de Posgrado",
+        "title": "Refactorización de saveInPeople para admitir estructuras y planes de estudio de Posgrado",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Implementaci�n de clave de idempotencia Hash(Programa+Estudiante+Ciclo+Operaci�n)",
+        "title": "Implementación de clave de idempotencia Hash(Programa+Estudiante+Ciclo+Operación)",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Gesti�n de excepciones, reintentos y bit�cora de respuestas en ScheduleLogs",
+        "title": "Gestión de excepciones, reintentos y bitácora de respuestas en ScheduleLogs",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Pruebas de integraci�n E2E con el ambiente PeopleSoft QA",
+        "title": "Pruebas de integración E2E con el ambiente PeopleSoft QA",
         "hours": 1.5,
         "completed": false
       }
@@ -2274,7 +2274,7 @@
   {
     "id": "TSK-09",
     "code": "M2-S3-MAE",
-    "title": "Desarrollo L�gica Matr�cula Posgrado - Maestr�a en Bloque",
+    "title": "Desarrollo Lógica Matrícula Posgrado - Maestría en Bloque",
     "month": "Mes 2",
     "sprint": "Sprint 3",
     "hours": 10,
@@ -2282,26 +2282,26 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Excel Fila 7 (Expandido)",
-    "desc": "Construcci�n completa del flujo autom�tico en bloque de Maestr�a: oferta �nica, turno �nico, sin selecci�n individual de asignaturas, validaci�n estricta de deuda y confirmaci�n directa.",
+    "desc": "Construcción completa del flujo automático en bloque de Maestría: oferta única, turno único, sin selección individual de asignaturas, validación estricta de deuda y confirmación directa.",
     "files": "miportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/courses-enrollment.component.ts\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (processEnrollment)",
     "subtasks": [
       {
-        "title": "Endpoint en Lumen para orquestaci�n de asignaci�n de bloque cerrado por ciclo",
+        "title": "Endpoint en Lumen para orquestación de asignación de bloque cerrado por ciclo",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Validaci�n de restricci�n financiera (bloqueo autom�tico ante saldo pendiente)",
+        "title": "Validación de restricción financiera (bloqueo automático ante saldo pendiente)",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Vista de confirmaci�n de bloque de asignaturas predeterminadas en Angular",
+        "title": "Vista de confirmación de bloque de asignaturas predeterminadas en Angular",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Generaci�n de constancia y resumen de matr�cula de Maestr�a",
+        "title": "Generación de constancia y resumen de matrícula de Maestría",
         "hours": 2,
         "completed": false
       }
@@ -2310,24 +2310,24 @@
   {
     "id": "TSK-10",
     "code": "M2-S3-LEAD",
-    "title": "Code Review de Integraci�n y Pruebas de Estr�s Idempotencia",
+    "title": "Code Review de Integración y Pruebas de Estrés Idempotencia",
     "month": "Mes 2",
     "sprint": "Sprint 3",
     "hours": 6,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "backlog",
-    "source": "Asignaci�n Propia (Revisi�n)",
-    "desc": "Revisi�n arquitect�nica de PRs de PeopleSoft y Frontend; ejecuci�n de pruebas de estr�s para validar que reintentos de red no generen dobles cargos ni matr�culas duplicadas.",
+    "source": "Asignación Propia (Revisión)",
+    "desc": "Revisión arquitectúnica de PRs de PeopleSoft y Frontend; ejecución de pruebas de estrés para validar que reintentos de red no generen dobles cargos ni matrículas duplicadas.",
     "files": "Pull Requests GitHub / GitLab\nSuite de Pruebas Postman / JMeter",
     "subtasks": [
       {
-        "title": "Revisi�n t�cnica de c�digo de integraci�n PeopleSoft (Ilan Valdez)",
+        "title": "Revisión técnica de código de integración PeopleSoft (Ilan Valdez)",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Pruebas de estr�s de idempotencia simulando concurrencia de reintentos",
+        "title": "Pruebas de estrés de idempotencia simulando concurrencia de reintentos",
         "hours": 3,
         "completed": false
       }
@@ -2343,22 +2343,22 @@
     "resource": "Ilan Valdez",
     "track": "Full Stack Developer",
     "column": "backlog",
-    "source": "Excel Fila 13 (Expandido con Cach�)",
-    "desc": "Capacidad para que los administradores de Posgrado sincronicen o recarguen turnos y cupos de forma inmediata 'On-Demand', sin tener que esperar el batch nocturno, con cach� inteligente.",
+    "source": "Excel Fila 13 (Expandido con Caché)",
+    "desc": "Capacidad para que los administradores de Posgrado sincronicen o recarguen turnos y cupos de forma inmediata 'On-Demand', sin tener que esperar el batch nocturno, con caché inteligente.",
     "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getScheduleNewBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
     "subtasks": [
       {
-        "title": "Endpoint en Lumen para invalidaci�n de cach� y refresco bajo demanda",
+        "title": "Endpoint en Lumen para invalidación de caché y refresco bajo demanda",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "L�gica de actualizaci�n en tiempo real de cupos y vacantes",
+        "title": "Lógica de actualización en tiempo real de cupos y vacantes",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Bot�n de acci�n en UI de Back Office con modal de confirmaci�n y log",
+        "title": "Botón de acción en UI de Back Office con modal de confirmación y log",
         "hours": 3,
         "completed": false
       }
@@ -2367,7 +2367,7 @@
   {
     "id": "TSK-12",
     "code": "M2-S4-HOR",
-    "title": "Integrar con Horarios Nuevos y Ajustes de Dise�o UX/UI",
+    "title": "Integrar con Horarios Nuevos y Ajustes de Diseño UX/UI",
     "month": "Mes 2",
     "sprint": "Sprint 4",
     "hours": 10,
@@ -2375,16 +2375,16 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Excel Filas 11 y 12",
-    "desc": "Adaptar visualizaci�n del calendario semanal para esquemas at�picos (quincenales, s�bados/domingos) y maquetaci�n de modales de alerta para deudas y arrastres.",
+    "desc": "Adaptar visualización del calendario semanal para esquemas atípicos (quincenales, sábados/domingos) y maquetación de modales de alerta para deudas y arrastres.",
     "files": "miportal_cientifica/src/app/student/pages/schedule/\nmiportal_cientifica/src/assets/styles/\nmiportal_cientifica/src/app/modals/modal-enrollment/",
     "subtasks": [
       {
-        "title": "Adaptaci�n del componente de horario semanal para s�bados y domingos",
+        "title": "Adaptación del componente de horario semanal para sábados y domingos",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Alineaci�n de estilos institucionales de Posgrado (colores, badges, responsive)",
+        "title": "Alineación de estilos institucionales de Posgrado (colores, badges, responsive)",
         "hours": 3,
         "completed": false
       },
@@ -2394,7 +2394,7 @@
         "completed": false
       },
       {
-        "title": "Enlaces de ayuda hacia tr�mites acad�micos de posgrado",
+        "title": "Enlaces de ayuda hacia trámites académicos de posgrado",
         "hours": 2,
         "completed": false
       }
@@ -2403,24 +2403,24 @@
   {
     "id": "TSK-13",
     "code": "M2-S4-LEAD",
-    "title": "Auditor�a de Seguridad, Permisos y Plan de Pruebas E2E",
+    "title": "Auditoría de Seguridad, Permisos y Plan de Pruebas E2E",
     "month": "Mes 2",
     "sprint": "Sprint 4",
     "hours": 6,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "backlog",
-    "source": "Asignaci�n Propia (Seguridad)",
-    "desc": "Auditor�a de seguridad en endpoints administrativos de Back Office; validaci�n de token JWT, control de roles y armado de bater�a de pruebas de aceptaci�n UAT.",
-    "files": "Plan_Pruebas_UAT_Posgrado.xlsx\nAuditor�a Seguridad Lumen JWT",
+    "source": "Asignación Propia (Seguridad)",
+    "desc": "Auditoría de seguridad en endpoints administrativos de Back Office; validación de token JWT, control de roles y armado de batería de pruebas de aceptación UAT.",
+    "files": "Plan_Pruebas_UAT_Posgrado.xlsx\nAuditoría Seguridad Lumen JWT",
     "subtasks": [
       {
-        "title": "Auditor�a de roles y permisos en endpoints masivos y on-demand",
+        "title": "Auditoría de roles y permisos en endpoints masivos y on-demand",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Elaboraci�n de bater�a de pruebas integrales para certificaci�n con usuarios",
+        "title": "Elaboración de batería de pruebas integrales para certificación con usuarios",
         "hours": 3,
         "completed": false
       }
@@ -2436,22 +2436,22 @@
     "resource": "Ilan Valdez",
     "track": "Full Stack Developer",
     "column": "backlog",
-    "source": "Fase de Estabilizaci�n",
-    "desc": "Pruebas de estr�s y resiliencia en ambiente QA: simulaci�n de carga masiva de horarios con 500 registros y 50 inscripciones concurrentes en PeopleSoft.",
+    "source": "Fase de Estabilización",
+    "desc": "Pruebas de estrés y resiliencia en ambiente QA: simulación de carga masiva de horarios con 500 registros y 50 inscripciones concurrentes en PeopleSoft.",
     "files": "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nScripts de Carga masiva",
     "subtasks": [
       {
-        "title": "Simulaci�n de timeouts PeopleSoft y verificaci�n de reintentos seguros",
+        "title": "Simulación de timeouts PeopleSoft y verificación de reintentos seguros",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Optimizaci�n de consultas SQL en own_enrollment_schedule y logs",
+        "title": "Optimización de consultas SQL en own_enrollment_schedule y logs",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Resoluci�n de incidencias t�cnicas detectadas en pruebas integrales",
+        "title": "Resolución de incidencias técnicas detectadas en pruebas integrales",
         "hours": 2,
         "completed": false
       }
@@ -2468,21 +2468,21 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Fase de Pulido UX",
-    "desc": "Incorporaci�n de mejoras visuales a partir de sesiones preliminares con usuarios clave de Posgrado; verificaci�n de usabilidad en m�viles.",
+    "desc": "Incorporación de mejoras visuales a partir de sesiones preliminares con usuarios clave de Posgrado; verificación de usabilidad en móviles.",
     "files": "miportal_cientifica/src/app/student/pages/enrollment/\nmiportal_cientifica/src/assets/styles/",
     "subtasks": [
       {
-        "title": "Ajuste de copy institucional y textos explicativos en portal de matr�cula",
+        "title": "Ajuste de copy institucional y textos explicativos en portal de matrícula",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Resoluci�n de bugs visuales y alineaci�n de componentes m�viles",
+        "title": "Resolución de bugs visuales y alineación de componentes móviles",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Soporte activo en sesiones de pre-certificaci�n UAT",
+        "title": "Soporte activo en sesiones de pre-certificación UAT",
         "hours": 2,
         "completed": false
       }
@@ -2491,29 +2491,29 @@
   {
     "id": "TSK-16",
     "code": "M3-S5-LEAD",
-    "title": "Conducci�n de Sesiones UAT y Certificaci�n con Posgrado",
+    "title": "Conducción de Sesiones UAT y Certificación con Posgrado",
     "month": "Mes 3",
     "sprint": "Sprint 5",
     "hours": 8,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "backlog",
-    "source": "Asignaci�n Propia (UAT)",
-    "desc": "Liderar las pruebas de aceptaci�n con el equipo directivo de la Escuela de Posgrado y Registros Acad�micos; levantamiento de feedback y firma de conformidad.",
+    "source": "Asignación Propia (UAT)",
+    "desc": "Liderar las pruebas de aceptación con el equipo directivo de la Escuela de Posgrado y Registros Académicos; levantamiento de feedback y firma de conformidad.",
     "files": "Acta_Conformidad_UAT_Posgrado.pdf\nMatriz de Hallazgos y Cierres",
     "subtasks": [
       {
-        "title": "Conducci�n de talleres de prueba guiada con usuarios de Posgrado",
+        "title": "Conducción de talleres de prueba guiada con usuarios de Posgrado",
         "hours": 4,
         "completed": false
       },
       {
-        "title": "Consolidaci�n de matriz de hallazgos y priorizaci�n de ajustes finales",
+        "title": "Consolidación de matriz de hallazgos y priorización de ajustes finales",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Firma formal de certificaci�n y pase a producci�n",
+        "title": "Firma formal de certificación y pase a producción",
         "hours": 2,
         "completed": false
       }
@@ -2522,24 +2522,24 @@
   {
     "id": "TSK-17",
     "code": "M3-S6-REL",
-    "title": "Checklist de Pase a Producci�n, Variables .env y Despliegue",
+    "title": "Checklist de Pase a Producción, Variables .env y Despliegue",
     "month": "Mes 3",
     "sprint": "Sprint 6",
     "hours": 6,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "backlog",
-    "source": "Asignaci�n Propia (Release)",
-    "desc": "Preparaci�n del checklist de despliegue a producci�n, configuraci�n de variables de entorno `.env`, plan de contingencia/rollback y soporte post-lanzamiento.",
+    "source": "Asignación Propia (Release)",
+    "desc": "Preparación del checklist de despliegue a producción, configuración de variables de entorno `.env`, plan de contingencia/rollback y soporte post-lanzamiento.",
     "files": "Checklist_Despliegue_Produccion.md\n.env.production\nProcedimiento de Rollback",
     "subtasks": [
       {
-        "title": "Elaboraci�n de checklist t�cnico de despliegue y variables .env",
+        "title": "Elaboración de checklist técnico de despliegue y variables .env",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Ejecuci�n coordinada del despliegue en ventana de mantenimiento",
+        "title": "Ejecución coordinada del despliegue en ventana de mantenimiento",
         "hours": 2,
         "completed": false
       },
@@ -2560,17 +2560,17 @@
     "resource": "Ilan Valdez",
     "track": "Full Stack Developer",
     "column": "backlog",
-    "source": "Hipercare Producci�n",
-    "desc": "Guardia activa de monitoreo en tiempo real de colas de PeopleSoft, logs de carga masiva y atenci�n prioritaria de incidencias en primeros d�as de matr�cula.",
-    "files": "Monitoreo Logs Producci�n / ScheduleLogs / Kibana / Datadog",
+    "source": "Hipercare Producción",
+    "desc": "Guardia activa de monitoreo en tiempo real de colas de PeopleSoft, logs de carga masiva y atención prioritaria de incidencias en primeros días de matrícula.",
+    "files": "Monitoreo Logs Producción / ScheduleLogs / Kibana / Datadog",
     "subtasks": [
       {
-        "title": "Supervisi�n en vivo de transacciones PeopleSoft durante ventana T-0 a T+7",
+        "title": "Supervisión en vivo de transacciones PeopleSoft durante ventana T-0 a T+7",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Atenci�n inmediata a incidencias de integraci�n o time-outs",
+        "title": "Atención inmediata a incidencias de integración o time-outs",
         "hours": 3,
         "completed": false
       }
@@ -2579,24 +2579,24 @@
   {
     "id": "TSK-19",
     "code": "M3-S6-UI",
-    "title": "Soporte Hipercare Frontend y Estabilizaci�n Alumno",
+    "title": "Soporte Hipercare Frontend y Estabilización Alumno",
     "month": "Mes 3",
     "sprint": "Sprint 6",
     "hours": 5,
     "resource": "Gary Rojas",
     "track": "Full Stack Developer",
     "column": "backlog",
-    "source": "Hipercare Producci�n",
-    "desc": "Monitoreo de experiencia de usuario en portal del alumno, resoluci�n de dudas de navegaci�n y correcci�n en caliente de fallas menores reportadas.",
-    "files": "Portal Alumno Producci�n / Sentry / Google Analytics",
+    "source": "Hipercare Producción",
+    "desc": "Monitoreo de experiencia de usuario en portal del alumno, resolución de dudas de navegación y corrección en caliente de fallas menores reportadas.",
+    "files": "Portal Alumno Producción / Sentry / Google Analytics",
     "subtasks": [
       {
-        "title": "Monitoreo de tasa de �xito en confirmaciones de matr�cula de Maestr�a",
+        "title": "Monitoreo de tasa de éxito en confirmaciones de matrícula de Maestría",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Soporte de frontend y resoluci�n de reportes de visualizaci�n",
+        "title": "Soporte de frontend y resolución de reportes de visualización",
         "hours": 2.5,
         "completed": false
       }
@@ -2617,26 +2617,26 @@
     "track": "Full Stack Developer",
     "column": "inprogress",
     "source": "Excel Fila 3 (Expandido a S1)",
-    "desc": "Relevamiento integral de particularidades de Posgrado (Maestr�a en bloque sin selecci�n vs Doctorado con selecci�n en portal vs Pregrado). Definici�n formal de calendario T-15, T-5, T-0, T+7 y reglas de corte de deudas.",
+    "desc": "Relevamiento integral de particularidades de Posgrado (Maestría en bloque sin selección vs Doctorado con selección en portal vs Pregrado). Definición formal de calendario T-15, T-5, T-0, T+7 y reglas de corte de deudas.",
     "files": "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n01_Contexto_Matricula_Posgrado.md\nMatriz_Casos_Uso_Posgrado.xlsx",
     "subtasks": [
       {
-        "title": "Mapeo comparativo de reglas de negocio: Pregrado vs Maestr�a (bloque) vs Doctorado",
+        "title": "Mapeo comparativo de reglas de negocio: Pregrado vs Maestría (bloque) vs Doctorado",
         "hours": 2.5,
         "completed": true
       },
       {
-        "title": "Definici�n t�cnica de precondiciones T-15 (programaci�n cerrada) y T-5 (actas cerradas)",
+        "title": "Definición técnica de precondiciones T-15 (programación cerrada) y T-5 (actas cerradas)",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Validaci�n de pol�ticas financieras de deuda para habilitaci�n autom�tica vs retenci�n",
+        "title": "Validación de políticas financieras de deuda para habilitación automática vs retención",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Elaboraci�n de matriz de 15 casos de uso funcionales y criterios de aceptaci�n QA",
+        "title": "Elaboración de matriz de 15 casos de uso funcionales y criterios de aceptación QA",
         "hours": 2.5,
         "completed": false
       }
@@ -2645,7 +2645,7 @@
   {
     "id": "TSK-02",
     "code": "M1-S1-CAR",
-    "title": "Implementaci�n de Carga de Horarios y Turnos desde Portal (BO)",
+    "title": "Implementación de Carga de Horarios y Turnos desde Portal (BO)",
     "month": "Mes 1",
     "sprint": "Sprint 1",
     "hours": 10,
@@ -2653,16 +2653,16 @@
     "track": "Full Stack Developer",
     "column": "todo",
     "source": "Excel Fila 4",
-    "desc": "Construcci�n del m�dulo administrativo en Back Office para la importaci�n, validaci�n y persistencia masiva de la oferta horaria y turnos especiales de posgrado (fines de semana, intensivos, quincenales).",
+    "desc": "Construcción del módulo administrativo en Back Office para la importación, validación y persistencia masiva de la oferta horaria y turnos especiales de posgrado (fines de semana, intensivos, quincenales).",
     "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (massiveUpload)\nmiportal_cientifica_lumen/app/Models/OwnEnrollmentSchedule.php\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
     "subtasks": [
       {
-        "title": "Dise�o y migraci�n de base de datos para turnos posgrado (own_enrollment_schedule)",
+        "title": "Diseño y migración de base de datos para turnos posgrado (own_enrollment_schedule)",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Implementaci�n de parser Excel/CSV en Lumen con validaciones de campos cr�ticos",
+        "title": "Implementación de parser Excel/CSV en Lumen con validaciones de campos críticos",
         "hours": 3,
         "completed": false
       },
@@ -2672,12 +2672,12 @@
         "completed": false
       },
       {
-        "title": "Interfaz Angular en Back Office con feedback de validaci�n y resumen de carga",
+        "title": "Interfaz Angular en Back Office con feedback de validación y resumen de carga",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Pruebas de estr�s y logs de auditor�a (ScheduleLogs)",
+        "title": "Pruebas de estrés y logs de auditoría (ScheduleLogs)",
         "hours": 1,
         "completed": false
       }
@@ -2686,24 +2686,24 @@
   {
     "id": "TSK-03",
     "code": "M1-S1-LEAD",
-    "title": "Definici�n de Arquitectura, Contratos REST y Swagger",
+    "title": "Definición de Arquitectura, Contratos REST y Swagger",
     "month": "Mes 1",
     "sprint": "Sprint 1",
     "hours": 6,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "inprogress",
-    "source": "Asignaci�n Propia (Liderazgo)",
-    "desc": "Especificaci�n formal de contratos Swagger/OpenAPI entre Lumen, Angular y PeopleSoft; homologaci�n de tipos de datos, c�digos de programa de Posgrado y llaves de idempotencia.",
+    "source": "Asignación Propia (Liderazgo)",
+    "desc": "Especificación formal de contratos Swagger/OpenAPI entre Lumen, Angular y PeopleSoft; homologación de tipos de datos, códigos de programa de Posgrado y llaves de idempotencia.",
     "files": "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n02_Propuesta_Tecnica_Matricula_Posgrado.md\nSwagger / Postman Collection",
     "subtasks": [
       {
-        "title": "Modelado de interfaces REST y validaci�n de esquema JSON",
+        "title": "Modelado de interfaces REST y validación de esquema JSON",
         "hours": 3,
         "completed": true
       },
       {
-        "title": "Alineaci�n de est�ndares de desarrollo en paralelo con Ilan Valdez y Gary Rojas",
+        "title": "Alineación de estándares de desarrollo en paralelo con Ilan Valdez y Gary Rojas",
         "hours": 3,
         "completed": false
       }
@@ -2712,7 +2712,7 @@
   {
     "id": "TSK-04",
     "code": "M1-S2-BO",
-    "title": "Parametrizaci�n BO por Unidad Acad�mica: POSGRADO y PREGRADO",
+    "title": "Parametrización BO por Unidad Académica: POSGRADO y PREGRADO",
     "month": "Mes 1",
     "sprint": "Sprint 2",
     "hours": 5,
@@ -2720,16 +2720,16 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Excel Fila 5",
-    "desc": "Habilitar la segregaci�n estricta de par�metros en el Back Office entre PREGRADO y POSGRADO (Maestr�a y Doctorado), permitiendo ventanas, fechas y reglas desacopladas.",
+    "desc": "Habilitar la segregación estricta de parámetros en el Back Office entre PREGRADO y POSGRADO (Maestría y Doctorado), permitiendo ventanas, fechas y reglas desacopladas.",
     "files": "miportal_cientifica_lumen/app/Http/Controllers/EnrollmentEntryConfigController.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getConfigBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-entry-config/",
     "subtasks": [
       {
-        "title": "Actualizaci�n de tablas de configuraci�n para flag UNIDAD_ACADEMICA",
+        "title": "Actualización de tablas de configuración para flag UNIDAD_ACADEMICA",
         "hours": 1,
         "completed": false
       },
       {
-        "title": "Refactorizaci�n de endpoints getConfigBO / getAllEnrollmentConfig con filtro por unidad",
+        "title": "Refactorización de endpoints getConfigBO / getAllEnrollmentConfig con filtro por unidad",
         "hours": 1.5,
         "completed": false
       },
@@ -2739,7 +2739,7 @@
         "completed": false
       },
       {
-        "title": "Pruebas de regresi�n para asegurar que la configuraci�n de Pregrado no se altere",
+        "title": "Pruebas de regresión para asegurar que la configuración de Pregrado no se altere",
         "hours": 1,
         "completed": false
       }
@@ -2748,7 +2748,7 @@
   {
     "id": "TSK-05",
     "code": "M1-S2-DOC",
-    "title": "Desarrollo l�gica de Matr�cula Posgrado - Doctorado",
+    "title": "Desarrollo lógica de Matrícula Posgrado - Doctorado",
     "month": "Mes 1",
     "sprint": "Sprint 2",
     "hours": 5,
@@ -2756,26 +2756,26 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Excel Fila 8",
-    "desc": "Implementaci�n del flujo de selecci�n en portal para Doctorado, donde el estudiante mantiene capacidad de elecci�n de asignaturas, investigaci�n y turnos.",
+    "desc": "Implementación del flujo de selección en portal para Doctorado, donde el estudiante mantiene capacidad de elección de asignaturas, investigación y turnos.",
     "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/",
     "subtasks": [
       {
-        "title": "Servicio Lumen de consulta de oferta acad�mica filtrada para programas de Doctorado",
+        "title": "Servicio Lumen de consulta de oferta académica filtrada para programas de Doctorado",
         "hours": 1.5,
         "completed": false
       },
       {
-        "title": "Flujo de selecci�n en Angular para cursos de investigaci�n y cr�ditos electivos",
+        "title": "Flujo de selección en Angular para cursos de investigación y créditos electivos",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Validaci�n de colisiones de turnos y cupos disponibles en tiempo real",
+        "title": "Validación de colisiones de turnos y cupos disponibles en tiempo real",
         "hours": 1,
         "completed": false
       },
       {
-        "title": "Confirmaci�n y reserva de vacantes de Doctorado",
+        "title": "Confirmación y reserva de vacantes de Doctorado",
         "hours": 0.5,
         "completed": false
       }
@@ -2784,34 +2784,34 @@
   {
     "id": "TSK-06",
     "code": "M1-S2-ALU",
-    "title": "Parametrizaci�n POSGRADO en el lado del alumno y Guards",
+    "title": "Parametrización POSGRADO en el lado del alumno y Guards",
     "month": "Mes 1",
     "sprint": "Sprint 2",
     "hours": 10,
     "resource": "Gary Rojas",
     "track": "Full Stack Developer",
     "column": "backlog",
-    "source": "Excel Fila 6 (Expandido con navegaci�n)",
-    "desc": "Adaptaci�n del portal del alumno para detectar la unidad acad�mica del estudiante autenticado y activar el flujo diferenciado de Posgrado en lugar del est�ndar de Pregrado.",
+    "source": "Excel Fila 6 (Expandido con navegación)",
+    "desc": "Adaptación del portal del alumno para detectar la unidad académica del estudiante autenticado y activar el flujo diferenciado de Posgrado en lugar del estándar de Pregrado.",
     "files": "miportal_cientifica/src/app/student/pages/enrollment/dashboard-enroll/\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php",
     "subtasks": [
       {
-        "title": "Consumo de servicio de perfil y detecci�n de carrera/modalidad Posgrado en Angular",
+        "title": "Consumo de servicio de perfil y detección de carrera/modalidad Posgrado en Angular",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "L�gica de guard y redirecci�n hacia flujo espec�fico (Maestr�a vs Doctorado)",
+        "title": "Lógica de guard y redirección hacia flujo específico (Maestría vs Doctorado)",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Visualizaci�n de ventana de matr�cula, estatus de habilitaci�n y sem�foro de deudas",
+        "title": "Visualización de ventana de matrícula, estatus de habilitación y semáforo de deudas",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Pruebas funcionales con perfiles de prueba de Pregrado, Maestr�a y Doctorado",
+        "title": "Pruebas funcionales con perfiles de prueba de Pregrado, Maestría y Doctorado",
         "hours": 2,
         "completed": false
       }
@@ -2820,24 +2820,24 @@
   {
     "id": "TSK-07",
     "code": "M1-S2-LEAD",
-    "title": "Coordinaci�n de Entorno PeopleSoft y Alineaci�n con Posgrado",
+    "title": "Coordinación de Entorno PeopleSoft y Alineación con Posgrado",
     "month": "Mes 1",
     "sprint": "Sprint 2",
     "hours": 6,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "todo",
-    "source": "Asignaci�n Propia (Coordinaci�n)",
-    "desc": "Gesti�n con TI Central y DBAs de credenciales, certificados SSL y conectividad VPN para PeopleSoft Integration Broker; validaci�n de pol�ticas T-15/T-5 con Escuela de Posgrado.",
-    "files": "Tickets TI Central / Conexi�n VPN & Gateway PeopleSoft / Actas Reuni�n",
+    "source": "Asignación Propia (Coordinación)",
+    "desc": "Gestión con TI Central y DBAs de credenciales, certificados SSL y conectividad VPN para PeopleSoft Integration Broker; validación de políticas T-15/T-5 con Escuela de Posgrado.",
+    "files": "Tickets TI Central / Conexión VPN & Gateway PeopleSoft / Actas Reunión",
     "subtasks": [
       {
-        "title": "Gesti�n y pruebas de conectividad de credenciales PeopleSoft Integration Broker",
+        "title": "Gestión y pruebas de conectividad de credenciales PeopleSoft Integration Broker",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Alineaci�n y formalizaci�n de precondiciones T-15 y T-5 con Direcci�n de Posgrado",
+        "title": "Alineación y formalización de precondiciones T-15 y T-5 con Dirección de Posgrado",
         "hours": 3,
         "completed": false
       }
@@ -2846,7 +2846,7 @@
   {
     "id": "TSK-08",
     "code": "M2-S3-PS",
-    "title": "Integraci�n PeopleSoft Integration Broker & Idempotencia",
+    "title": "Integración PeopleSoft Integration Broker & Idempotencia",
     "month": "Mes 2",
     "sprint": "Sprint 3",
     "hours": 10,
@@ -2854,31 +2854,31 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Excel Fila 10",
-    "desc": "Conexi�n robusta e idempotente con PeopleSoft Integration Broker para asentar formalmente las matr�culas de Posgrado (CLASS_NBR, EMPLID, STRM), manejo de fallos y auditor�a.",
+    "desc": "Conexión robusta e idempotente con PeopleSoft Integration Broker para asentar formalmente las matrículas de Posgrado (CLASS_NBR, EMPLID, STRM), manejo de fallos y auditoría.",
     "files": "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (saveInPeople)",
     "subtasks": [
       {
-        "title": "Definici�n y mapeo de payloads XML/JSON de PeopleSoft Integration Broker para Posgrado",
+        "title": "Definición y mapeo de payloads XML/JSON de PeopleSoft Integration Broker para Posgrado",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Refactorizaci�n de saveInPeople para admitir estructuras y planes de estudio de Posgrado",
+        "title": "Refactorización de saveInPeople para admitir estructuras y planes de estudio de Posgrado",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Implementaci�n de clave de idempotencia Hash(Programa+Estudiante+Ciclo+Operaci�n)",
+        "title": "Implementación de clave de idempotencia Hash(Programa+Estudiante+Ciclo+Operación)",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Gesti�n de excepciones, reintentos y bit�cora de respuestas en ScheduleLogs",
+        "title": "Gestión de excepciones, reintentos y bitácora de respuestas en ScheduleLogs",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Pruebas de integraci�n E2E con el ambiente PeopleSoft QA",
+        "title": "Pruebas de integración E2E con el ambiente PeopleSoft QA",
         "hours": 1.5,
         "completed": false
       }
@@ -2887,7 +2887,7 @@
   {
     "id": "TSK-09",
     "code": "M2-S3-MAE",
-    "title": "Desarrollo L�gica Matr�cula Posgrado - Maestr�a en Bloque",
+    "title": "Desarrollo Lógica Matrícula Posgrado - Maestría en Bloque",
     "month": "Mes 2",
     "sprint": "Sprint 3",
     "hours": 10,
@@ -2895,26 +2895,26 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Excel Fila 7 (Expandido)",
-    "desc": "Construcci�n completa del flujo autom�tico en bloque de Maestr�a: oferta �nica, turno �nico, sin selecci�n individual de asignaturas, validaci�n estricta de deuda y confirmaci�n directa.",
+    "desc": "Construcción completa del flujo automático en bloque de Maestría: oferta única, turno único, sin selección individual de asignaturas, validación estricta de deuda y confirmación directa.",
     "files": "miportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/courses-enrollment.component.ts\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (processEnrollment)",
     "subtasks": [
       {
-        "title": "Endpoint en Lumen para orquestaci�n de asignaci�n de bloque cerrado por ciclo",
+        "title": "Endpoint en Lumen para orquestación de asignación de bloque cerrado por ciclo",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Validaci�n de restricci�n financiera (bloqueo autom�tico ante saldo pendiente)",
+        "title": "Validación de restricción financiera (bloqueo automático ante saldo pendiente)",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Vista de confirmaci�n de bloque de asignaturas predeterminadas en Angular",
+        "title": "Vista de confirmación de bloque de asignaturas predeterminadas en Angular",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Generaci�n de constancia y resumen de matr�cula de Maestr�a",
+        "title": "Generación de constancia y resumen de matrícula de Maestría",
         "hours": 2,
         "completed": false
       }
@@ -2923,24 +2923,24 @@
   {
     "id": "TSK-10",
     "code": "M2-S3-LEAD",
-    "title": "Code Review de Integraci�n y Pruebas de Estr�s Idempotencia",
+    "title": "Code Review de Integración y Pruebas de Estrés Idempotencia",
     "month": "Mes 2",
     "sprint": "Sprint 3",
     "hours": 6,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "backlog",
-    "source": "Asignaci�n Propia (Revisi�n)",
-    "desc": "Revisi�n arquitect�nica de PRs de PeopleSoft y Frontend; ejecuci�n de pruebas de estr�s para validar que reintentos de red no generen dobles cargos ni matr�culas duplicadas.",
+    "source": "Asignación Propia (Revisión)",
+    "desc": "Revisión arquitectúnica de PRs de PeopleSoft y Frontend; ejecución de pruebas de estrés para validar que reintentos de red no generen dobles cargos ni matrículas duplicadas.",
     "files": "Pull Requests GitHub / GitLab\nSuite de Pruebas Postman / JMeter",
     "subtasks": [
       {
-        "title": "Revisi�n t�cnica de c�digo de integraci�n PeopleSoft (Ilan Valdez)",
+        "title": "Revisión técnica de código de integración PeopleSoft (Ilan Valdez)",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Pruebas de estr�s de idempotencia simulando concurrencia de reintentos",
+        "title": "Pruebas de estrés de idempotencia simulando concurrencia de reintentos",
         "hours": 3,
         "completed": false
       }
@@ -2956,22 +2956,22 @@
     "resource": "Ilan Valdez",
     "track": "Full Stack Developer",
     "column": "backlog",
-    "source": "Excel Fila 13 (Expandido con Cach�)",
-    "desc": "Capacidad para que los administradores de Posgrado sincronicen o recarguen turnos y cupos de forma inmediata 'On-Demand', sin tener que esperar el batch nocturno, con cach� inteligente.",
+    "source": "Excel Fila 13 (Expandido con Caché)",
+    "desc": "Capacidad para que los administradores de Posgrado sincronicen o recarguen turnos y cupos de forma inmediata 'On-Demand', sin tener que esperar el batch nocturno, con caché inteligente.",
     "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getScheduleNewBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
     "subtasks": [
       {
-        "title": "Endpoint en Lumen para invalidaci�n de cach� y refresco bajo demanda",
+        "title": "Endpoint en Lumen para invalidación de caché y refresco bajo demanda",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "L�gica de actualizaci�n en tiempo real de cupos y vacantes",
+        "title": "Lógica de actualización en tiempo real de cupos y vacantes",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Bot�n de acci�n en UI de Back Office con modal de confirmaci�n y log",
+        "title": "Botón de acción en UI de Back Office con modal de confirmación y log",
         "hours": 3,
         "completed": false
       }
@@ -2980,7 +2980,7 @@
   {
     "id": "TSK-12",
     "code": "M2-S4-HOR",
-    "title": "Integrar con Horarios Nuevos y Ajustes de Dise�o UX/UI",
+    "title": "Integrar con Horarios Nuevos y Ajustes de Diseño UX/UI",
     "month": "Mes 2",
     "sprint": "Sprint 4",
     "hours": 10,
@@ -2988,16 +2988,16 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Excel Filas 11 y 12",
-    "desc": "Adaptar visualizaci�n del calendario semanal para esquemas at�picos (quincenales, s�bados/domingos) y maquetaci�n de modales de alerta para deudas y arrastres.",
+    "desc": "Adaptar visualización del calendario semanal para esquemas atípicos (quincenales, sábados/domingos) y maquetación de modales de alerta para deudas y arrastres.",
     "files": "miportal_cientifica/src/app/student/pages/schedule/\nmiportal_cientifica/src/assets/styles/\nmiportal_cientifica/src/app/modals/modal-enrollment/",
     "subtasks": [
       {
-        "title": "Adaptaci�n del componente de horario semanal para s�bados y domingos",
+        "title": "Adaptación del componente de horario semanal para sábados y domingos",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Alineaci�n de estilos institucionales de Posgrado (colores, badges, responsive)",
+        "title": "Alineación de estilos institucionales de Posgrado (colores, badges, responsive)",
         "hours": 3,
         "completed": false
       },
@@ -3007,7 +3007,7 @@
         "completed": false
       },
       {
-        "title": "Enlaces de ayuda hacia tr�mites acad�micos de posgrado",
+        "title": "Enlaces de ayuda hacia trámites académicos de posgrado",
         "hours": 2,
         "completed": false
       }
@@ -3016,24 +3016,24 @@
   {
     "id": "TSK-13",
     "code": "M2-S4-LEAD",
-    "title": "Auditor�a de Seguridad, Permisos y Plan de Pruebas E2E",
+    "title": "Auditoría de Seguridad, Permisos y Plan de Pruebas E2E",
     "month": "Mes 2",
     "sprint": "Sprint 4",
     "hours": 6,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "backlog",
-    "source": "Asignaci�n Propia (Seguridad)",
-    "desc": "Auditor�a de seguridad en endpoints administrativos de Back Office; validaci�n de token JWT, control de roles y armado de bater�a de pruebas de aceptaci�n UAT.",
-    "files": "Plan_Pruebas_UAT_Posgrado.xlsx\nAuditor�a Seguridad Lumen JWT",
+    "source": "Asignación Propia (Seguridad)",
+    "desc": "Auditoría de seguridad en endpoints administrativos de Back Office; validación de token JWT, control de roles y armado de batería de pruebas de aceptación UAT.",
+    "files": "Plan_Pruebas_UAT_Posgrado.xlsx\nAuditoría Seguridad Lumen JWT",
     "subtasks": [
       {
-        "title": "Auditor�a de roles y permisos en endpoints masivos y on-demand",
+        "title": "Auditoría de roles y permisos en endpoints masivos y on-demand",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Elaboraci�n de bater�a de pruebas integrales para certificaci�n con usuarios",
+        "title": "Elaboración de batería de pruebas integrales para certificación con usuarios",
         "hours": 3,
         "completed": false
       }
@@ -3049,22 +3049,22 @@
     "resource": "Ilan Valdez",
     "track": "Full Stack Developer",
     "column": "backlog",
-    "source": "Fase de Estabilizaci�n",
-    "desc": "Pruebas de estr�s y resiliencia en ambiente QA: simulaci�n de carga masiva de horarios con 500 registros y 50 inscripciones concurrentes en PeopleSoft.",
+    "source": "Fase de Estabilización",
+    "desc": "Pruebas de estrés y resiliencia en ambiente QA: simulación de carga masiva de horarios con 500 registros y 50 inscripciones concurrentes en PeopleSoft.",
     "files": "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nScripts de Carga masiva",
     "subtasks": [
       {
-        "title": "Simulaci�n de timeouts PeopleSoft y verificaci�n de reintentos seguros",
+        "title": "Simulación de timeouts PeopleSoft y verificación de reintentos seguros",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Optimizaci�n de consultas SQL en own_enrollment_schedule y logs",
+        "title": "Optimización de consultas SQL en own_enrollment_schedule y logs",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Resoluci�n de incidencias t�cnicas detectadas en pruebas integrales",
+        "title": "Resolución de incidencias técnicas detectadas en pruebas integrales",
         "hours": 2,
         "completed": false
       }
@@ -3081,21 +3081,21 @@
     "track": "Full Stack Developer",
     "column": "backlog",
     "source": "Fase de Pulido UX",
-    "desc": "Incorporaci�n de mejoras visuales a partir de sesiones preliminares con usuarios clave de Posgrado; verificaci�n de usabilidad en m�viles.",
+    "desc": "Incorporación de mejoras visuales a partir de sesiones preliminares con usuarios clave de Posgrado; verificación de usabilidad en móviles.",
     "files": "miportal_cientifica/src/app/student/pages/enrollment/\nmiportal_cientifica/src/assets/styles/",
     "subtasks": [
       {
-        "title": "Ajuste de copy institucional y textos explicativos en portal de matr�cula",
+        "title": "Ajuste de copy institucional y textos explicativos en portal de matrícula",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Resoluci�n de bugs visuales y alineaci�n de componentes m�viles",
+        "title": "Resolución de bugs visuales y alineación de componentes móviles",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Soporte activo en sesiones de pre-certificaci�n UAT",
+        "title": "Soporte activo en sesiones de pre-certificación UAT",
         "hours": 2,
         "completed": false
       }
@@ -3104,29 +3104,29 @@
   {
     "id": "TSK-16",
     "code": "M3-S5-LEAD",
-    "title": "Conducci�n de Sesiones UAT y Certificaci�n con Posgrado",
+    "title": "Conducción de Sesiones UAT y Certificación con Posgrado",
     "month": "Mes 3",
     "sprint": "Sprint 5",
     "hours": 8,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "backlog",
-    "source": "Asignaci�n Propia (UAT)",
-    "desc": "Liderar las pruebas de aceptaci�n con el equipo directivo de la Escuela de Posgrado y Registros Acad�micos; levantamiento de feedback y firma de conformidad.",
+    "source": "Asignación Propia (UAT)",
+    "desc": "Liderar las pruebas de aceptación con el equipo directivo de la Escuela de Posgrado y Registros Académicos; levantamiento de feedback y firma de conformidad.",
     "files": "Acta_Conformidad_UAT_Posgrado.pdf\nMatriz de Hallazgos y Cierres",
     "subtasks": [
       {
-        "title": "Conducci�n de talleres de prueba guiada con usuarios de Posgrado",
+        "title": "Conducción de talleres de prueba guiada con usuarios de Posgrado",
         "hours": 4,
         "completed": false
       },
       {
-        "title": "Consolidaci�n de matriz de hallazgos y priorizaci�n de ajustes finales",
+        "title": "Consolidación de matriz de hallazgos y priorización de ajustes finales",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Firma formal de certificaci�n y pase a producci�n",
+        "title": "Firma formal de certificación y pase a producción",
         "hours": 2,
         "completed": false
       }
@@ -3135,24 +3135,24 @@
   {
     "id": "TSK-17",
     "code": "M3-S6-REL",
-    "title": "Checklist de Pase a Producci�n, Variables .env y Despliegue",
+    "title": "Checklist de Pase a Producción, Variables .env y Despliegue",
     "month": "Mes 3",
     "sprint": "Sprint 6",
     "hours": 6,
     "resource": "Jaime Alfaro",
     "track": "Arquitecto de Soluciones y Líder Técnico",
     "column": "backlog",
-    "source": "Asignaci�n Propia (Release)",
-    "desc": "Preparaci�n del checklist de despliegue a producci�n, configuraci�n de variables de entorno `.env`, plan de contingencia/rollback y soporte post-lanzamiento.",
+    "source": "Asignación Propia (Release)",
+    "desc": "Preparación del checklist de despliegue a producción, configuración de variables de entorno `.env`, plan de contingencia/rollback y soporte post-lanzamiento.",
     "files": "Checklist_Despliegue_Produccion.md\n.env.production\nProcedimiento de Rollback",
     "subtasks": [
       {
-        "title": "Elaboraci�n de checklist t�cnico de despliegue y variables .env",
+        "title": "Elaboración de checklist técnico de despliegue y variables .env",
         "hours": 2,
         "completed": false
       },
       {
-        "title": "Ejecuci�n coordinada del despliegue en ventana de mantenimiento",
+        "title": "Ejecución coordinada del despliegue en ventana de mantenimiento",
         "hours": 2,
         "completed": false
       },
@@ -3173,17 +3173,17 @@
     "resource": "Ilan Valdez",
     "track": "Full Stack Developer",
     "column": "backlog",
-    "source": "Hipercare Producci�n",
-    "desc": "Guardia activa de monitoreo en tiempo real de colas de PeopleSoft, logs de carga masiva y atenci�n prioritaria de incidencias en primeros d�as de matr�cula.",
-    "files": "Monitoreo Logs Producci�n / ScheduleLogs / Kibana / Datadog",
+    "source": "Hipercare Producción",
+    "desc": "Guardia activa de monitoreo en tiempo real de colas de PeopleSoft, logs de carga masiva y atención prioritaria de incidencias en primeros días de matrícula.",
+    "files": "Monitoreo Logs Producción / ScheduleLogs / Kibana / Datadog",
     "subtasks": [
       {
-        "title": "Supervisi�n en vivo de transacciones PeopleSoft durante ventana T-0 a T+7",
+        "title": "Supervisión en vivo de transacciones PeopleSoft durante ventana T-0 a T+7",
         "hours": 3,
         "completed": false
       },
       {
-        "title": "Atenci�n inmediata a incidencias de integraci�n o time-outs",
+        "title": "Atención inmediata a incidencias de integración o time-outs",
         "hours": 3,
         "completed": false
       }
@@ -3192,24 +3192,24 @@
   {
     "id": "TSK-19",
     "code": "M3-S6-UI",
-    "title": "Soporte Hipercare Frontend y Estabilizaci�n Alumno",
+    "title": "Soporte Hipercare Frontend y Estabilización Alumno",
     "month": "Mes 3",
     "sprint": "Sprint 6",
     "hours": 5,
     "resource": "Gary Rojas",
     "track": "Full Stack Developer",
     "column": "backlog",
-    "source": "Hipercare Producci�n",
-    "desc": "Monitoreo de experiencia de usuario en portal del alumno, resoluci�n de dudas de navegaci�n y correcci�n en caliente de fallas menores reportadas.",
-    "files": "Portal Alumno Producci�n / Sentry / Google Analytics",
+    "source": "Hipercare Producción",
+    "desc": "Monitoreo de experiencia de usuario en portal del alumno, resolución de dudas de navegación y corrección en caliente de fallas menores reportadas.",
+    "files": "Portal Alumno Producción / Sentry / Google Analytics",
     "subtasks": [
       {
-        "title": "Monitoreo de tasa de �xito en confirmaciones de matr�cula de Maestr�a",
+        "title": "Monitoreo de tasa de éxito en confirmaciones de matrícula de Maestría",
         "hours": 2.5,
         "completed": false
       },
       {
-        "title": "Soporte de frontend y resoluci�n de reportes de visualizaci�n",
+        "title": "Soporte de frontend y resolución de reportes de visualización",
         "hours": 2.5,
         "completed": false
       }
