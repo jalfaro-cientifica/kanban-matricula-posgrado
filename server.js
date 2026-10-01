@@ -6,6 +6,7 @@ const path = require('path');
 const url = require('url');
 const tasksHandler = require('./api/tasks');
 const auditHandler = require('./api/audit');
+const authHandler = require('./api/auth');
 
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -43,6 +44,17 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       req.body = body;
       auditHandler(req, res);
+    });
+    return;
+  }
+
+  // Route /api/auth
+  if (pathname === '/api/auth' || pathname.startsWith('/api/auth/')) {
+    let body = '';
+    req.on('data', chunk => body += chunk.toString());
+    req.on('end', () => {
+      req.body = body;
+      authHandler(req, res);
     });
     return;
   }

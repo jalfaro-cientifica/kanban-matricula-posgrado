@@ -7,8 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- MSAL.js for Microsoft 365 Authentication -->
-  <script src="https://alcdn.msauth.net/browser/2.35.0/js/msal-browser.min.js"></script>
+  <!-- Institutional Email Authentication -->
   <style>
     :root {
       --bg-primary: #0f172a;
@@ -896,7 +895,7 @@
     }
 
     /* =========================================
-       LOGIN SCREEN OVERLAY (Corporate Modern)
+       LOGIN & REGISTRATION SCREEN OVERLAY (Institutional)
        ========================================= */
     .login-overlay {
       position: fixed;
@@ -910,17 +909,17 @@
     }
 
     .login-card {
-      background: rgba(30, 41, 59, 0.85);
+      background: rgba(30, 41, 59, 0.88);
       border: 1px solid rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(16px);
       width: 100%;
-      max-width: 480px;
-      border-radius: 18px;
+      max-width: 460px;
+      border-radius: 20px;
       padding: 32px;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
     }
 
     .login-brand {
@@ -954,128 +953,214 @@
     .login-title p {
       font-size: 0.82rem;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 3px;
     }
 
-    .btn-microsoft-login {
-      background: #ffffff;
-      color: #1e293b;
+    /* Auth Tab Navigation */
+    .auth-tabs-nav {
+      display: flex;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .auth-tab-btn {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      background: transparent;
+      color: var(--text-muted);
       border: none;
-      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .auth-tab-btn.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    }
+
+    .auth-tab-btn:hover:not(.active) {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Alert Banner */
+    .auth-alert-box {
+      padding: 10px 14px;
       border-radius: 10px;
-      font-size: 0.9rem;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.4;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .auth-alert-box.error {
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      color: #fda4af;
+    }
+
+    .auth-alert-box.success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+    }
+
+    /* Auth Forms */
+    .auth-form-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .auth-form-body.hidden {
+      display: none;
+    }
+
+    .auth-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .auth-input-group label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+
+    .auth-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .auth-input-icon {
+      position: absolute;
+      left: 14px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-input {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 14px 12px 42px;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .auth-input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .auth-select {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 14px 12px 42px;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px top 50%;
+      background-size: 10px auto;
+    }
+
+    .auth-select:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .btn-auth-submit {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 0.92rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: all 0.2s;
-    }
-
-    .btn-microsoft-login:hover {
-      background: #f1f5f9;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-    }
-
-    .ms-logo-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 8px);
-      gap: 3px;
-    }
-
-    .ms-logo-grid span:nth-child(1) { background: #f25022; width: 8px; height: 8px; }
-    .ms-logo-grid span:nth-child(2) { background: #7fba00; width: 8px; height: 8px; }
-    .ms-logo-grid span:nth-child(3) { background: #00a4ef; width: 8px; height: 8px; }
-    .ms-logo-grid span:nth-child(4) { background: #ffb900; width: 8px; height: 8px; }
-
-    .login-divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-
-    .login-divider::before, .login-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border-color);
-    }
-
-    .quick-profiles-list {
-      display: flex;
-      flex-direction: column;
       gap: 10px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      transition: all 0.2s ease;
+      margin-top: 4px;
     }
 
-    .quick-profile-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: all 0.15s;
+    .btn-auth-submit:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
     }
 
-    .quick-profile-card:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--accent-blue);
-      transform: translateX(4px);
+    .btn-auth-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
-    .qp-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .auth-toggle-link-row {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
     }
 
-    .qp-info h4 {
-      font-size: 0.86rem;
+    .auth-toggle-link-row button {
+      background: transparent;
+      border: none;
+      color: var(--accent-blue);
       font-weight: 600;
+      cursor: pointer;
+      margin-left: 4px;
+      text-decoration: underline;
+      font-size: 0.8rem;
     }
 
-    .qp-info p {
+    .auth-toggle-link-row button:hover {
+      color: #60a5fa;
+    }
+
+    .auth-footer-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
       font-size: 0.72rem;
       color: var(--text-muted);
-    }
-
-    .qp-badge {
-      font-size: 0.68rem;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-
-    .qp-badge.lead { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-    .qp-badge.fs { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
-
-    .custom-email-section {
-      display: flex;
-      gap: 8px;
-    }
-
-    .custom-email-input {
-      flex: 1;
-      background: var(--bg-primary);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      outline: none;
-    }
-
-    .custom-email-input:focus {
-      border-color: var(--accent-blue);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 14px;
+      margin-top: -4px;
     }
 
     /* =========================================
@@ -1178,7 +1263,7 @@
 </head>
 <body>
 
-  <!-- Corporate Login Overlay (Shown if not logged in) -->
+  <!-- Corporate Authentication Overlay (Login & Registration) -->
   <div class="login-overlay" id="loginOverlay">
     <div class="login-card">
       <div class="login-brand">
@@ -1189,57 +1274,103 @@
         </div>
       </div>
 
-      <!-- Microsoft 365 Outlook Single Sign-On Button -->
-      <button class="btn-microsoft-login" onclick="loginWithMicrosoft()">
-        <div class="ms-logo-grid">
-          <span></span><span></span><span></span><span></span>
-        </div>
-        <span>Iniciar sesión con Microsoft 365 (@cientifica.edu.pe)</span>
-      </button>
-
-      <div class="login-divider">o acceso rápido por rol corporativo</div>
-
-      <!-- Quick Team Member Cards -->
-      <div class="quick-profiles-list">
-        <div class="quick-profile-card" onclick="loginAs('jaime')">
-          <div class="qp-left">
-            <div class="avatar jaime" style="width:36px; height:36px; font-size:0.85rem;">JA</div>
-            <div class="qp-info">
-              <h4>Jaime Alfaro Salazar</h4>
-              <p>jalfaro_ext@cientifica.edu.pe</p>
-            </div>
-          </div>
-          <span class="qp-badge lead">Arquitecto & Líder</span>
-        </div>
-
-        <div class="quick-profile-card" onclick="loginAs('ilan')">
-          <div class="qp-left">
-            <div class="avatar ilan" style="width:36px; height:36px; font-size:0.85rem;">IV</div>
-            <div class="qp-info">
-              <h4>Ilan Valdez</h4>
-              <p>ivaldez_ext@cientifica.edu.pe</p>
-            </div>
-          </div>
-          <span class="qp-badge fs">Full Stack Dev</span>
-        </div>
-
-        <div class="quick-profile-card" onclick="loginAs('gary')">
-          <div class="qp-left">
-            <div class="avatar gary" style="width:36px; height:36px; font-size:0.85rem;">GR</div>
-            <div class="qp-info">
-              <h4>Gary Rojas</h4>
-              <p>grojas_ext@cientifica.edu.pe</p>
-            </div>
-          </div>
-          <span class="qp-badge fs">Full Stack Dev</span>
-        </div>
+      <!-- Auth Tab Navigation -->
+      <div class="auth-tabs-nav">
+        <button type="button" class="auth-tab-btn active" id="tabBtnLogin" onclick="switchAuthTab('login')">
+          🔑 Iniciar Sesión
+        </button>
+        <button type="button" class="auth-tab-btn" id="tabBtnRegister" onclick="switchAuthTab('register')">
+          📝 Registrarse
+        </button>
       </div>
 
-      <div class="login-divider">o ingresar con correo institucional</div>
+      <!-- Feedback Alert -->
+      <div class="auth-alert-box" id="authAlertBox" style="display: none;"></div>
 
-      <div class="custom-email-section">
-        <input type="email" id="customEmailInput" class="custom-email-input" placeholder="usuario@cientifica.edu.pe" onkeydown="if(event.key==='Enter') loginWithCustomEmail()">
-        <button class="btn-action btn-primary" onclick="loginWithCustomEmail()">Entrar</button>
+      <!-- Form 1: Iniciar Sesión -->
+      <form id="formLogin" class="auth-form-body" onsubmit="handleLoginSubmit(event)">
+        <div class="auth-input-group">
+          <label for="loginEmail">Correo Electrónico</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon">✉️</span>
+            <input type="email" id="loginEmail" class="auth-input" placeholder="tu_correo_ext@cientifica.edu.pe" required autocomplete="email">
+          </div>
+        </div>
+
+        <div class="auth-input-group">
+          <label for="loginPassword">Contraseña</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon">🔒</span>
+            <input type="password" id="loginPassword" class="auth-input" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth-submit" id="btnSubmitLogin">
+          <span>Ingresar al Tablero</span>
+          <span>→</span>
+        </button>
+
+        <div class="auth-toggle-link-row">
+          <span>¿Aún no tienes una cuenta?</span>
+          <button type="button" onclick="switchAuthTab('register')">Regístrate aquí</button>
+        </div>
+      </form>
+
+      <!-- Form 2: Registrarse -->
+      <form id="formRegister" class="auth-form-body hidden" onsubmit="handleRegisterSubmit(event)">
+        <div class="auth-input-group">
+          <label for="regName">Nombre y Apellidos</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon">👤</span>
+            <input type="text" id="regName" class="auth-input" placeholder="Ej. Jaime Alfaro, Ilan Valdez, Gary Rojas" required autocomplete="name">
+          </div>
+        </div>
+
+        <div class="auth-input-group">
+          <label for="regEmail">Correo Electrónico Corporativo</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon">✉️</span>
+            <input type="email" id="regEmail" class="auth-input" placeholder="tu_correo_ext@cientifica.edu.pe" required autocomplete="email">
+          </div>
+        </div>
+
+        <div class="auth-input-group">
+          <label for="regRole">Rol / Cargo en el Proyecto</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon">💼</span>
+            <select id="regRole" class="auth-select" required>
+              <option value="Full Stack Developer (Backend, Frontend, QA, etc.)">Full Stack Developer (Backend, Frontend, QA, etc.)</option>
+              <option value="Arquitecto de Soluciones y Líder Técnico">Arquitecto de Soluciones y Líder Técnico</option>
+              <option value="Líder Técnico">Líder Técnico</option>
+              <option value="Frontend Developer">Frontend Developer</option>
+              <option value="Backend Developer">Backend Developer</option>
+              <option value="QA & Testing Specialist">QA & Testing Specialist</option>
+              <option value="Product Owner / Stakeholder">Product Owner / Stakeholder</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="auth-input-group">
+          <label for="regPassword">Contraseña</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon">🔒</span>
+            <input type="password" id="regPassword" class="auth-input" placeholder="Mínimo 4 caracteres" minlength="4" required autocomplete="new-password">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth-submit" id="btnSubmitRegister">
+          <span>Crear Cuenta e Ingresar</span>
+          <span>✓</span>
+        </button>
+
+        <div class="auth-toggle-link-row">
+          <span>¿Ya estás registrado?</span>
+          <button type="button" onclick="switchAuthTab('login')">Inicia sesión aquí</button>
+        </div>
+      </form>
+
+      <div class="auth-footer-badge">
+        <span>🛡️ Autenticación y Auditoría persistidas en MongoDB Atlas</span>
       </div>
     </div>
   </div>
@@ -1455,40 +1586,6 @@
   </div>
 
   <script>
-    // Corporate Users Directory
-    const corporateUsers = {
-      jaime: {
-        id: 'usr_jaime',
-        name: 'Jaime Alfaro Salazar',
-        shortName: 'Jaime',
-        email: 'jalfaro_ext@cientifica.edu.pe',
-        role: 'Arquitecto de Soluciones y Líder Técnico',
-        avatarInitials: 'JA',
-        color: '#059669',
-        avatarClass: 'jaime'
-      },
-      ilan: {
-        id: 'usr_ilan',
-        name: 'Ilan Valdez',
-        shortName: 'Ilan',
-        email: 'ivaldez_ext@cientifica.edu.pe',
-        role: 'Full Stack Developer (Backend, Frontend, QA, etc.)',
-        avatarInitials: 'IV',
-        color: '#0284c7',
-        avatarClass: 'ilan'
-      },
-      gary: {
-        id: 'usr_gary',
-        name: 'Gary Rojas',
-        shortName: 'Gary',
-        email: 'grojas_ext@cientifica.edu.pe',
-        role: 'Full Stack Developer (Backend, Frontend, QA, etc.)',
-        avatarInitials: 'GR',
-        color: '#7c3aed',
-        avatarClass: 'gary'
-      }
-    };
-
     // State
     const STORAGE_KEY = 'ucs_matricula_3meses_kanban_v3';
     const USER_SESSION_KEY = 'ucs_kanban_current_user_v1';
@@ -1512,7 +1609,7 @@
       { id: 'done', title: '✅ Completado (Done)', color: '#10b981' }
     ];
 
-    // Resources definition with new Full Stack / Architect roles
+    // Resources definition with Full Stack / Architect roles
     const resourcesConfig = [
       { id: 'Ilan Valdez', label: '💻 Ilan Valdez', role: 'Full Stack Developer (Backend, Frontend, QA, etc.)', color: 'var(--ilan-color)' },
       { id: 'Gary Rojas', label: '🎨 Gary Rojas', role: 'Full Stack Developer (Backend, Frontend, QA, etc.)', color: 'var(--gary-color)' },
@@ -1549,8 +1646,137 @@
     }
 
     // =========================================
-    // AUTHENTICATION LOGIC
+    // AUTHENTICATION & REGISTRATION LOGIC
     // =========================================
+    function switchAuthTab(tab) {
+      clearAuthAlert();
+      const tabLogin = document.getElementById('tabBtnLogin');
+      const tabReg = document.getElementById('tabBtnRegister');
+      const formLogin = document.getElementById('formLogin');
+      const formReg = document.getElementById('formRegister');
+
+      if (tab === 'login') {
+        tabLogin.classList.add('active');
+        tabReg.classList.remove('active');
+        formLogin.classList.remove('hidden');
+        formReg.classList.add('hidden');
+        setTimeout(() => {
+          const el = document.getElementById('loginEmail');
+          if (el) el.focus();
+        }, 50);
+      } else {
+        tabReg.classList.add('active');
+        tabLogin.classList.remove('active');
+        formReg.classList.remove('hidden');
+        formLogin.classList.add('hidden');
+        setTimeout(() => {
+          const el = document.getElementById('regName');
+          if (el) el.focus();
+        }, 50);
+      }
+    }
+
+    function showAuthAlert(type, message) {
+      const box = document.getElementById('authAlertBox');
+      if (!box) return;
+      box.className = 'auth-alert-box ' + type;
+      box.innerHTML = (type === 'error' ? '⚠️ ' : '✅ ') + message;
+      box.style.display = 'flex';
+    }
+
+    function clearAuthAlert() {
+      const box = document.getElementById('authAlertBox');
+      if (!box) return;
+      box.style.display = 'none';
+      box.textContent = '';
+    }
+
+    async function handleLoginSubmit(event) {
+      event.preventDefault();
+      clearAuthAlert();
+
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const submitBtn = document.getElementById('btnSubmitLogin');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>Verificando credenciales...</span>';
+
+      try {
+        const res = await fetch('/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'login', email, password })
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          showAuthAlert('error', data.error || 'Credenciales inválidas.');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>Ingresar al Tablero</span><span>→</span>';
+          return;
+        }
+
+        currentUser = data.user;
+        localStorage.setItem(USER_SESSION_KEY, JSON.stringify(currentUser));
+        applyUserSession();
+        document.getElementById('loginOverlay').style.display = 'none';
+
+        logAuditAction('LOGIN', null, `Inició sesión: ${currentUser.name} (${currentUser.email})`);
+        showSaveToast(`Bienvenido/a, ${currentUser.name}`);
+        loadAuditLogs();
+      } catch (err) {
+        showAuthAlert('error', 'Error al conectar con el servidor: ' + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Ingresar al Tablero</span><span>→</span>';
+      }
+    }
+
+    async function handleRegisterSubmit(event) {
+      event.preventDefault();
+      clearAuthAlert();
+
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const role = document.getElementById('regRole').value;
+      const password = document.getElementById('regPassword').value;
+      const submitBtn = document.getElementById('btnSubmitRegister');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>Registrando cuenta...</span>';
+
+      try {
+        const res = await fetch('/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'register', name, email, role, password })
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          showAuthAlert('error', data.error || 'No se pudo completar el registro.');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>Crear Cuenta e Ingresar</span><span>✓</span>';
+          return;
+        }
+
+        currentUser = data.user;
+        localStorage.setItem(USER_SESSION_KEY, JSON.stringify(currentUser));
+        applyUserSession();
+        document.getElementById('loginOverlay').style.display = 'none';
+
+        logAuditAction('REGISTER', null, `Se registró nuevo colaborador: ${currentUser.name} (${currentUser.role})`);
+        showSaveToast(`¡Cuenta creada con éxito! Bienvenido/a, ${currentUser.name}`);
+        loadAuditLogs();
+      } catch (err) {
+        showAuthAlert('error', 'Error al registrar: ' + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Crear Cuenta e Ingresar</span><span>✓</span>';
+      }
+    }
+
     function checkUserSession() {
       const savedUser = localStorage.getItem(USER_SESSION_KEY);
       if (savedUser) {
@@ -1564,86 +1790,40 @@
         }
       }
       document.getElementById('loginOverlay').style.display = 'flex';
+      switchAuthTab('login');
       return false;
-    }
-
-    function loginAs(profileKey) {
-      const user = corporateUsers[profileKey];
-      if (user) {
-        currentUser = user;
-        localStorage.setItem(USER_SESSION_KEY, JSON.stringify(currentUser));
-        applyUserSession();
-        document.getElementById('loginOverlay').style.display = 'none';
-        logAuditAction('LOGIN', null, `Inició sesión con perfil corporativo ${currentUser.name}`);
-        showSaveToast(`Bienvenido/a, ${currentUser.name}`);
-      }
-    }
-
-    function loginWithMicrosoft() {
-      // Microsoft MSAL Simulation / Real flow
-      try {
-        const email = prompt("Ingresa tu correo institucional de Microsoft 365:", "jalfaro_ext@cientifica.edu.pe");
-        if (!email) return;
-        handleCorporateEmail(email);
-      } catch (err) {
-        alert("Error en autenticación Microsoft: " + err.message);
-      }
-    }
-
-    function loginWithCustomEmail() {
-      const emailInput = document.getElementById('customEmailInput');
-      const email = emailInput.value.trim().toLowerCase();
-      if (!email) {
-        alert('Por favor ingresa tu correo corporativo.');
-        return;
-      }
-      handleCorporateEmail(email);
-    }
-
-    function handleCorporateEmail(email) {
-      let matched = Object.values(corporateUsers).find(u => u.email.toLowerCase() === email.toLowerCase());
-      if (!matched) {
-        // Create dynamic corporate profile
-        const parts = email.split('@')[0].split('.');
-        const firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
-        const lastName = parts.length > 1 ? parts[1].charAt(0).toUpperCase() + parts[1].slice(1) : '';
-        const fullName = `${firstName} ${lastName}`.trim() || email.split('@')[0];
-
-        matched = {
-          id: 'usr_' + Date.now(),
-          name: fullName,
-          shortName: firstName,
-          email: email,
-          role: 'Colaborador UCS',
-          avatarInitials: firstName.charAt(0) + (lastName ? lastName.charAt(0) : 'U'),
-          color: '#3b82f6',
-          avatarClass: 'ilan'
-        };
-      }
-
-      currentUser = matched;
-      localStorage.setItem(USER_SESSION_KEY, JSON.stringify(currentUser));
-      applyUserSession();
-      document.getElementById('loginOverlay').style.display = 'none';
-      logAuditAction('LOGIN', null, `Inició sesión mediante Microsoft SSO: ${currentUser.email}`);
-      showSaveToast(`Bienvenido/a, ${currentUser.name}`);
     }
 
     function applyUserSession() {
       if (!currentUser) return;
-      document.getElementById('headerUserAvatar').textContent = currentUser.avatarInitials;
-      document.getElementById('headerUserAvatar').style.background = currentUser.color;
-      document.getElementById('headerUserName').textContent = currentUser.name.split(' ')[0] + ' ' + (currentUser.name.split(' ')[1] || '');
-      document.getElementById('headerUserRole').textContent = currentUser.role;
-      document.getElementById('myTasksLabelName').textContent = currentUser.shortName || currentUser.name.split(' ')[0];
+      const avatarEl = document.getElementById('headerUserAvatar');
+      if (avatarEl) {
+        avatarEl.textContent = currentUser.avatarInitials || 'U';
+        avatarEl.style.background = currentUser.color || '#3b82f6';
+      }
+      const nameEl = document.getElementById('headerUserName');
+      if (nameEl) nameEl.textContent = currentUser.name;
+      const roleEl = document.getElementById('headerUserRole');
+      if (roleEl) roleEl.textContent = currentUser.role || 'Colaborador UCS';
+      const myLabel = document.getElementById('myTasksLabelName');
+      if (myLabel) {
+        myLabel.textContent = currentUser.shortName || currentUser.name.split(' ')[0];
+      }
     }
 
     function logout() {
       if (confirm("¿Deseas cerrar tu sesión actual?")) {
-        logAuditAction('LOGOUT', null, `Cerró sesión: ${currentUser ? currentUser.name : ''}`);
+        if (currentUser) {
+          logAuditAction('LOGOUT', null, `Cerró sesión: ${currentUser.name}`);
+        }
         localStorage.removeItem(USER_SESSION_KEY);
         currentUser = null;
         document.getElementById('loginOverlay').style.display = 'flex';
+        switchAuthTab('login');
+        const emailInput = document.getElementById('loginEmail');
+        const passInput = document.getElementById('loginPassword');
+        if (emailInput) emailInput.value = '';
+        if (passInput) passInput.value = '';
       }
     }
 
