@@ -1,7 +1,13 @@
 // api/tasks.js - Vercel Serverless Function & Local Endpoint
 const { connectToDatabase } = require('../lib/mongodb');
-const fs = require('fs');
-const path = require('path');
+
+// Require directly so Vercel's bundler includes it in the serverless artifact
+let seedTasks = [];
+try {
+  seedTasks = require('../data/kanban_state.json');
+} catch (e) {
+  seedTasks = [];
+}
 
 module.exports = async function handler(req, res) {
   // CORS Headers
@@ -22,16 +28,9 @@ module.exports = async function handler(req, res) {
       let tasks = await collection.find({}, { projection: { _id: 0 } }).toArray();
 
       // Auto-seed if collection is empty
-      if (tasks.length === 0) {
-        const seedPath = path.join(__dirname, '..', 'data', 'kanban_state.json');
-        if (fs.existsSync(seedPath)) {
-          const raw = fs.readFileSync(seedPath, 'utf8');
-          const seedData = JSON.parse(raw);
-          if (Array.isArray(seedData) && seedData.length > 0) {
-            await collection.insertMany(seedData);
-            tasks = await collection.find({}, { projection: { _id: 0 } }).toArray();
-          }
-        }
+      if (tasks.length === 0 && seedTasks.length > 0) {
+        await collection.insertMany(seedTasks);
+        tasks = await collection.find({}, { projection: { _id: 0 } }).toArray();
       }
 
       return res.status(200).json(tasks);
@@ -53,10 +52,8 @@ module.exports = async function handler(req, res) {
       }
 
       if (Array.isArray(body)) {
-        // Replace full state
         await collection.deleteMany({});
         if (body.length > 0) {
-          // Remove any Mongo internal _id before inserting
           const cleanTasks = body.map(t => {
             const copy = { ...t };
             delete copy._id;
@@ -68,7 +65,6 @@ module.exports = async function handler(req, res) {
         return res.status(200).json({ success: true, count: body.length, timestamp: now });
       }
 
-      // Single task insert/upsert
       if (body && body.id) {
         const copy = { ...body };
         delete copy._id;
@@ -79,7 +75,7 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Payload debe ser una lista de tareas o un objeto con id' });
     }
 
-    // PATCH /api/tasks -> Update specific task by ID
+    // PATCH / PUT -> Update specific task by ID
     if (req.method === 'PATCH' || req.method === 'PUT') {
       let body = req.body;
       if (typeof body === 'string') {
@@ -106,7 +102,19 @@ module.exports = async function handler(req, res) {
 
     return res.status(405).json({ error: 'Método no permitido' });
   } catch (err) {
-    console.error('[API ERROR]:', err);
-    return res.status(500).json({ error: 'Error del servidor MongoDB', message: err.message });
+    console.error('[API ERROR MongoDB]:', err.message);
+
+    // Resilient Fallback on GET
+    if (req.method === 'GET' && seedTasks.length > 0) {
+      res.setHeader('X-Storage-Fallback', 'true');
+      res.setHeader('X-Atlas-Notice', 'MongoDB Atlas IP Whitelist required');
+      return res.status(200).json(seedTasks);
+    }
+
+    return res.status(500).json({
+      error: 'Error de conexión a MongoDB Atlas',
+      message: err.message,
+      hint: 'Verifica que en MongoDB Atlas -> Network Access esté permitida la IP 0.0.0.0/0 para conexiones desde Vercel.'
+    });
   }
 };
