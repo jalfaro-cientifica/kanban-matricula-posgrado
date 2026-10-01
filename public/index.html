@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Trello — Matrícula Posgrado (Plan 3 Meses) | UCS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #334155;
+      --bg-card-hover: #475569;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-rose: #f43f5e;
+      --accent-cyan: #06b6d4;
+      --ilan-color: #38bdf8;
+      --gary-color: #a78bfa;
+      --jaime-color: #34d399;
+      --header-bg: #0b1120;
+      --column-bg: rgba(30, 41, 59, 0.7);
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --header-bg: #ffffff;
+      --column-bg: #e2e8f0;
+      --ilan-color: #0284c7;
+      --gary-color: #7c3aed;
+      --jaime-color: #059669;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Top Navigation */
+    header {
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .brand-title h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-title p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Metrics Bar */
+    .metrics-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .metric-pill {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+    }
+
+    .metric-pill .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .metric-pill strong {
+      font-weight: 600;
+    }
+
+    .dot.ilan { background: var(--ilan-color); }
+    .dot.gary { background: var(--gary-color); }
+    .dot.jaime { background: var(--jaime-color); }
+    .dot.total { background: var(--accent-amber); }
+
+    /* Filters Bar */
+    .filters-bar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    .btn-filter {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-filter:hover {
+      background: var(--bg-card);
+      color: var(--text-main);
+    }
+
+    .btn-filter.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .btn-filter.active.ilan {
+      background: #0284c7;
+      border-color: #0284c7;
+    }
+
+    .btn-filter.active.gary {
+      background: #7c3aed;
+      border-color: #7c3aed;
+    }
+
+    .btn-filter.active.jaime {
+      background: #059669;
+      border-color: #059669;
+    }
+
+    .search-input {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      width: 220px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+
+    .btn-action:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .btn-action.btn-primary {
+      background: var(--accent-blue);
+      color: white;
+      border-color: var(--accent-blue);
+    }
+
+    /* Overall Progress Bar */
+    .progress-strip {
+      height: 4px;
+      background: var(--bg-secondary);
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    /* View Mode Tabs (Kanban vs Parallel Swimlanes) */
+    .view-mode-bar {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .view-tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .view-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .view-tab.active {
+      background: var(--bg-card);
+      color: var(--text-main);
+    }
+
+    .view-tab:hover:not(.active) {
+      color: var(--text-main);
+    }
+
+    .parallel-banner {
+      font-size: 0.78rem;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Board Area */
+    .board-container {
+      flex: 1;
+      padding: 20px 24px;
+      overflow-x: auto;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    /* Columns */
+    .kanban-column {
+      background: var(--column-bg);
+      border-radius: 12px;
+      width: 320px;
+      min-width: 320px;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 200px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border-color);
+    }
+
+    .column-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .column-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .column-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .column-count {
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      border-radius: 12px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .column-hours {
+      font-size: 0.75rem;
+      color: var(--accent-amber);
+      font-weight: 600;
+    }
+
+    .cards-container {
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 120px;
+      flex: 1;
+    }
+
+    .cards-container.drag-over {
+      background: rgba(59, 130, 246, 0.08);
+      border: 2px dashed var(--accent-blue);
+      border-radius: 8px;
+    }
+
+    /* Swimlanes View (Parallel Tracks) */
+    .swimlanes-container {
+      flex: 1;
+      padding: 20px 24px;
+      overflow-y: auto;
+      display: none;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .swimlane-row {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .swimlane-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+
+    .swimlane-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .swimlane-badge {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    .swimlane-cards-scroll {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .swimlane-cards-scroll .kanban-card {
+      min-width: 290px;
+      max-width: 290px;
+    }
+
+    /* Kanban Card */
+    .kanban-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: grab;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .kanban-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .kanban-card.dragging {
+      opacity: 0.4;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .badge.m1 {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .badge.m2 {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge.m3 {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge.lead {
+      background: rgba(236, 72, 153, 0.2);
+      color: #f472b6;
+      border: 1px solid rgba(236, 72, 153, 0.3);
+    }
+
+    .card-hours {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #facc15;
+      background: rgba(250, 204, 21, 0.12);
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .card-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .card-title:hover {
+      color: var(--accent-blue);
+    }
+
+    .card-subtasks-summary {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+
+    .card-progress-bar {
+      height: 5px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .card-progress-fill {
+      height: 100%;
+      background: var(--accent-green);
+      transition: width 0.3s;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: 2px;
+    }
+
+    .assignee-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .avatar.ilan { background: #0284c7; }
+    .avatar.gary { background: #7c3aed; }
+    .avatar.jaime { background: #059669; }
+
+    .card-actions-quick {
+      display: flex;
+      gap: 4px;
+    }
+
+    .btn-quick {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-quick:hover {
+      background: var(--accent-blue);
+      color: white;
+      border-color: var(--accent-blue);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-header-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--text-main);
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .modal-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      background: var(--bg-primary);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .meta-item label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .meta-item span {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .subtask-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .subtask-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 12px;
+      background: var(--bg-card);
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      transition: background 0.15s;
+    }
+
+    .subtask-item:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .subtask-item input[type="checkbox"] {
+      margin-top: 3px;
+      cursor: pointer;
+      accent-color: var(--accent-blue);
+      width: 16px;
+      height: 16px;
+    }
+
+    .subtask-text-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .subtask-title {
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .subtask-title.completed {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .subtask-hours {
+      font-size: 0.72rem;
+      color: var(--accent-amber);
+      font-weight: 600;
+    }
+
+    .code-paths-box {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: #38bdf8;
+      line-height: 1.5;
+    }
+
+    .modal-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    @media (max-width: 768px) {
+      header, .filters-bar, .view-mode-bar {
+        padding: 12px 14px;
+      }
+      .board-container {
+        padding: 12px;
+      }
+      .kanban-column {
+        width: 280px;
+        min-width: 280px;
+      }
+      .search-input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand-section">
+      <div class="brand-logo">UCS</div>
+      <div class="brand-title">
+        <h1>Tablero Matrícula Posgrado — Plan 3 Meses</h1>
+        <p>Líder: <strong>Jaime Alfaro</strong> &middot; Devs en Paralelo: <strong>Ilan Valdez</strong> & <strong>Gary Rojas</strong></p>
+      </div>
+    </div>
+
+    <!-- Quick Metrics -->
+    <div class="metrics-bar">
+      <div class="metric-pill" title="Total horas estimadas del proyecto (3 Meses)">
+        <span class="dot total"></span>
+        <span>Total: <strong id="metricTotalHours">142h</strong></span>
+      </div>
+      <div class="metric-pill" title="Pista Backend (Ilan Valdez)">
+        <span class="dot ilan"></span>
+        <span>Ilan: <strong id="metricIlanHours">52h</strong></span>
+      </div>
+      <div class="metric-pill" title="Pista Frontend (Gary Rojas)">
+        <span class="dot gary"></span>
+        <span>Gary: <strong id="metricGaryHours">52h</strong></span>
+      </div>
+      <div class="metric-pill" title="Pista Liderazgo y QA (Jaime Alfaro)">
+        <span class="dot jaime"></span>
+        <span>Jaime: <strong id="metricJaimeHours">38h</strong></span>
+      </div>
+      <div class="metric-pill" title="Progreso global completado">
+        <span>Progreso: <strong id="metricOverallProgress" style="color: var(--accent-green);">0%</strong></span>
+      </div>
+      <div class="metric-pill" id="storageStatusPill" style="border-color: #3b82f6;">
+        <span class="dot" id="storageDot" style="background:#10b981;"></span>
+        <span id="storageStatusText">💾 Verificando almacenamiento...</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-action" onclick="toggleTheme()" title="Cambiar tema claro/oscuro">🌓 Modo</button>
+      <button class="btn-action" id="btnLinkFile" onclick="linkLocalFile()" title="Vincular directamente con archivo en disco (File System Access API)">📂 Conectar Disco</button>
+      <button class="btn-action" onclick="exportJSON()" title="Descargar copia de kanban_state.json">💾 Exportar JSON</button>
+      <button class="btn-action" onclick="triggerImportJSON()" title="Cargar archivo kanban_state.json desde tu computadora">📥 Importar JSON</button>
+      <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="handleImportJSON(event)">
+      <button class="btn-action" onclick="resetToDefaultData()" title="Reiniciar a datos originales del plan">🔄 Reset</button>
+      <button class="btn-action btn-primary" onclick="openAddTaskModal()">➕ Nueva Tarea</button>
+    </div>
+  </header>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" style="position:fixed; bottom:24px; right:24px; background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; border-radius:8px; padding:10px 18px; font-size:0.82rem; font-weight:600; box-shadow:0 10px 25px rgba(0,0,0,0.5); z-index:9999; display:none; align-items:center; gap:8px;">
+    <span>💾</span> <span id="toastMessage">Guardado en disco</span>
+  </div>
+
+  <!-- Progress bar line -->
+  <div class="progress-strip">
+    <div class="progress-fill" id="progressFillBar"></div>
+  </div>
+
+  <!-- View Mode Switcher -->
+  <div class="view-mode-bar">
+    <div class="view-tabs">
+      <button class="view-tab active" id="tabKanban" onclick="switchView('kanban')">📋 Vista Kanban (Estados)</button>
+      <button class="view-tab" id="tabSwimlanes" onclick="switchView('swimlanes')">⚡ Vista Carriles Paralelos (Devs en Simultáneo)</button>
+    </div>
+    <div class="parallel-banner">
+      <span>🔄 Ejecución Concurrente: Ilan (Backend) ⇄ Gary (Frontend) ⇄ Jaime (Lead/QA)</span>
+    </div>
+  </div>
+
+  <!-- Filters Ribbon -->
+  <div class="filters-bar">
+    <div class="filter-group">
+      <span class="filter-label">Recurso:</span>
+      <button class="btn-filter active" onclick="setResourceFilter('all', this)">Todos</button>
+      <button class="btn-filter ilan" onclick="setResourceFilter('Ilan Valdez', this)">💻 Ilan Valdez (Backend)</button>
+      <button class="btn-filter gary" onclick="setResourceFilter('Gary Rojas', this)">🎨 Gary Rojas (Frontend)</button>
+      <button class="btn-filter jaime" onclick="setResourceFilter('Jaime Alfaro', this)">👔 Jaime Alfaro (Mis Asignaciones)</button>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-label">Mes / Sprint:</span>
+      <button class="btn-filter active" onclick="setMonthFilter('all', this)">Todo el Trimestre</button>
+      <button class="btn-filter" onclick="setMonthFilter('Mes 1', this)">Mes 1 (S1-S2) Cimientos</button>
+      <button class="btn-filter" onclick="setMonthFilter('Mes 2', this)">Mes 2 (S3-S4) PeopleSoft & UI</button>
+      <button class="btn-filter" onclick="setMonthFilter('Mes 3', this)">Mes 3 (S5-S6) UAT & Salida</button>
+    </div>
+
+    <div class="filter-group">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar tarea o código..." oninput="handleSearch()">
+    </div>
+  </div>
+
+  <!-- Kanban Board Container (View 1) -->
+  <main class="board-container" id="boardContainer">
+    <!-- Columns rendered dynamically -->
+  </main>
+
+  <!-- Swimlanes Container (View 2: Parallel Tracks) -->
+  <section class="swimlanes-container" id="swimlanesContainer">
+    <!-- Swimlanes rendered dynamically -->
+  </section>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="taskModalOverlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal-content" id="taskModalContent">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <div style="display:flex; gap:8px; align-items:center;">
+            <span class="badge" id="modalTagBadge">MES 1</span>
+            <span class="badge" id="modalSprintBadge" style="background:rgba(255,255,255,0.1);">SPRINT 1</span>
+            <span class="card-hours" id="modalHours">5h</span>
+            <span id="modalId" style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">#TASK</span>
+          </div>
+          <h2 class="modal-title" id="modalTitle">Título de la tarea</h2>
+        </div>
+        <button class="modal-close-btn" onclick="closeTaskModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-meta-grid">
+          <div class="meta-item">
+            <label>Asignado A</label>
+            <span id="modalAssignee">Ilan Valdez</span>
+          </div>
+          <div class="meta-item">
+            <label>Pista de Trabajo</label>
+            <span id="modalTrack">Pista Backend</span>
+          </div>
+          <div class="meta-item">
+            <label>Columna Actual</label>
+            <span id="modalColumn">Por Hacer</span>
+          </div>
+          <div class="meta-item">
+            <label>Avance Subtareas</label>
+            <span id="modalSubtaskRatio" style="color:var(--accent-green);">0 / 4</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title">📝 Descripción y Reglas de Negocio</div>
+          <p id="modalDesc" style="font-size:0.85rem; line-height:1.6; color:var(--text-main);"></p>
+        </div>
+
+        <div>
+          <div class="section-title">📂 Archivos / Componentes Impactados</div>
+          <div class="code-paths-box" id="modalFiles"></div>
+        </div>
+
+        <div>
+          <div class="section-title" style="justify-content:space-between;">
+            <span>📋 Plan de Acción — Subtareas Desglosadas</span>
+            <span id="modalSubtasksPercent" style="font-size:0.75rem; color:var(--accent-green);">0%</span>
+          </div>
+          <div class="subtask-list" id="modalSubtaskList"></div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div style="display:flex; gap:8px;">
+          <button class="btn-action" onclick="moveTaskFromModal('prev')">⬅ Columna Anterior</button>
+          <button class="btn-action btn-primary" onclick="moveTaskFromModal('next')">Columna Siguiente ➡</button>
+        </div>
+        <button class="btn-action" onclick="closeTaskModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 3-Month Comprehensive Plan Tasks (142 Hours Total)
+    const defaultTasks = [
+      // ==========================================
+      // MES 1: SPRINT 1 (Semanas 1 y 2)
+      // ==========================================
+      {
+        id: "TSK-01",
+        code: "M1-S1-LEV",
+        title: "Levantamiento Funcional y Matriz de Reglas de Posgrado",
+        month: "Mes 1",
+        sprint: "Sprint 1",
+        hours: 10,
+        resource: "Gary Rojas",
+        track: "Frontend & Funcional",
+        column: "todo",
+        source: "Excel Fila 3 (Expandido a S1)",
+        desc: "Relevamiento integral de particularidades de Posgrado (Maestría en bloque sin selección vs Doctorado con selección en portal vs Pregrado). Definición formal de calendario T-15, T-5, T-0, T+7 y reglas de corte de deudas.",
+        files: "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n01_Contexto_Matricula_Posgrado.md\nMatriz_Casos_Uso_Posgrado.xlsx",
+        subtasks: [
+          { title: "Mapeo comparativo de reglas de negocio: Pregrado vs Maestría (bloque) vs Doctorado", hours: 2.5, completed: false },
+          { title: "Definición técnica de precondiciones T-15 (programación cerrada) y T-5 (actas cerradas)", hours: 2.5, completed: false },
+          { title: "Validación de políticas financieras de deuda para habilitación automática vs retención", hours: 2.5, completed: false },
+          { title: "Elaboración de matriz de 15 casos de uso funcionales y criterios de aceptación QA", hours: 2.5, completed: false }
+        ]
+      },
+      {
+        id: "TSK-02",
+        code: "M1-S1-CAR",
+        title: "Implementación de Carga de Horarios y Turnos desde Portal (BO)",
+        month: "Mes 1",
+        sprint: "Sprint 1",
+        hours: 10,
+        resource: "Ilan Valdez",
+        track: "Backend & Integraciones",
+        column: "todo",
+        source: "Excel Fila 4",
+        desc: "Construcción del módulo administrativo en Back Office para la importación, validación y persistencia masiva de la oferta horaria y turnos especiales de posgrado (fines de semana, intensivos, quincenales).",
+        files: "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (massiveUpload)\nmiportal_cientifica_lumen/app/Models/OwnEnrollmentSchedule.php\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
+        subtasks: [
+          { title: "Diseño y migración de base de datos para turnos posgrado (own_enrollment_schedule)", hours: 2.0, completed: false },
+          { title: "Implementación de parser Excel/CSV en Lumen con validaciones de campos críticos", hours: 3.0, completed: false },
+          { title: "Procesamiento por lotes (Batch Insert) transaccional con rollback ante error", hours: 2.0, completed: false },
+          { title: "Interfaz Angular en Back Office con feedback de validación y resumen de carga", hours: 2.0, completed: false },
+          { title: "Pruebas de estrés y logs de auditoría (ScheduleLogs)", hours: 1.0, completed: false }
+        ]
+      },
+      {
+        id: "TSK-03",
+        code: "M1-S1-LEAD",
+        title: "Definición de Arquitectura, Contratos REST y Swagger",
+        month: "Mes 1",
+        sprint: "Sprint 1",
+        hours: 6,
+        resource: "Jaime Alfaro",
+        track: "Liderazgo & Arquitectura",
+        column: "inprogress",
+        source: "Asignación Propia (Liderazgo)",
+        desc: "Especificación formal de contratos Swagger/OpenAPI entre Lumen, Angular y PeopleSoft; homologación de tipos de datos, códigos de programa de Posgrado y llaves de idempotencia.",
+        files: "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n02_Propuesta_Tecnica_Matricula_Posgrado.md\nSwagger / Postman Collection",
+        subtasks: [
+          { title: "Modelado de interfaces REST y validación de esquema JSON", hours: 3.0, completed: true },
+          { title: "Alineación de estándares de desarrollo en paralelo con Ilan Valdez y Gary Rojas", hours: 3.0, completed: false }
+        ]
+      },
+
+      // ==========================================
+      // MES 1: SPRINT 2 (Semanas 3 y 4)
+      // ==========================================
+      {
+        id: "TSK-04",
+        code: "M1-S2-BO",
+        title: "Parametrización BO por Unidad Académica: POSGRADO y PREGRADO",
+        month: "Mes 1",
+        sprint: "Sprint 2",
+        hours: 5,
+        resource: "Ilan Valdez",
+        track: "Backend & Integraciones",
+        column: "backlog",
+        source: "Excel Fila 5",
+        desc: "Habilitar la segregación estricta de parámetros en el Back Office entre PREGRADO y POSGRADO (Maestría y Doctorado), permitiendo ventanas, fechas y reglas desacopladas.",
+        files: "miportal_cientifica_lumen/app/Http/Controllers/EnrollmentEntryConfigController.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getConfigBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-entry-config/",
+        subtasks: [
+          { title: "Actualización de tablas de configuración para flag UNIDAD_ACADEMICA", hours: 1.0, completed: false },
+          { title: "Refactorización de endpoints getConfigBO / getAllEnrollmentConfig con filtro por unidad", hours: 1.5, completed: false },
+          { title: "Pantalla Back Office en Angular para alternar y configurar PREGRADO vs POSGRADO", hours: 1.5, completed: false },
+          { title: "Pruebas de regresión para asegurar que la configuración de Pregrado no se altere", hours: 1.0, completed: false }
+        ]
+      },
+      {
+        id: "TSK-05",
+        code: "M1-S2-DOC",
+        title: "Desarrollo lógica de Matrícula Posgrado - Doctorado",
+        month: "Mes 1",
+        sprint: "Sprint 2",
+        hours: 5,
+        resource: "Ilan Valdez",
+        track: "Backend & Integraciones",
+        column: "backlog",
+        source: "Excel Fila 8",
+        desc: "Implementación del flujo de selección en portal para Doctorado, donde el estudiante mantiene capacidad de elección de asignaturas, investigación y turnos.",
+        files: "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/",
+        subtasks: [
+          { title: "Servicio Lumen de consulta de oferta académica filtrada para programas de Doctorado", hours: 1.5, completed: false },
+          { title: "Flujo de selección en Angular para cursos de investigación y créditos electivos", hours: 2.0, completed: false },
+          { title: "Validación de colisiones de turnos y cupos disponibles en tiempo real", hours: 1.0, completed: false },
+          { title: "Confirmación y reserva de vacantes de Doctorado", hours: 0.5, completed: false }
+        ]
+      },
+      {
+        id: "TSK-06",
+        code: "M1-S2-ALU",
+        title: "Parametrización POSGRADO en el lado del alumno y Guards",
+        month: "Mes 1",
+        sprint: "Sprint 2",
+        hours: 10,
+        resource: "Gary Rojas",
+        track: "Frontend & Funcional",
+        column: "backlog",
+        source: "Excel Fila 6 (Expandido con navegación)",
+        desc: "Adaptación del portal del alumno para detectar la unidad académica del estudiante autenticado y activar el flujo diferenciado de Posgrado en lugar del estándar de Pregrado.",
+        files: "miportal_cientifica/src/app/student/pages/enrollment/dashboard-enroll/\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php",
+        subtasks: [
+          { title: "Consumo de servicio de perfil y detección de carrera/modalidad Posgrado en Angular", hours: 2.0, completed: false },
+          { title: "Lógica de guard y redirección hacia flujo específico (Maestría vs Doctorado)", hours: 3.0, completed: false },
+          { title: "Visualización de ventana de matrícula, estatus de habilitación y semáforo de deudas", hours: 3.0, completed: false },
+          { title: "Pruebas funcionales con perfiles de prueba de Pregrado, Maestría y Doctorado", hours: 2.0, completed: false }
+        ]
+      },
+      {
+        id: "TSK-07",
+        code: "M1-S2-LEAD",
+        title: "Coordinación de Entorno PeopleSoft y Alineación con Posgrado",
+        month: "Mes 1",
+        sprint: "Sprint 2",
+        hours: 6,
+        resource: "Jaime Alfaro",
+        track: "Liderazgo & Coordinación",
+        column: "todo",
+        source: "Asignación Propia (Coordinación)",
+        desc: "Gestión con TI Central y DBAs de credenciales, certificados SSL y conectividad VPN para PeopleSoft Integration Broker; validación de políticas T-15/T-5 con Escuela de Posgrado.",
+        files: "Tickets TI Central / Conexión VPN & Gateway PeopleSoft / Actas Reunión",
+        subtasks: [
+          { title: "Gestión y pruebas de conectividad de credenciales PeopleSoft Integration Broker", hours: 3.0, completed: false },
+          { title: "Alineación y formalización de precondiciones T-15 y T-5 con Dirección de Posgrado", hours: 3.0, completed: false }
+        ]
+      },
+
+      // ==========================================
+      // MES 2: SPRINT 3 (Semanas 5 y 6)
+      // ==========================================
+      {
+        id: "TSK-08",
+        code: "M2-S3-PS",
+        title: "Integración PeopleSoft Integration Broker & Idempotencia",
+        month: "Mes 2",
+        sprint: "Sprint 3",
+        hours: 10,
+        resource: "Ilan Valdez",
+        track: "Backend & Integraciones",
+        column: "backlog",
+        source: "Excel Fila 10",
+        desc: "Conexión robusta e idempotente con PeopleSoft Integration Broker para asentar formalmente las matrículas de Posgrado (CLASS_NBR, EMPLID, STRM), manejo de fallos y auditoría.",
+        files: "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (saveInPeople)",
+        subtasks: [
+          { title: "Definición y mapeo de payloads XML/JSON de PeopleSoft Integration Broker para Posgrado", hours: 2.0, completed: false },
+          { title: "Refactorización de saveInPeople para admitir estructuras y planes de estudio de Posgrado", hours: 2.5, completed: false },
+          { title: "Implementación de clave de idempotencia Hash(Programa+Estudiante+Ciclo+Operación)", hours: 2.0, completed: false },
+          { title: "Gestión de excepciones, reintentos y bitácora de respuestas en ScheduleLogs", hours: 2.0, completed: false },
+          { title: "Pruebas de integración E2E con el ambiente PeopleSoft QA", hours: 1.5, completed: false }
+        ]
+      },
+      {
+        id: "TSK-09",
+        code: "M2-S3-MAE",
+        title: "Desarrollo Lógica Matrícula Posgrado - Maestría en Bloque",
+        month: "Mes 2",
+        sprint: "Sprint 3",
+        hours: 10,
+        resource: "Gary Rojas",
+        track: "Frontend & Funcional",
+        column: "backlog",
+        source: "Excel Fila 7 (Expandido)",
+        desc: "Construcción completa del flujo automático en bloque de Maestría: oferta única, turno único, sin selección individual de asignaturas, validación estricta de deuda y confirmación directa.",
+        files: "miportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/courses-enrollment.component.ts\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (processEnrollment)",
+        subtasks: [
+          { title: "Endpoint en Lumen para orquestación de asignación de bloque cerrado por ciclo", hours: 2.5, completed: false },
+          { title: "Validación de restricción financiera (bloqueo automático ante saldo pendiente)", hours: 2.5, completed: false },
+          { title: "Vista de confirmación de bloque de asignaturas predeterminadas en Angular", hours: 3.0, completed: false },
+          { title: "Generación de constancia y resumen de matrícula de Maestría", hours: 2.0, completed: false }
+        ]
+      },
+      {
+        id: "TSK-10",
+        code: "M2-S3-LEAD",
+        title: "Code Review de Integración y Pruebas de Estrés Idempotencia",
+        month: "Mes 2",
+        sprint: "Sprint 3",
+        hours: 6,
+        resource: "Jaime Alfaro",
+        track: "Liderazgo & Calidad",
+        column: "backlog",
+        source: "Asignación Propia (Revisión)",
+        desc: "Revisión arquitectónica de PRs de PeopleSoft y Frontend; ejecución de pruebas de estrés para validar que reintentos de red no generen dobles cargos ni matrículas duplicadas.",
+        files: "Pull Requests GitHub / GitLab\nSuite de Pruebas Postman / JMeter",
+        subtasks: [
+          { title: "Revisión técnica de código de integración PeopleSoft (Ilan Valdez)", hours: 3.0, completed: false },
+          { title: "Pruebas de estrés de idempotencia simulando concurrencia de reintentos", hours: 3.0, completed: false }
+        ]
+      },
+
+      // ==========================================
+      // MES 2: SPRINT 4 (Semanas 7 y 8)
+      // ==========================================
+      {
+        id: "TSK-11",
+        code: "M2-S4-DEM",
+        title: "Carga de Horarios y Turnos desde el Portal a Demanda",
+        month: "Mes 2",
+        sprint: "Sprint 4",
+        hours: 8,
+        resource: "Ilan Valdez",
+        track: "Backend & Integraciones",
+        column: "backlog",
+        source: "Excel Fila 13 (Expandido con Caché)",
+        desc: "Capacidad para que los administradores de Posgrado sincronicen o recarguen turnos y cupos de forma inmediata 'On-Demand', sin tener que esperar el batch nocturno, con caché inteligente.",
+        files: "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getScheduleNewBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
+        subtasks: [
+          { title: "Endpoint en Lumen para invalidación de caché y refresco bajo demanda", hours: 2.5, completed: false },
+          { title: "Lógica de actualización en tiempo real de cupos y vacantes", hours: 2.5, completed: false },
+          { title: "Botón de acción en UI de Back Office con modal de confirmación y log", hours: 3.0, completed: false }
+        ]
+      },
+      {
+        id: "TSK-12",
+        code: "M2-S4-HOR",
+        title: "Integrar con Horarios Nuevos y Ajustes de Diseño UX/UI",
+        month: "Mes 2",
+        sprint: "Sprint 4",
+        hours: 10,
+        resource: "Gary Rojas",
+        track: "Frontend & Funcional",
+        column: "backlog",
+        source: "Excel Filas 11 y 12",
+        desc: "Adaptar visualización del calendario semanal para esquemas atípicos (quincenales, sábados/domingos) y maquetación de modales de alerta para deudas y arrastres.",
+        files: "miportal_cientifica/src/app/student/pages/schedule/\nmiportal_cientifica/src/assets/styles/\nmiportal_cientifica/src/app/modals/modal-enrollment/",
+        subtasks: [
+          { title: "Adaptación del componente de horario semanal para sábados y domingos", hours: 3.0, completed: false },
+          { title: "Alineación de estilos institucionales de Posgrado (colores, badges, responsive)", hours: 3.0, completed: false },
+          { title: "Modales de alerta para desaprobados (con cobro) vs retirados (sin cobro)", hours: 2.0, completed: false },
+          { title: "Enlaces de ayuda hacia trámites académicos de posgrado", hours: 2.0, completed: false }
+        ]
+      },
+      {
+        id: "TSK-13",
+        code: "M2-S4-LEAD",
+        title: "Auditoría de Seguridad, Permisos y Plan de Pruebas E2E",
+        month: "Mes 2",
+        sprint: "Sprint 4",
+        hours: 6,
+        resource: "Jaime Alfaro",
+        track: "Liderazgo & Calidad",
+        column: "backlog",
+        source: "Asignación Propia (Seguridad)",
+        desc: "Auditoría de seguridad en endpoints administrativos de Back Office; validación de token JWT, control de roles y armado de batería de pruebas de aceptación UAT.",
+        files: "Plan_Pruebas_UAT_Posgrado.xlsx\nAuditoría Seguridad Lumen JWT",
+        subtasks: [
+          { title: "Auditoría de roles y permisos en endpoints masivos y on-demand", hours: 3.0, completed: false },
+          { title: "Elaboración de batería de pruebas integrales para certificación con usuarios", hours: 3.0, completed: false }
+        ]
+      },
+
+      // ==========================================
+      // MES 3: SPRINT 5 (Semanas 9 y 10)
+      // ==========================================
+      {
+        id: "TSK-14",
+        code: "M3-S5-INT",
+        title: "Pruebas Integrales de Carga, Resiliencia y Hardening Backend",
+        month: "Mes 3",
+        sprint: "Sprint 5",
+        hours: 8,
+        resource: "Ilan Valdez",
+        track: "Backend & Integraciones",
+        column: "backlog",
+        source: "Fase de Estabilización",
+        desc: "Pruebas de estrés y resiliencia en ambiente QA: simulación de carga masiva de horarios con 500 registros y 50 inscripciones concurrentes en PeopleSoft.",
+        files: "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nScripts de Carga masiva",
+        subtasks: [
+          { title: "Simulación de timeouts PeopleSoft y verificación de reintentos seguros", hours: 3.0, completed: false },
+          { title: "Optimización de consultas SQL en own_enrollment_schedule y logs", hours: 3.0, completed: false },
+          { title: "Resolución de incidencias técnicas detectadas en pruebas integrales", hours: 2.0, completed: false }
+        ]
+      },
+      {
+        id: "TSK-15",
+        code: "M3-S5-UX",
+        title: "Pulido UX, Accesibilidad y Feedback de Pre-UAT",
+        month: "Mes 3",
+        sprint: "Sprint 5",
+        hours: 7,
+        resource: "Gary Rojas",
+        track: "Frontend & Funcional",
+        column: "backlog",
+        source: "Fase de Pulido UX",
+        desc: "Incorporación de mejoras visuales a partir de sesiones preliminares con usuarios clave de Posgrado; verificación de usabilidad en móviles.",
+        files: "miportal_cientifica/src/app/student/pages/enrollment/\nmiportal_cientifica/src/assets/styles/",
+        subtasks: [
+          { title: "Ajuste de copy institucional y textos explicativos en portal de matrícula", hours: 2.5, completed: false },
+          { title: "Resolución de bugs visuales y alineación de componentes móviles", hours: 2.5, completed: false },
+          { title: "Soporte activo en sesiones de pre-certificación UAT", hours: 2.0, completed: false }
+        ]
+      },
+      {
+        id: "TSK-16",
+        code: "M3-S5-LEAD",
+        title: "Conducción de Sesiones UAT y Certificación con Posgrado",
+        month: "Mes 3",
+        sprint: "Sprint 5",
+        hours: 8,
+        resource: "Jaime Alfaro",
+        track: "Liderazgo & QA",
+        column: "backlog",
+        source: "Asignación Propia (UAT)",
+        desc: "Liderar las pruebas de aceptación con el equipo directivo de la Escuela de Posgrado y Registros Académicos; levantamiento de feedback y firma de conformidad.",
+        files: "Acta_Conformidad_UAT_Posgrado.pdf\nMatriz de Hallazgos y Cierres",
+        subtasks: [
+          { title: "Conducción de talleres de prueba guiada con usuarios de Posgrado", hours: 4.0, completed: false },
+          { title: "Consolidación de matriz de hallazgos y priorización de ajustes finales", hours: 2.0, completed: false },
+          { title: "Firma formal de certificación y pase a producción", hours: 2.0, completed: false }
+        ]
+      },
+
+      // ==========================================
+      // MES 3: SPRINT 6 (Semanas 11 y 12)
+      // ==========================================
+      {
+        id: "TSK-17",
+        code: "M3-S6-REL",
+        title: "Checklist de Pase a Producción, Variables .env y Despliegue",
+        month: "Mes 3",
+        sprint: "Sprint 6",
+        hours: 6,
+        resource: "Jaime Alfaro",
+        track: "Liderazgo & Release",
+        column: "backlog",
+        source: "Asignación Propia (Release)",
+        desc: "Preparación del checklist de despliegue a producción, configuración de variables de entorno `.env`, plan de contingencia/rollback y soporte post-lanzamiento.",
+        files: "Checklist_Despliegue_Produccion.md\n.env.production\nProcedimiento de Rollback",
+        subtasks: [
+          { title: "Elaboración de checklist técnico de despliegue y variables .env", hours: 2.0, completed: false },
+          { title: "Ejecución coordinada del despliegue en ventana de mantenimiento", hours: 2.0, completed: false },
+          { title: "Plan de contingencia, rollback y protocolo de contingencia", hours: 2.0, completed: false }
+        ]
+      },
+      {
+        id: "TSK-18",
+        code: "M3-S6-DEV",
+        title: "Soporte Hipercare Post-Lanzamiento y Monitoreo PeopleSoft",
+        month: "Mes 3",
+        sprint: "Sprint 6",
+        hours: 6,
+        resource: "Ilan Valdez",
+        track: "Backend & Integraciones",
+        column: "backlog",
+        source: "Hipercare Producción",
+        desc: "Guardia activa de monitoreo en tiempo real de colas de PeopleSoft, logs de carga masiva y atención prioritaria de incidencias en primeros días de matrícula.",
+        files: "Monitoreo Logs Producción / ScheduleLogs / Kibana / Datadog",
+        subtasks: [
+          { title: "Supervisión en vivo de transacciones PeopleSoft durante ventana T-0 a T+7", hours: 3.0, completed: false },
+          { title: "Atención inmediata a incidencias de integración o time-outs", hours: 3.0, completed: false }
+        ]
+      },
+      {
+        id: "TSK-19",
+        code: "M3-S6-UI",
+        title: "Soporte Hipercare Frontend y Estabilización Alumno",
+        month: "Mes 3",
+        sprint: "Sprint 6",
+        hours: 5,
+        resource: "Gary Rojas",
+        track: "Frontend & Funcional",
+        column: "backlog",
+        source: "Hipercare Producción",
+        desc: "Monitoreo de experiencia de usuario en portal del alumno, resolución de dudas de navegación y corrección en caliente de fallas menores reportadas.",
+        files: "Portal Alumno Producción / Sentry / Google Analytics",
+        subtasks: [
+          { title: "Monitoreo de tasa de éxito en confirmaciones de matrícula de Maestría", hours: 2.5, completed: false },
+          { title: "Soporte de frontend y resolución de reportes de visualización", hours: 2.5, completed: false }
+        ]
+      }
+    ];
+
+    // State
+    const STORAGE_KEY = 'ucs_matricula_3meses_kanban_v2';
+    let tasks = [];
+    let currentResourceFilter = 'all';
+    let currentMonthFilter = 'all';
+    let currentSearchTerm = '';
+    let currentModalTaskId = null;
+    let currentView = 'kanban'; // 'kanban' or 'swimlanes'
+    let fileHandle = null;
+    let isServerConnected = false;
+
+    const columnsConfig = [
+      { id: 'backlog', title: '📋 Backlog', color: '#64748b' },
+      { id: 'todo', title: '⏳ Por Hacer (To Do)', color: '#3b82f6' },
+      { id: 'inprogress', title: '🚀 En Progreso (Doing)', color: '#f59e0b' },
+      { id: 'review', title: '🔍 En Revisión / QA', color: '#8b5cf6' },
+      { id: 'done', title: '✅ Completado (Done)', color: '#10b981' }
+    ];
+
+    const resourcesConfig = [
+      { id: 'Ilan Valdez', label: '💻 Pista Backend (Ilan Valdez)', role: 'Backend & Integraciones', color: 'var(--ilan-color)' },
+      { id: 'Gary Rojas', label: '🎨 Pista Frontend (Gary Rojas)', role: 'Frontend & Lógica Alumno', color: 'var(--gary-color)' },
+      { id: 'Jaime Alfaro', label: '👔 Pista Liderazgo (Jaime Alfaro)', role: 'Tech Lead, Arquitectura & QA', color: 'var(--jaime-color)' }
+    ];
+
+    // Notification Toast
+    let toastTimeout = null;
+    function showSaveToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      const msgEl = document.getElementById('toastMessage');
+      if (!toast || !msgEl) return;
+      msgEl.textContent = msg;
+      toast.style.display = 'flex';
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    function setStorageStatus(mode, text) {
+      const pill = document.getElementById('storageStatusPill');
+      const dot = document.getElementById('storageDot');
+      const label = document.getElementById('storageStatusText');
+      if (!label) return;
+      label.textContent = text;
+      if (mode === 'server') {
+        pill.style.borderColor = '#10b981';
+        dot.style.background = '#10b981';
+      } else if (mode === 'handle') {
+        pill.style.borderColor = '#38bdf8';
+        dot.style.background = '#38bdf8';
+      } else {
+        pill.style.borderColor = '#f59e0b';
+        dot.style.background = '#f59e0b';
+      }
+    }
+
+    // Init with Server & Disk check
+    async function init() {
+      // 1. Try connecting to Node server (relative or localhost:3000)
+      const endpointsToTry = ['/api/tasks', 'http://localhost:3000/api/tasks'];
+      for (const endpoint of endpointsToTry) {
+        try {
+          const res = await fetch(endpoint);
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              tasks = data;
+              isServerConnected = true;
+              setStorageStatus('server', '🟢 MongoDB Atlas (Cloud Conectado)');
+              renderBoard();
+              updateMetrics();
+              return;
+            }
+          }
+        } catch (e) {
+          // Continue to next check
+        }
+      }
+
+      // 2. Fallback to localStorage or default tasks
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          tasks = JSON.parse(saved);
+        } catch (e) {
+          tasks = JSON.parse(JSON.stringify(defaultTasks));
+        }
+      } else {
+        tasks = JSON.parse(JSON.stringify(defaultTasks));
+      }
+
+      setStorageStatus('local', '🟡 Modo local (Ejecuta iniciar_tablero.bat para conectar a MongoDB)');
+      renderBoard();
+      updateMetrics();
+    }
+
+    // Save state directly to disk (Server or File System API)
+    async function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+      updateMetrics();
+
+      // Priority 1: Save via Node Server if connected
+      if (isServerConnected) {
+        try {
+          const res = await fetch('/api/tasks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(tasks)
+          });
+          if (res.ok) {
+            showSaveToast('✔ Sincronizado en MongoDB Atlas (Cloud)');
+            setStorageStatus('server', '🟢 MongoDB Atlas (Cloud Conectado)');
+            return;
+          }
+        } catch (err) {
+          console.warn('Fallo guardado en servidor:', err);
+        }
+      }
+
+      // Priority 2: Save directly via File System Access API handle
+      if (fileHandle) {
+        try {
+          const writable = await fileHandle.createWritable();
+          await writable.write(JSON.stringify(tasks, null, 2));
+          await writable.close();
+          showSaveToast('✔ Guardado directamente en archivo vinculado');
+          setStorageStatus('handle', `🔵 Vinculado a: ${fileHandle.name}`);
+          return;
+        } catch (err) {
+          console.error('Error al escribir en archivo con File System API:', err);
+        }
+      }
+
+      // Fallback notification
+      showSaveToast('ℹ Guardado temporalmente en navegador');
+    }
+
+    // File System Access API: Link direct JSON file on disk
+    async function linkLocalFile() {
+      if (!('showOpenFilePicker' in window)) {
+        alert('Tu navegador no cuenta con File System Access API. Te recomendamos hacer doble clic en iniciar_tablero.bat para sincronización automática en disco con Node.js.');
+        return;
+      }
+      try {
+        const [handle] = await window.showOpenFilePicker({
+          types: [{
+            description: 'Archivo de estado Kanban JSON',
+            accept: { 'application/json': ['.json'] }
+          }]
+        });
+        fileHandle = handle;
+        const file = await fileHandle.getFile();
+        const text = await file.text();
+        if (text && text.trim()) {
+          const parsed = JSON.parse(text);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            tasks = parsed;
+            renderBoard();
+            updateMetrics();
+            if (currentView === 'swimlanes') renderSwimlanes();
+          }
+        }
+        setStorageStatus('handle', `🔵 Vinculado a: ${handle.name}`);
+        showSaveToast(`✔ Vinculado con ${handle.name}`);
+        alert(`¡Archivo ${handle.name} vinculado con éxito!\nCada movimiento, subtarea marcada o tarea nueva se guardará directamente en este archivo en tu disco.`);
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error(err);
+          alert('No se pudo vincular el archivo: ' + err.message);
+        }
+      }
+    }
+
+    // Export JSON to disk
+    function exportJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "kanban_state.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showSaveToast('✔ Copia kanban_state.json descargada');
+    }
+
+    // Import JSON from disk
+    function triggerImportJSON() {
+      document.getElementById('importFileInput').click();
+    }
+
+    function handleImportJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (Array.isArray(imported)) {
+            tasks = imported;
+            saveState();
+            renderBoard();
+            if (currentView === 'swimlanes') renderSwimlanes();
+            showSaveToast(`✔ Importadas ${tasks.length} tareas desde ${file.name}`);
+          } else {
+            alert('El archivo JSON debe contener una lista de tareas.');
+          }
+        } catch (err) {
+          alert('Error al leer el archivo JSON: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetToDefaultData() {
+      if (confirm("¿Deseas reiniciar todas las tareas del plan trimestral a su estado original?")) {
+        tasks = JSON.parse(JSON.stringify(defaultTasks));
+        saveState();
+        renderBoard();
+        if (currentView === 'swimlanes') renderSwimlanes();
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+    }
+
+    function switchView(mode) {
+      currentView = mode;
+      document.getElementById('tabKanban').classList.toggle('active', mode === 'kanban');
+      document.getElementById('tabSwimlanes').classList.toggle('active', mode === 'swimlanes');
+
+      const boardEl = document.getElementById('boardContainer');
+      const swimEl = document.getElementById('swimlanesContainer');
+
+      if (mode === 'kanban') {
+        boardEl.style.display = 'flex';
+        swimEl.style.display = 'none';
+      } else {
+        boardEl.style.display = 'none';
+        swimEl.style.display = 'flex';
+        renderSwimlanes();
+      }
+    }
+
+    // Filter functions
+    function setResourceFilter(resource, btn) {
+      currentResourceFilter = resource;
+      document.querySelectorAll('.filter-group:nth-child(1) .btn-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderBoard();
+      if (currentView === 'swimlanes') renderSwimlanes();
+    }
+
+    function setMonthFilter(month, btn) {
+      currentMonthFilter = month;
+      document.querySelectorAll('.filter-group:nth-child(2) .btn-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderBoard();
+      if (currentView === 'swimlanes') renderSwimlanes();
+    }
+
+    function handleSearch() {
+      currentSearchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+      renderBoard();
+      if (currentView === 'swimlanes') renderSwimlanes();
+    }
+
+    function getFilteredTasks() {
+      return tasks.filter(task => {
+        // Resource filter
+        if (currentResourceFilter !== 'all' && task.resource !== currentResourceFilter) {
+          return false;
+        }
+        // Month filter
+        if (currentMonthFilter !== 'all' && task.month !== currentMonthFilter) {
+          return false;
+        }
+        // Search term
+        if (currentSearchTerm) {
+          const matchCode = task.code.toLowerCase().includes(currentSearchTerm);
+          const matchTitle = task.title.toLowerCase().includes(currentSearchTerm);
+          const matchDesc = task.desc.toLowerCase().includes(currentSearchTerm);
+          const matchResource = task.resource.toLowerCase().includes(currentSearchTerm);
+          const matchSprint = task.sprint.toLowerCase().includes(currentSearchTerm);
+          if (!matchCode && !matchTitle && !matchDesc && !matchResource && !matchSprint) {
+            return false;
+          }
+        }
+        return true;
+      });
+    }
+
+    // Render Traditional Kanban Board
+    function renderBoard() {
+      const container = document.getElementById('boardContainer');
+      container.innerHTML = '';
+
+      const filtered = getFilteredTasks();
+
+      columnsConfig.forEach(col => {
+        const colTasks = filtered.filter(t => t.column === col.id);
+        const colHours = colTasks.reduce((sum, t) => sum + (t.hours || 0), 0);
+
+        const colEl = document.createElement('div');
+        colEl.className = 'kanban-column';
+        colEl.dataset.colId = col.id;
+
+        colEl.innerHTML = `
+          <div class="column-header">
+            <div class="column-title-group">
+              <span class="column-title" style="color: ${col.color};">${col.title}</span>
+              <span class="column-count">${colTasks.length}</span>
+            </div>
+            <span class="column-hours">${colHours}h</span>
+          </div>
+          <div class="cards-container" id="col-${col.id}" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${col.id}')">
+          </div>
+        `;
+
+        const cardsBox = colEl.querySelector('.cards-container');
+
+        colTasks.forEach(task => {
+          const cardEl = createCardElement(task);
+          cardsBox.appendChild(cardEl);
+        });
+
+        container.appendChild(colEl);
+      });
+    }
+
+    // Render Parallel Swimlanes View
+    function renderSwimlanes() {
+      const container = document.getElementById('swimlanesContainer');
+      container.innerHTML = '';
+
+      const filtered = getFilteredTasks();
+
+      resourcesConfig.forEach(res => {
+        if (currentResourceFilter !== 'all' && currentResourceFilter !== res.id) {
+          return;
+        }
+
+        const resTasks = filtered.filter(t => t.resource === res.id);
+        const resHours = resTasks.reduce((sum, t) => sum + (t.hours || 0), 0);
+        const completedHours = resTasks.filter(t => t.column === 'done').reduce((sum, t) => sum + (t.hours || 0), 0);
+
+        const rowEl = document.createElement('div');
+        rowEl.className = 'swimlane-row';
+
+        rowEl.innerHTML = `
+          <div class="swimlane-header">
+            <div class="swimlane-title-group">
+              <span class="swimlane-badge" style="background: rgba(255,255,255,0.08); color: ${res.color}; border: 1px solid ${res.color};">
+                ${res.label}
+              </span>
+              <span style="font-size:0.8rem; color:var(--text-muted);">${res.role}</span>
+            </div>
+            <div style="display:flex; gap:14px; font-size:0.8rem; align-items:center;">
+              <span>Total Pista: <strong style="color:var(--accent-amber);">${resHours}h</strong></span>
+              <span>Completado: <strong style="color:var(--accent-green);">${completedHours}h</strong></span>
+            </div>
+          </div>
+          <div class="swimlane-cards-scroll"></div>
+        `;
+
+        const scrollBox = rowEl.querySelector('.swimlane-cards-scroll');
+
+        if (resTasks.length === 0) {
+          scrollBox.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:12px;">No hay tareas que coincidan con los filtros para este carril.</div>`;
+        } else {
+          resTasks.forEach(task => {
+            const cardEl = createCardElement(task);
+            scrollBox.appendChild(cardEl);
+          });
+        }
+
+        container.appendChild(rowEl);
+      });
+    }
+
+    function createCardElement(task) {
+      const card = document.createElement('div');
+      card.className = 'kanban-card';
+      card.draggable = true;
+      card.id = `card-${task.id}`;
+      card.ondragstart = (e) => handleDragStart(e, task.id);
+      card.ondragend = handleDragEnd;
+
+      // Month & Sprint Badges
+      let monthClass = 'm1';
+      if (task.month === 'Mes 2') monthClass = 'm2';
+      if (task.month === 'Mes 3') monthClass = 'm3';
+
+      let leadBadge = task.resource.includes('Jaime') ? '<span class="badge lead">LEAD</span>' : '';
+
+      // Resource avatar
+      let avatarClass = 'ilan';
+      let initials = 'IV';
+      if (task.resource.includes('Gary')) {
+        avatarClass = 'gary';
+        initials = 'GR';
+      } else if (task.resource.includes('Jaime')) {
+        avatarClass = 'jaime';
+        initials = 'JA';
+      }
+
+      // Subtask progress
+      const totalSub = task.subtasks ? task.subtasks.length : 0;
+      const completedSub = task.subtasks ? task.subtasks.filter(s => s.completed).length : 0;
+      const percentSub = totalSub > 0 ? Math.round((completedSub / totalSub) * 100) : (task.column === 'done' ? 100 : 0);
+
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="badge ${monthClass}">${task.month} &middot; ${task.sprint}</span>
+            ${leadBadge}
+          </div>
+          <span class="card-hours">⏱ ${task.hours}h</span>
+        </div>
+        <div class="card-title" onclick="openTaskModal('${task.id}')">${task.title}</div>
+        
+        <div class="card-subtasks-summary">
+          <span>Subtareas: <strong>${completedSub}/${totalSub}</strong></span>
+          <span>${percentSub}%</span>
+        </div>
+        <div class="card-progress-bar">
+          <div class="card-progress-fill" style="width: ${percentSub}%;"></div>
+        </div>
+
+        <div class="card-footer">
+          <div class="assignee-chip">
+            <div class="avatar ${avatarClass}">${initials}</div>
+            <span>${task.resource.split(' ')[0]}</span>
+          </div>
+          <div class="card-actions-quick">
+            <button class="btn-quick" title="Mover a columna anterior" onclick="quickMoveTask('${task.id}', -1)">◀</button>
+            <button class="btn-quick" title="Ver detalles y subtareas" onclick="openTaskModal('${task.id}')">👁</button>
+            <button class="btn-quick" title="Mover a columna siguiente" onclick="quickMoveTask('${task.id}', 1)">▶</button>
+          </div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    // Drag & Drop
+    let draggedTaskId = null;
+
+    function handleDragStart(e, taskId) {
+      draggedTaskId = taskId;
+      e.target.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', taskId);
+    }
+
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging');
+      document.querySelectorAll('.cards-container').forEach(c => c.classList.remove('drag-over'));
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(e, targetColId) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      if (draggedTaskId) {
+        moveTaskToColumn(draggedTaskId, targetColId);
+        draggedTaskId = null;
+      }
+    }
+
+    function quickMoveTask(taskId, direction) {
+      const task = tasks.find(t => t.id === taskId);
+      if (!task) return;
+      const colOrder = ['backlog', 'todo', 'inprogress', 'review', 'done'];
+      const currentIdx = colOrder.indexOf(task.column);
+      const nextIdx = currentIdx + direction;
+      if (nextIdx >= 0 && nextIdx < colOrder.length) {
+        moveTaskToColumn(taskId, colOrder[nextIdx]);
+      }
+    }
+
+    function moveTaskToColumn(taskId, targetColId) {
+      const task = tasks.find(t => t.id === taskId);
+      if (task && task.column !== targetColId) {
+        task.column = targetColId;
+        if (targetColId === 'done' && task.subtasks) {
+          task.subtasks.forEach(s => s.completed = true);
+        }
+        saveState();
+        renderBoard();
+        if (currentView === 'swimlanes') renderSwimlanes();
+      }
+    }
+
+    // Task Modal
+    function openTaskModal(taskId) {
+      currentModalTaskId = taskId;
+      const task = tasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      document.getElementById('modalTitle').textContent = task.title;
+      document.getElementById('modalId').textContent = task.code;
+      document.getElementById('modalHours').textContent = `⏱ ${task.hours}h Estimadas`;
+      document.getElementById('modalAssignee').textContent = task.resource;
+      document.getElementById('modalTrack').textContent = task.track || 'Desarrollo';
+
+      const colName = columnsConfig.find(c => c.id === task.column)?.title || task.column;
+      document.getElementById('modalColumn').textContent = colName;
+
+      const badgeEl = document.getElementById('modalTagBadge');
+      badgeEl.textContent = task.month;
+      badgeEl.className = 'badge ' + (task.month === 'Mes 2' ? 'm2' : (task.month === 'Mes 3' ? 'm3' : 'm1'));
+
+      document.getElementById('modalSprintBadge').textContent = task.sprint;
+
+      document.getElementById('modalDesc').textContent = task.desc;
+      document.getElementById('modalFiles').innerHTML = (task.files || 'No especificado').replace(/\n/g, '<br>');
+
+      renderModalSubtasks(task);
+
+      document.getElementById('taskModalOverlay').classList.add('open');
+    }
+
+    function renderModalSubtasks(task) {
+      const subListEl = document.getElementById('modalSubtaskList');
+      subListEl.innerHTML = '';
+
+      const total = task.subtasks ? task.subtasks.length : 0;
+      const completed = task.subtasks ? task.subtasks.filter(s => s.completed).length : 0;
+      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      document.getElementById('modalSubtaskRatio').textContent = `${completed} de ${total}`;
+      document.getElementById('modalSubtasksPercent').textContent = `${pct}% Completado`;
+
+      if (task.subtasks && task.subtasks.length > 0) {
+        task.subtasks.forEach((sub, idx) => {
+          const item = document.createElement('div');
+          item.className = 'subtask-item';
+          item.innerHTML = `
+            <input type="checkbox" id="sub-${idx}" ${sub.completed ? 'checked' : ''} onchange="toggleSubtaskStatus(${idx})">
+            <div class="subtask-text-group">
+              <label for="sub-${idx}" class="subtask-title ${sub.completed ? 'completed' : ''}">${sub.title}</label>
+              <span class="subtask-hours">⏳ Subtarea: ${sub.hours}h</span>
+            </div>
+          `;
+          subListEl.appendChild(item);
+        });
+      } else {
+        subListEl.innerHTML = `<p style="font-size:0.8rem; color:var(--text-muted);">Sin subtareas definidas.</p>`;
+      }
+    }
+
+    function toggleSubtaskStatus(subtaskIdx) {
+      const task = tasks.find(t => t.id === currentModalTaskId);
+      if (!task || !task.subtasks || !task.subtasks[subtaskIdx]) return;
+
+      task.subtasks[subtaskIdx].completed = !task.subtasks[subtaskIdx].completed;
+
+      const allDone = task.subtasks.every(s => s.completed);
+      if (allDone && task.column !== 'done') {
+        task.column = 'done';
+      } else if (!allDone && task.column === 'done') {
+        task.column = 'inprogress';
+      }
+
+      saveState();
+      renderModalSubtasks(task);
+      renderBoard();
+      if (currentView === 'swimlanes') renderSwimlanes();
+    }
+
+    function closeTaskModal() {
+      document.getElementById('taskModalOverlay').classList.remove('open');
+      currentModalTaskId = null;
+    }
+
+    function closeModalOnOverlay(e) {
+      if (e.target.id === 'taskModalOverlay') {
+        closeTaskModal();
+      }
+    }
+
+    function moveTaskFromModal(direction) {
+      if (!currentModalTaskId) return;
+      quickMoveTask(currentModalTaskId, direction === 'next' ? 1 : -1);
+      const updated = tasks.find(t => t.id === currentModalTaskId);
+      if (updated) {
+        const colName = columnsConfig.find(c => c.id === updated.column)?.title || updated.column;
+        document.getElementById('modalColumn').textContent = colName;
+      }
+    }
+
+    // Metrics Calculation
+    function updateMetrics() {
+      let totalH = 0;
+      let ilanH = 0;
+      let garyH = 0;
+      let jaimeH = 0;
+      let doneH = 0;
+
+      tasks.forEach(t => {
+        const h = t.hours || 0;
+        totalH += h;
+        if (t.resource.includes('Ilan')) ilanH += h;
+        if (t.resource.includes('Gary')) garyH += h;
+        if (t.resource.includes('Jaime')) jaimeH += h;
+
+        if (t.column === 'done') {
+          doneH += h;
+        } else if (t.subtasks && t.subtasks.length > 0) {
+          const compSubH = t.subtasks.filter(s => s.completed).reduce((sum, s) => sum + (s.hours || 0), 0);
+          doneH += compSubH;
+        }
+      });
+
+      const pct = totalH > 0 ? Math.round((doneH / totalH) * 100) : 0;
+
+      document.getElementById('metricTotalHours').textContent = `${totalH}h`;
+      document.getElementById('metricIlanHours').textContent = `${ilanH}h`;
+      document.getElementById('metricGaryHours').textContent = `${garyH}h`;
+      document.getElementById('metricJaimeHours').textContent = `${jaimeH}h`;
+      document.getElementById('metricOverallProgress').textContent = `${pct}% (${Math.round(doneH)}h)`;
+      document.getElementById('progressFillBar').style.width = `${pct}%`;
+    }
+
+    // Modal to add custom task
+    function openAddTaskModal() {
+      const title = prompt("Título de la nueva tarea:");
+      if (!title) return;
+      const resource = prompt("Asignar a (Ilan Valdez, Gary Rojas, Jaime Alfaro):", "Jaime Alfaro");
+      const hoursStr = prompt("Horas estimadas:", "3");
+      const hours = parseFloat(hoursStr) || 2;
+      const month = prompt("Mes (Mes 1, Mes 2, Mes 3):", "Mes 1");
+      const sprint = prompt("Sprint (Sprint 1 a Sprint 6):", "Sprint 1");
+
+      const newTask = {
+        id: "TSK-" + (tasks.length + 1),
+        code: "AD-HOC-" + (tasks.length + 1),
+        title: title,
+        month: month || "Mes 1",
+        sprint: sprint || "Sprint 1",
+        hours: hours,
+        resource: resource || "Jaime Alfaro",
+        track: resource && resource.includes('Ilan') ? 'Backend' : (resource && resource.includes('Gary') ? 'Frontend' : 'Liderazgo'),
+        column: "todo",
+        source: "Añadida manualmente",
+        desc: "Tarea ad-hoc incorporada al plan trimestral para seguimiento en vivo.",
+        files: "Por definir",
+        subtasks: [
+          { title: "Definición y ejecución", hours: hours, completed: false }
+        ]
+      };
+
+      tasks.push(newTask);
+      saveState();
+      renderBoard();
+      if (currentView === 'swimlanes') renderSwimlanes();
+    }
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeTaskModal();
+      }
+    });
+
+    // Start
+    init();
+  </script>
+</body>
+</html>

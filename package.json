@@ -1,0 +1,23 @@
+{
+  "name": "kanban-matricula-posgrado",
+  "version": "1.0.0",
+  "description": "Tablero Kanban de Seguimiento de Matrícula Posgrado (UCS) conectado a MongoDB Atlas y desplegable en Vercel",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.5",
+    "mongodb": "^4.17.2"
+  },
+  "keywords": [
+    "kanban",
+    "trello",
+    "posgrado",
+    "mongodb",
+    "vercel"
+  ],
+  "author": "Jaime Alfaro Salazar",
+  "license": "MIT"
+}
