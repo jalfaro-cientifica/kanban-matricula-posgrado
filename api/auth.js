@@ -1,17 +1,6 @@
-// api/auth.js - Authentication & Registration endpoint connected to MongoDB Atlas with fallback
+// api/auth.js - Authentication & Registration endpoint connected directly to MongoDB Atlas
 const crypto = require('crypto');
 const { connectToDatabase } = require('../lib/mongodb');
-
-// Require directly so Vercel includes data/users_state.json in the serverless bundle
-let seedUsers = [];
-try {
-  seedUsers = require('../data/users_state.json');
-} catch (e) {
-  seedUsers = [];
-}
-
-// In-memory fallback buffer for users
-const inMemoryUsers = [...seedUsers];
 
 function hashPassword(password) {
   return crypto.createHash('sha256').update(password + '_ucs_salt_2026').digest('hex');
@@ -75,41 +64,54 @@ module.exports = async function handler(req, res) {
     db = conn.db;
   } catch (err) {
     dbError = err.message;
-    console.warn('[AUTH API]: MongoDB Atlas no accesible desde esta IP:', err.message);
+    console.error('[AUTH API]: Error conectando a MongoDB Atlas:', err.message);
   }
 
-  res.setHeader('X-Db-Status', db ? 'connected' : 'fallback-ip-required');
+  res.setHeader('X-Db-Status', db ? 'connected' : 'atlas-unreachable');
+  if (dbError) {
+    res.setHeader('X-Db-Error', encodeURIComponent(dbError));
+  }
 
-  // GET /api/auth -> List public user profiles
+  // GET /api/auth -> List public registered users from Atlas
   if (req.method === 'GET') {
-    if (db) {
-      try {
-        const collection = db.collection('users');
-        const users = await collection
-          .find({}, { projection: { passwordHash: 0, _id: 0 } })
-          .sort({ createdAt: -1 })
-          .toArray();
-        return res.status(200).json(users);
-      } catch (e) {
-        console.warn('[AUTH GET DB ERROR]:', e.message);
-      }
+    if (!db) {
+      return res.status(503).json({
+        error: 'No se pudo conectar con MongoDB Atlas.',
+        details: dbError,
+        hint: 'Verifica que en MongoDB Atlas -> Network Access esté permitida la IP 0.0.0.0/0 para conexiones desde Vercel.'
+      });
     }
-    const publicMemory = inMemoryUsers.map(u => {
-      const copy = { ...u };
-      delete copy.passwordHash;
-      delete copy._id;
-      return copy;
-    });
-    return res.status(200).json(publicMemory);
+
+    try {
+      const collection = db.collection('users');
+      const users = await collection
+        .find({}, { projection: { passwordHash: 0, _id: 0 } })
+        .sort({ createdAt: -1 })
+        .toArray();
+      return res.status(200).json(users);
+    } catch (e) {
+      return res.status(500).json({ error: 'Error al consultar usuarios en MongoDB Atlas', details: e.message });
+    }
   }
 
   // POST /api/auth
   if (req.method === 'POST') {
     const body = await parseBody(req);
     if (!body || !body.action) {
-      return res.status(400).json({ error: 'Acción no especificada (register o login)' });
+      return res.status(400).json({ error: 'Acción no especificada (register o login).' });
     }
 
+    // Require database connection for all auth operations
+    if (!db) {
+      return res.status(503).json({
+        success: false,
+        error: 'No se puede conectar a MongoDB Atlas. MongoDB rechazó la conexión desde los servidores de Vercel (Alerta TLS / IP no autorizada). Para resolverlo: ingresa a MongoDB Atlas > Network Access y agrega la regla 0.0.0.0/0 (Allow Access from Anywhere).',
+        details: dbError,
+        code: 'ATLAS_WHITELIST_REQUIRED'
+      });
+    }
+
+    const collection = db.collection('users');
     const action = body.action;
 
     // REGISTER ACTION
@@ -128,35 +130,41 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'La contraseña debe tener al menos 4 caracteres.' });
       }
 
-      // Check if user already exists in DB
-      if (db) {
-        try {
-          const collection = db.collection('users');
-          const existing = await collection.findOne({ email: cleanEmail });
-          if (existing) {
-            // Update password if registering again
-            const newHash = hashPassword(password);
-            await collection.updateOne({ email: cleanEmail }, { $set: { passwordHash: newHash } });
-            const updated = { ...existing, passwordHash: newHash };
-            delete updated._id;
-            delete updated.passwordHash;
-            return res.status(200).json({
-              success: true,
-              message: 'Cuenta actualizada exitosamente',
-              user: updated
-            });
-          }
-        } catch (e) {
-          console.warn('[AUTH CHECK USER ERROR]:', e.message);
-        }
-      }
-
+      // Check if user already exists
+      const existing = await collection.findOne({ email: cleanEmail });
       const cleanName = name.trim();
       const parts = cleanName.split(/\s+/);
       const shortName = parts[0];
       const userRole = role && role.trim() ? role.trim() : 'Colaborador UCS';
       const color = getRoleColor(userRole);
       const avatarInitials = getAvatarInitials(cleanName);
+      const hashedPass = hashPassword(password);
+
+      if (existing) {
+        // Update credentials and role if already registered
+        await collection.updateOne(
+          { email: cleanEmail },
+          {
+            $set: {
+              name: cleanName,
+              shortName: shortName,
+              role: userRole,
+              passwordHash: hashedPass,
+              avatarInitials: avatarInitials,
+              color: color,
+              updatedAt: new Date().toISOString()
+            }
+          }
+        );
+
+        const updatedDoc = await collection.findOne({ email: cleanEmail }, { projection: { passwordHash: 0, _id: 0 } });
+        return res.status(200).json({
+          success: true,
+          message: 'Cuenta actualizada exitosamente en MongoDB Atlas.',
+          user: updatedDoc,
+          savedInAtlas: true
+        });
+      }
 
       const newUser = {
         id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
@@ -164,38 +172,23 @@ module.exports = async function handler(req, res) {
         shortName: shortName,
         email: cleanEmail,
         role: userRole,
-        passwordHash: hashPassword(password),
+        passwordHash: hashedPass,
         avatarInitials: avatarInitials,
         color: color,
         createdAt: new Date().toISOString()
       };
 
-      if (db) {
-        try {
-          const collection = db.collection('users');
-          await collection.insertOne(newUser);
-          delete newUser._id;
-        } catch (e) {
-          console.warn('[AUTH INSERT DB ERROR]:', e.message);
-        }
-      }
-
-      // Always update in-memory cache
-      const memIdx = inMemoryUsers.findIndex(u => u.email === cleanEmail);
-      if (memIdx >= 0) {
-        inMemoryUsers[memIdx] = newUser;
-      } else {
-        inMemoryUsers.unshift(newUser);
-      }
+      await collection.insertOne(newUser);
 
       const safeUser = { ...newUser };
+      delete safeUser._id;
       delete safeUser.passwordHash;
 
       return res.status(201).json({
         success: true,
-        message: 'Usuario registrado exitosamente',
+        message: 'Usuario registrado exitosamente en MongoDB Atlas.',
         user: safeUser,
-        atlasConnected: !!db
+        savedInAtlas: true
       });
     }
 
@@ -208,41 +201,16 @@ module.exports = async function handler(req, res) {
 
       const cleanEmail = email.trim().toLowerCase();
       const incomingHash = hashPassword(password);
-      let foundUser = null;
 
-      // 1. Try DB first
-      if (db) {
-        try {
-          const collection = db.collection('users');
-          foundUser = await collection.findOne({ email: cleanEmail });
-        } catch (e) {
-          console.warn('[AUTH FIND DB ERROR]:', e.message);
-        }
-      }
+      const foundUser = await collection.findOne({ email: cleanEmail });
 
-      // 2. Try memory and seed users fallback
       if (!foundUser) {
-        foundUser = inMemoryUsers.find(u => u.email === cleanEmail);
-      }
-      if (!foundUser) {
-        foundUser = seedUsers.find(u => u.email === cleanEmail);
-      }
-
-      // User not found anywhere
-      if (!foundUser) {
-        if (!db) {
-          // If Atlas is unreachable, give helpful message
-          return res.status(401).json({
-            error: 'No se encontró la cuenta. Nota: MongoDB Atlas requiere habilitar 0.0.0.0/0 en Network Access para conexiones desde Vercel. Puedes registrarte directamente en la pestaña "Registrarse".',
-            hint: 'atlas_network_access_required'
-          });
-        }
         return res.status(401).json({
-          error: 'No existe una cuenta con este correo electrónico. Por favor regístrate primero.'
+          error: 'No existe una cuenta registrada con este correo electrónico (' + cleanEmail + '). Por favor regístrate primero en la pestaña "Registrarse".'
         });
       }
 
-      // STRICT PASSWORD VERIFICATION - Error if hash does not match
+      // STRICT PASSWORD VERIFICATION
       if (foundUser.passwordHash !== incomingHash) {
         return res.status(401).json({
           error: 'Contraseña incorrecta. Por favor verifica tus credenciales.'
@@ -255,14 +223,14 @@ module.exports = async function handler(req, res) {
 
       return res.status(200).json({
         success: true,
-        message: 'Inicio de sesión exitoso',
+        message: 'Inicio de sesión exitoso.',
         user: safeUser,
-        atlasConnected: !!db
+        verifiedInAtlas: true
       });
     }
 
-    return res.status(400).json({ error: 'Acción inválida' });
+    return res.status(400).json({ error: 'Acción inválida.' });
   }
 
-  return res.status(405).json({ error: 'Método no permitido' });
+  return res.status(405).json({ error: 'Método no permitido.' });
 };
