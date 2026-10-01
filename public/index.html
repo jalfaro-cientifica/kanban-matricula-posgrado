@@ -10,39 +10,113 @@
   <!-- Institutional Email Authentication -->
   <style>
     :root {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-card: #334155;
-      --bg-card-hover: #475569;
+      /* Dark Theme (Default) */
+      --bg-primary: #0b1120;
+      --bg-secondary: #131d31;
+      --bg-card: #1e293b;
+      --bg-card-hover: #27354f;
       --text-main: #f8fafc;
+      --text-secondary: #cbd5e1;
       --text-muted: #94a3b8;
-      --border-color: #334155;
+      --border-color: #26354d;
+      --border-card: rgba(148, 163, 184, 0.16);
+      --header-bg: #090e1a;
+      --column-bg: rgba(19, 29, 49, 0.75);
+      --view-bar-bg: rgba(11, 17, 32, 0.9);
+
       --accent-blue: #3b82f6;
       --accent-green: #10b981;
       --accent-amber: #f59e0b;
       --accent-purple: #8b5cf6;
       --accent-rose: #f43f5e;
       --accent-cyan: #06b6d4;
+
       --ilan-color: #38bdf8;
       --gary-color: #a78bfa;
       --jaime-color: #34d399;
-      --header-bg: #0b1120;
-      --column-bg: rgba(30, 41, 59, 0.7);
+
+      /* Badges & Pills (Dark) */
+      --badge-m1-bg: rgba(59, 130, 246, 0.2);
+      --badge-m1-text: #93c5fd;
+      --badge-m1-border: rgba(59, 130, 246, 0.4);
+
+      --badge-m2-bg: rgba(245, 158, 11, 0.2);
+      --badge-m2-text: #fde047;
+      --badge-m2-border: rgba(245, 158, 11, 0.4);
+
+      --badge-m3-bg: rgba(16, 185, 129, 0.2);
+      --badge-m3-text: #6ee7b7;
+      --badge-m3-border: rgba(16, 185, 129, 0.4);
+
+      --badge-fullstack-bg: rgba(139, 92, 246, 0.2);
+      --badge-fullstack-text: #d8b4fe;
+      --badge-fullstack-border: rgba(139, 92, 246, 0.4);
+
+      --badge-hours-bg: rgba(245, 158, 11, 0.15);
+      --badge-hours-text: #fef08a;
+      --badge-hours-border: rgba(245, 158, 11, 0.35);
+
+      --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+      --card-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.35);
+      --modal-bg: #131d31;
+      --input-bg: #0b1120;
+      --input-border: #26354d;
+      --progress-track: #0b1120;
     }
 
     [data-theme="light"] {
-      --bg-primary: #f8fafc;
+      /* Light Theme (Polished, High-Contrast Executive Look) */
+      --bg-primary: #f1f5f9;
       --bg-secondary: #ffffff;
       --bg-card: #ffffff;
-      --bg-card-hover: #f1f5f9;
+      --bg-card-hover: #f8fafc;
       --text-main: #0f172a;
+      --text-secondary: #334155;
       --text-muted: #64748b;
-      --border-color: #e2e8f0;
+      --border-color: #cbd5e1;
+      --border-card: #e2e8f0;
       --header-bg: #ffffff;
       --column-bg: #e2e8f0;
+      --view-bar-bg: #f8fafc;
+
+      --accent-blue: #1d4ed8;
+      --accent-green: #047857;
+      --accent-amber: #b45309;
+      --accent-purple: #6d28d9;
+      --accent-rose: #be123c;
+      --accent-cyan: #0369a1;
+
       --ilan-color: #0284c7;
       --gary-color: #7c3aed;
       --jaime-color: #059669;
+
+      /* Badges & Pills (Light - High Contrast) */
+      --badge-m1-bg: #eff6ff;
+      --badge-m1-text: #1d4ed8;
+      --badge-m1-border: #bfdbfe;
+
+      --badge-m2-bg: #fffbeb;
+      --badge-m2-text: #92400e;
+      --badge-m2-border: #fde68a;
+
+      --badge-m3-bg: #ecfdf5;
+      --badge-m3-text: #065f46;
+      --badge-m3-border: #a7f3d0;
+
+      --badge-fullstack-bg: #f5f3ff;
+      --badge-fullstack-text: #5b21b6;
+      --badge-fullstack-border: #ddd6fe;
+
+      --badge-hours-bg: #fefce8;
+      --badge-hours-text: #854d0e;
+      --badge-hours-border: #fef08a;
+
+      --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --card-shadow-hover: 0 6px 16px -2px rgba(0, 0, 0, 0.12), 0 3px 6px -2px rgba(0, 0, 0, 0.06);
+      --modal-bg: #ffffff;
+      --input-bg: #ffffff;
+      --input-border: #cbd5e1;
+      --progress-track: #e2e8f0;
     }
 
     * {
@@ -330,20 +404,20 @@
     }
 
     .btn-action.btn-audit {
-      background: rgba(139, 92, 246, 0.2);
-      border-color: rgba(139, 92, 246, 0.4);
-      color: #c4b5fd;
+      background: var(--badge-fullstack-bg);
+      border-color: var(--badge-fullstack-border);
+      color: var(--badge-fullstack-text);
       font-weight: 600;
     }
 
     .btn-action.btn-audit:hover {
-      background: rgba(139, 92, 246, 0.35);
+      filter: brightness(1.1);
     }
 
     /* Overall Progress Bar */
     .progress-strip {
       height: 4px;
-      background: var(--bg-secondary);
+      background: var(--progress-track);
       width: 100%;
       overflow: hidden;
     }
@@ -357,12 +431,13 @@
 
     /* View Mode Tabs (Kanban vs Parallel Swimlanes) */
     .view-mode-bar {
-      background: rgba(15, 23, 42, 0.6);
+      background: var(--view-bar-bg);
       padding: 8px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--border-color);
+      transition: background-color 0.25s ease;
     }
 
     .view-tabs {
@@ -400,6 +475,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      font-weight: 600;
     }
 
     /* Board Area */
@@ -535,12 +611,12 @@
     /* Kanban Card */
     .kanban-card {
       background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 12px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      padding: 13px;
+      box-shadow: var(--card-shadow);
       cursor: grab;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.2s ease;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -548,12 +624,12 @@
 
     .kanban-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
-      border-color: rgba(255,255,255,0.2);
+      box-shadow: var(--card-shadow-hover);
+      border-color: var(--accent-blue);
     }
 
     .kanban-card.dragging {
-      opacity: 0.4;
+      opacity: 0.35;
     }
 
     .card-top {
@@ -571,50 +647,52 @@
 
     .badge {
       font-size: 0.68rem;
-      padding: 2px 7px;
-      border-radius: 4px;
-      font-weight: 600;
+      padding: 2.5px 8px;
+      border-radius: 5px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.03em;
+      transition: all 0.2s ease;
     }
 
     .badge.m1 {
-      background: rgba(59, 130, 246, 0.2);
-      color: #60a5fa;
-      border: 1px solid rgba(59, 130, 246, 0.3);
+      background: var(--badge-m1-bg);
+      color: var(--badge-m1-text);
+      border: 1px solid var(--badge-m1-border);
     }
 
     .badge.m2 {
-      background: rgba(245, 158, 11, 0.2);
-      color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      background: var(--badge-m2-bg);
+      color: var(--badge-m2-text);
+      border: 1px solid var(--badge-m2-border);
     }
 
     .badge.m3 {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: var(--badge-m3-bg);
+      color: var(--badge-m3-text);
+      border: 1px solid var(--badge-m3-border);
     }
 
     .badge.lead {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: var(--badge-m3-bg);
+      color: var(--badge-m3-text);
+      border: 1px solid var(--badge-m3-border);
     }
 
     .badge.fullstack {
-      background: rgba(139, 92, 246, 0.2);
-      color: #c4b5fd;
-      border: 1px solid rgba(139, 92, 246, 0.3);
+      background: var(--badge-fullstack-bg);
+      color: var(--badge-fullstack-text);
+      border: 1px solid var(--badge-fullstack-border);
     }
 
     .card-hours {
       font-size: 0.72rem;
       font-weight: 700;
-      color: #facc15;
-      background: rgba(250, 204, 21, 0.12);
-      padding: 2px 6px;
-      border-radius: 4px;
+      color: var(--badge-hours-text);
+      background: var(--badge-hours-bg);
+      border: 1px solid var(--badge-hours-border);
+      padding: 2.5px 7px;
+      border-radius: 5px;
       display: flex;
       align-items: center;
       gap: 3px;
@@ -623,9 +701,10 @@
     .card-title {
       font-size: 0.88rem;
       font-weight: 600;
-      line-height: 1.35;
+      line-height: 1.38;
       color: var(--text-main);
       cursor: pointer;
+      transition: color 0.15s ease;
     }
 
     .card-title:hover {
@@ -639,11 +718,12 @@
       align-items: center;
       justify-content: space-between;
       margin-top: 2px;
+      font-weight: 500;
     }
 
     .card-progress-bar {
       height: 5px;
-      background: var(--bg-secondary);
+      background: var(--progress-track);
       border-radius: 4px;
       overflow: hidden;
       width: 100%;
@@ -659,8 +739,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-top: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 9px;
+      border-top: 1px solid var(--border-card);
       margin-top: 2px;
     }
 
@@ -880,9 +960,10 @@
       border: 1px solid var(--border-color);
       border-radius: 6px;
       padding: 10px 14px;
-      font-family: monospace;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 0.78rem;
-      color: #38bdf8;
+      color: var(--accent-cyan);
+      font-weight: 500;
       line-height: 1.5;
     }
 
@@ -1236,10 +1317,10 @@
       text-transform: uppercase;
     }
 
-    .audit-badge.move { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-    .audit-badge.subtask { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-    .audit-badge.create { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-    .audit-badge.login { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; }
+    .audit-badge.move { background: var(--badge-m1-bg); color: var(--badge-m1-text); border: 1px solid var(--badge-m1-border); }
+    .audit-badge.subtask { background: var(--badge-m3-bg); color: var(--badge-m3-text); border: 1px solid var(--badge-m3-border); }
+    .audit-badge.create { background: var(--badge-m2-bg); color: var(--badge-m2-text); border: 1px solid var(--badge-m2-border); }
+    .audit-badge.login { background: var(--badge-fullstack-bg); color: var(--badge-fullstack-text); border: 1px solid var(--badge-fullstack-border); }
 
     @media (max-width: 768px) {
       header, .filters-bar, .view-mode-bar {
@@ -1255,8 +1336,128 @@
       .search-input {
         width: 100%;
       }
-      .login-card {
-        padding: 20px;
+      .toast-notification {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--bg-card);
+        color: var(--accent-blue);
+        border: 1px solid var(--accent-blue);
+        border-radius: 8px;
+        padding: 10px 18px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+      }
+
+      [data-theme="light"] .login-overlay {
+        background: radial-gradient(circle at top center, #f1f5f9 0%, #cbd5e1 100%);
+      }
+
+      [data-theme="light"] .login-card {
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        color: #0f172a;
+      }
+
+      [data-theme="light"] .login-title h2 {
+        color: #0f172a;
+      }
+
+      [data-theme="light"] .auth-tab-btn:hover:not(.active) {
+        color: #0f172a;
+        background: #f1f5f9;
+      }
+
+      [data-theme="light"] .auth-alert-box.error {
+        background: #fff1f2;
+        border-color: #fecdd3;
+        color: #be123c;
+      }
+
+      [data-theme="light"] .auth-alert-box.success {
+        background: #ecfdf5;
+        border-color: #a7f3d0;
+        color: #047857;
+      }
+
+      [data-theme="light"] .auth-footer-badge {
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+      }
+
+      [data-theme="light"] .metric-pill {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      }
+
+      [data-theme="light"] .user-profile-capsule {
+        background: #ffffff;
+        border-color: #cbd5e1;
+      }
+
+      [data-theme="light"] .user-profile-capsule:hover {
+        background: #f8fafc;
+        border-color: var(--accent-blue);
+      }
+
+      [data-theme="light"] .btn-filter {
+        background: #ffffff;
+        border-color: #cbd5e1;
+        color: #475569;
+      }
+
+      [data-theme="light"] .btn-filter:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+      }
+
+      [data-theme="light"] .btn-action {
+        background: #ffffff;
+        border-color: #cbd5e1;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      }
+
+      [data-theme="light"] .btn-action:hover {
+        background: #f8fafc;
+      }
+
+      [data-theme="light"] .swimlane-row {
+        background: #ffffff;
+        border-color: #cbd5e1;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      }
+
+      [data-theme="light"] .audit-card {
+        background: #ffffff;
+        border-color: #e2e8f0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      }
+
+      [data-theme="light"] .subtask-item {
+        background: #ffffff;
+        border-color: #e2e8f0;
+      }
+
+      [data-theme="light"] .subtask-item:hover {
+        background: #f8fafc;
+      }
+
+      [data-theme="light"] .column-count {
+        background: #ffffff;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+      }
+
+      [data-theme="light"] .column-title {
+        color: #0f172a;
       }
     }
   </style>
@@ -1427,13 +1628,15 @@
         📜 Auditoría <span id="auditCountBadge" style="background:rgba(255,255,255,0.2); padding:1px 6px; border-radius:10px; font-size:0.7rem;">0</span>
       </button>
 
-      <button class="btn-action" onclick="toggleTheme()" title="Cambiar tema claro/oscuro">🌓 Modo</button>
+      <button class="btn-action" id="btnThemeToggle" onclick="toggleTheme()" title="Cambiar tema claro/oscuro">
+        <span>☀️</span> <span>Modo Claro</span>
+      </button>
       <button class="btn-action btn-primary" onclick="openAddTaskModal()">➕ Nueva Tarea</button>
     </div>
   </header>
 
   <!-- Toast Notification -->
-  <div id="toastNotification" style="position:fixed; bottom:24px; right:24px; background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; border-radius:8px; padding:10px 18px; font-size:0.82rem; font-weight:600; box-shadow:0 10px 25px rgba(0,0,0,0.5); z-index:9999; display:none; align-items:center; gap:8px;">
+  <div id="toastNotification" class="toast-notification">
     <span>💾</span> <span id="toastMessage">Guardado</span>
   </div>
 
@@ -1967,6 +2170,7 @@
     // INITIALIZATION & MONGODB SYNC
     // =========================================
     async function init() {
+      initTheme();
       checkUserSession();
 
       // Try fetching from /api/tasks
@@ -3246,10 +3450,31 @@
       showSaveToast('ℹ Guardado temporalmente en navegador');
     }
 
+    function initTheme() {
+      const saved = localStorage.getItem('kanban_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+      updateThemeButton(saved);
+    }
+
     function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
       const next = current === 'light' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('kanban_theme', next);
+      updateThemeButton(next);
+      showSaveToast(next === 'light' ? '☀️ Modo Claro activado' : '🌙 Modo Oscuro activado');
+    }
+
+    function updateThemeButton(theme) {
+      const btn = document.getElementById('btnThemeToggle');
+      if (!btn) return;
+      if (theme === 'light') {
+        btn.innerHTML = '<span>🌙</span> <span>Modo Oscuro</span>';
+        btn.title = 'Cambiar a Modo Oscuro';
+      } else {
+        btn.innerHTML = '<span>☀️</span> <span>Modo Claro</span>';
+        btn.title = 'Cambiar a Modo Claro';
+      }
     }
 
     function switchView(mode) {
@@ -3524,8 +3749,10 @@
         renderBoard();
         if (currentView === 'swimlanes') renderSwimlanes();
 
-        const fromTitle = columnsConfig.find(c => c.id === fromCol)?.title || fromCol;
-        const toTitle = columnsConfig.find(c => c.id === targetColId)?.title || targetColId;
+        const fromColObj = columnsConfig.find(c => c.id === fromCol);
+        const fromTitle = fromColObj ? fromColObj.title : fromCol;
+        const toColObj = columnsConfig.find(c => c.id === targetColId);
+        const toTitle = toColObj ? toColObj.title : targetColId;
         logAuditAction('MOVE_TASK', task, `Movió la tarea de "${fromTitle}" a "${toTitle}"`, fromCol, targetColId);
       }
     }
@@ -3547,7 +3774,8 @@
       }
       document.getElementById('modalTrack').textContent = roleLabel;
 
-      const colName = columnsConfig.find(c => c.id === task.column)?.title || task.column;
+      const colObj = columnsConfig.find(c => c.id === task.column);
+      const colName = colObj ? colObj.title : task.column;
       document.getElementById('modalColumn').textContent = colName;
 
       const badgeEl = document.getElementById('modalTagBadge');
@@ -3630,7 +3858,8 @@
       quickMoveTask(currentModalTaskId, direction === 'next' ? 1 : -1);
       const updated = tasks.find(t => t.id === currentModalTaskId);
       if (updated) {
-        const colName = columnsConfig.find(c => c.id === updated.column)?.title || updated.column;
+        const colObj = columnsConfig.find(c => c.id === updated.column);
+        const colName = colObj ? colObj.title : updated.column;
         document.getElementById('modalColumn').textContent = colName;
       }
     }
