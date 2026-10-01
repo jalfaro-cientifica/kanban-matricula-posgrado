@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Trello — Matrícula Posgrado (Plan 3 Meses) | UCS</title>
+  <title>Tablero Matrícula Posgrado | UCS & MongoDB Atlas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- MSAL.js for Microsoft 365 Authentication -->
+  <script src="https://alcdn.msauth.net/browser/2.35.0/js/msal-browser.min.js"></script>
   <style>
     :root {
       --bg-primary: #0f172a;
@@ -65,7 +67,7 @@
     header {
       background: var(--header-bg);
       border-bottom: 1px solid var(--border-color);
-      padding: 12px 24px;
+      padding: 10px 24px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -84,47 +86,112 @@
     }
 
     .brand-logo {
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
-      width: 44px;
-      height: 44px;
+      background: linear-gradient(135deg, #059669, #2563eb);
+      width: 42px;
+      height: 42px;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
       color: white;
-      font-size: 20px;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
     }
 
     .brand-title h1 {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
       letter-spacing: -0.02em;
     }
 
     .brand-title p {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
+    }
+
+    /* User Profile Capsule in Header */
+    .user-profile-capsule {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 30px;
+      padding: 4px 12px 4px 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .user-profile-capsule:hover {
+      border-color: var(--accent-blue);
+      background: var(--bg-card);
+    }
+
+    .user-avatar-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    .user-info-text {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .user-name-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .user-role-badge {
+      font-size: 0.65rem;
+      color: var(--accent-cyan);
+      font-weight: 500;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      margin-left: 4px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      transition: color 0.15s;
+    }
+
+    .btn-logout:hover {
+      color: var(--accent-rose);
     }
 
     /* Metrics Bar */
     .metrics-bar {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
     .metric-pill {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 8px;
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 0.82rem;
+      gap: 6px;
+      font-size: 0.78rem;
     }
 
     .metric-pill .dot {
@@ -146,7 +213,7 @@
     .filters-bar {
       background: var(--bg-secondary);
       border-bottom: 1px solid var(--border-color);
-      padding: 10px 24px;
+      padding: 8px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -209,6 +276,14 @@
       border-color: #059669;
     }
 
+    .btn-filter.active.my-tasks {
+      background: linear-gradient(135deg, #059669, #0284c7);
+      border-color: transparent;
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.4);
+    }
+
     .search-input {
       background: var(--bg-primary);
       border: 1px solid var(--border-color);
@@ -253,6 +328,17 @@
       background: var(--accent-blue);
       color: white;
       border-color: var(--accent-blue);
+    }
+
+    .btn-action.btn-audit {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: rgba(139, 92, 246, 0.4);
+      color: #c4b5fd;
+      font-weight: 600;
+    }
+
+    .btn-action.btn-audit:hover {
+      background: rgba(139, 92, 246, 0.35);
     }
 
     /* Overall Progress Bar */
@@ -512,9 +598,15 @@
     }
 
     .badge.lead {
-      background: rgba(236, 72, 153, 0.2);
-      color: #f472b6;
-      border: 1px solid rgba(236, 72, 153, 0.3);
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge.fullstack {
+      background: rgba(139, 92, 246, 0.2);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.3);
     }
 
     .card-hours {
@@ -803,6 +895,267 @@
       justify-content: space-between;
     }
 
+    /* =========================================
+       LOGIN SCREEN OVERLAY (Corporate Modern)
+       ========================================= */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top center, #1e293b 0%, #090d16 100%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      width: 100%;
+      max-width: 480px;
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .login-brand {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .login-logo {
+      background: linear-gradient(135deg, #059669, #2563eb);
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+    }
+
+    .login-title h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .login-title p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .btn-microsoft-login {
+      background: #ffffff;
+      color: #1e293b;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s;
+    }
+
+    .btn-microsoft-login:hover {
+      background: #f1f5f9;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .ms-logo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 8px);
+      gap: 3px;
+    }
+
+    .ms-logo-grid span:nth-child(1) { background: #f25022; width: 8px; height: 8px; }
+    .ms-logo-grid span:nth-child(2) { background: #7fba00; width: 8px; height: 8px; }
+    .ms-logo-grid span:nth-child(3) { background: #00a4ef; width: 8px; height: 8px; }
+    .ms-logo-grid span:nth-child(4) { background: #ffb900; width: 8px; height: 8px; }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .login-divider::before, .login-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+
+    .quick-profiles-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quick-profile-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .quick-profile-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-blue);
+      transform: translateX(4px);
+    }
+
+    .qp-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .qp-info h4 {
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    .qp-info p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .qp-badge {
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .qp-badge.lead { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .qp-badge.fs { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+
+    .custom-email-section {
+      display: flex;
+      gap: 8px;
+    }
+
+    .custom-email-input {
+      flex: 1;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      outline: none;
+    }
+
+    .custom-email-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    /* =========================================
+       AUDIT TRAIL MODAL / DRAWER
+       ========================================= */
+    .audit-modal-content {
+      max-width: 800px;
+      height: 85vh;
+    }
+
+    .audit-filters-bar {
+      display: flex;
+      gap: 10px;
+      padding: 10px 24px;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .audit-timeline {
+      padding: 18px 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .audit-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.15s;
+    }
+
+    .audit-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .audit-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .audit-user-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .audit-time {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .audit-body {
+      font-size: 0.82rem;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .audit-badge {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .audit-badge.move { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+    .audit-badge.subtask { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .audit-badge.create { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .audit-badge.login { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; }
+
     @media (max-width: 768px) {
       header, .filters-bar, .view-mode-bar {
         padding: 12px 14px;
@@ -817,10 +1170,79 @@
       .search-input {
         width: 100%;
       }
+      .login-card {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- Corporate Login Overlay (Shown if not logged in) -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="login-logo">UCS</div>
+        <div class="login-title">
+          <h2>Portal Matrícula Posgrado</h2>
+          <p>Universidad Científica del Sur &middot; Dirección de TI</p>
+        </div>
+      </div>
+
+      <!-- Microsoft 365 Outlook Single Sign-On Button -->
+      <button class="btn-microsoft-login" onclick="loginWithMicrosoft()">
+        <div class="ms-logo-grid">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <span>Iniciar sesión con Microsoft 365 (@cientifica.edu.pe)</span>
+      </button>
+
+      <div class="login-divider">o acceso rápido por rol corporativo</div>
+
+      <!-- Quick Team Member Cards -->
+      <div class="quick-profiles-list">
+        <div class="quick-profile-card" onclick="loginAs('jaime')">
+          <div class="qp-left">
+            <div class="avatar jaime" style="width:36px; height:36px; font-size:0.85rem;">JA</div>
+            <div class="qp-info">
+              <h4>Jaime Alfaro Salazar</h4>
+              <p>jalfaro_ext@cientifica.edu.pe</p>
+            </div>
+          </div>
+          <span class="qp-badge lead">Arquitecto & Líder</span>
+        </div>
+
+        <div class="quick-profile-card" onclick="loginAs('ilan')">
+          <div class="qp-left">
+            <div class="avatar ilan" style="width:36px; height:36px; font-size:0.85rem;">IV</div>
+            <div class="qp-info">
+              <h4>Ilan Valdez</h4>
+              <p>ivaldez@cientifica.edu.pe</p>
+            </div>
+          </div>
+          <span class="qp-badge fs">Full Stack Dev</span>
+        </div>
+
+        <div class="quick-profile-card" onclick="loginAs('gary')">
+          <div class="qp-left">
+            <div class="avatar gary" style="width:36px; height:36px; font-size:0.85rem;">GR</div>
+            <div class="qp-info">
+              <h4>Gary Rojas</h4>
+              <p>grojas@cientifica.edu.pe</p>
+            </div>
+          </div>
+          <span class="qp-badge fs">Full Stack Dev</span>
+        </div>
+      </div>
+
+      <div class="login-divider">o ingresar con correo institucional</div>
+
+      <div class="custom-email-section">
+        <input type="email" id="customEmailInput" class="custom-email-input" placeholder="usuario@cientifica.edu.pe" onkeydown="if(event.key==='Enter') loginWithCustomEmail()">
+        <button class="btn-action btn-primary" onclick="loginWithCustomEmail()">Entrar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Header -->
   <header>
@@ -828,7 +1250,7 @@
       <div class="brand-logo">UCS</div>
       <div class="brand-title">
         <h1>Tablero Matrícula Posgrado — Plan 3 Meses</h1>
-        <p>Líder: <strong>Jaime Alfaro</strong> &middot; Devs en Paralelo: <strong>Ilan Valdez</strong> & <strong>Gary Rojas</strong></p>
+        <p>Universidad Científica del Sur &middot; MongoDB Atlas Cloud</p>
       </div>
     </div>
 
@@ -838,15 +1260,15 @@
         <span class="dot total"></span>
         <span>Total: <strong id="metricTotalHours">142h</strong></span>
       </div>
-      <div class="metric-pill" title="Pista Backend (Ilan Valdez)">
+      <div class="metric-pill" title="Pista Ilan Valdez (Full Stack Developer)">
         <span class="dot ilan"></span>
         <span>Ilan: <strong id="metricIlanHours">52h</strong></span>
       </div>
-      <div class="metric-pill" title="Pista Frontend (Gary Rojas)">
+      <div class="metric-pill" title="Pista Gary Rojas (Full Stack Developer)">
         <span class="dot gary"></span>
         <span>Gary: <strong id="metricGaryHours">52h</strong></span>
       </div>
-      <div class="metric-pill" title="Pista Liderazgo y QA (Jaime Alfaro)">
+      <div class="metric-pill" title="Pista Jaime Alfaro (Arquitecto & Líder Técnico)">
         <span class="dot jaime"></span>
         <span>Jaime: <strong id="metricJaimeHours">38h</strong></span>
       </div>
@@ -855,24 +1277,33 @@
       </div>
       <div class="metric-pill" id="storageStatusPill" style="border-color: #3b82f6;">
         <span class="dot" id="storageDot" style="background:#10b981;"></span>
-        <span id="storageStatusText">💾 Verificando almacenamiento...</span>
+        <span id="storageStatusText">💾 MongoDB Atlas (Cloud)</span>
       </div>
     </div>
 
     <div class="header-actions">
+      <!-- Active User Profile Capsule -->
+      <div class="user-profile-capsule" id="userProfileCapsule" onclick="switchUserPrompt()" title="Usuario autenticado actual">
+        <div class="user-avatar-circle" id="headerUserAvatar">JA</div>
+        <div class="user-info-text">
+          <span class="user-name-label" id="headerUserName">Jaime Alfaro</span>
+          <span class="user-role-badge" id="headerUserRole">Arquitecto & Líder Técnico</span>
+        </div>
+        <button class="btn-logout" onclick="event.stopPropagation(); logout()" title="Cerrar Sesión">🚪 Salir</button>
+      </div>
+
+      <button class="btn-action btn-audit" onclick="openAuditModal()" title="Ver registro cronológico de auditoría">
+        📜 Auditoría <span id="auditCountBadge" style="background:rgba(255,255,255,0.2); padding:1px 6px; border-radius:10px; font-size:0.7rem;">0</span>
+      </button>
+
       <button class="btn-action" onclick="toggleTheme()" title="Cambiar tema claro/oscuro">🌓 Modo</button>
-      <button class="btn-action" id="btnLinkFile" onclick="linkLocalFile()" title="Vincular directamente con archivo en disco (File System Access API)">📂 Conectar Disco</button>
-      <button class="btn-action" onclick="exportJSON()" title="Descargar copia de kanban_state.json">💾 Exportar JSON</button>
-      <button class="btn-action" onclick="triggerImportJSON()" title="Cargar archivo kanban_state.json desde tu computadora">📥 Importar JSON</button>
-      <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="handleImportJSON(event)">
-      <button class="btn-action" onclick="resetToDefaultData()" title="Reiniciar a datos originales del plan">🔄 Reset</button>
       <button class="btn-action btn-primary" onclick="openAddTaskModal()">➕ Nueva Tarea</button>
     </div>
   </header>
 
   <!-- Toast Notification -->
   <div id="toastNotification" style="position:fixed; bottom:24px; right:24px; background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; border-radius:8px; padding:10px 18px; font-size:0.82rem; font-weight:600; box-shadow:0 10px 25px rgba(0,0,0,0.5); z-index:9999; display:none; align-items:center; gap:8px;">
-    <span>💾</span> <span id="toastMessage">Guardado en disco</span>
+    <span>💾</span> <span id="toastMessage">Guardado</span>
   </div>
 
   <!-- Progress bar line -->
@@ -884,21 +1315,24 @@
   <div class="view-mode-bar">
     <div class="view-tabs">
       <button class="view-tab active" id="tabKanban" onclick="switchView('kanban')">📋 Vista Kanban (Estados)</button>
-      <button class="view-tab" id="tabSwimlanes" onclick="switchView('swimlanes')">⚡ Vista Carriles Paralelos (Devs en Simultáneo)</button>
+      <button class="view-tab" id="tabSwimlanes" onclick="switchView('swimlanes')">⚡ Vista Carriles Paralelos (Full Stack Devs en Simultáneo)</button>
     </div>
     <div class="parallel-banner">
-      <span>🔄 Ejecución Concurrente: Ilan (Backend) ⇄ Gary (Frontend) ⇄ Jaime (Lead/QA)</span>
+      <span>🔄 Ejecución Concurrente: Ilan Valdez (Full Stack) ⇄ Gary Rojas (Full Stack) ⇄ Jaime Alfaro (Arquitecto/Líder)</span>
     </div>
   </div>
 
   <!-- Filters Ribbon -->
   <div class="filters-bar">
     <div class="filter-group">
-      <span class="filter-label">Recurso:</span>
+      <span class="filter-label">Filtro Asignado:</span>
       <button class="btn-filter active" onclick="setResourceFilter('all', this)">Todos</button>
-      <button class="btn-filter ilan" onclick="setResourceFilter('Ilan Valdez', this)">💻 Ilan Valdez (Backend)</button>
-      <button class="btn-filter gary" onclick="setResourceFilter('Gary Rojas', this)">🎨 Gary Rojas (Frontend)</button>
-      <button class="btn-filter jaime" onclick="setResourceFilter('Jaime Alfaro', this)">👔 Jaime Alfaro (Mis Asignaciones)</button>
+      <button class="btn-filter my-tasks" id="btnMyTasks" onclick="filterMyTasks(this)">
+        👤 Mis Asignaciones (<span id="myTasksLabelName">Jaime</span>)
+      </button>
+      <button class="btn-filter ilan" onclick="setResourceFilter('Ilan Valdez', this)">💻 Ilan Valdez (Full Stack)</button>
+      <button class="btn-filter gary" onclick="setResourceFilter('Gary Rojas', this)">🎨 Gary Rojas (Full Stack)</button>
+      <button class="btn-filter jaime" onclick="setResourceFilter('Jaime Alfaro', this)">🏛 Jaime Alfaro (Arquitecto)</button>
     </div>
 
     <div class="filter-group">
@@ -924,7 +1358,7 @@
     <!-- Swimlanes rendered dynamically -->
   </section>
 
-  <!-- Detail Modal -->
+  <!-- Task Detail Modal -->
   <div class="modal-overlay" id="taskModalOverlay" onclick="closeModalOnOverlay(event)">
     <div class="modal-content" id="taskModalContent">
       <div class="modal-header">
@@ -947,8 +1381,8 @@
             <span id="modalAssignee">Ilan Valdez</span>
           </div>
           <div class="meta-item">
-            <label>Pista de Trabajo</label>
-            <span id="modalTrack">Pista Backend</span>
+            <label>Rol del Asignado</label>
+            <span id="modalTrack">Full Stack Developer</span>
           </div>
           <div class="meta-item">
             <label>Columna Actual</label>
@@ -989,410 +1423,87 @@
     </div>
   </div>
 
+  <!-- Audit Trail Slide-over / Modal -->
+  <div class="modal-overlay" id="auditModalOverlay" onclick="if(event.target.id==='auditModalOverlay') closeAuditModal()">
+    <div class="modal-content audit-modal-content">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <span class="badge" style="background:rgba(139, 92, 246, 0.2); color:#c4b5fd;">MONGODB ATLAS AUDIT TRAIL</span>
+          <h2 class="modal-title">Registro Cronológico de Auditoría</h2>
+          <p style="font-size:0.78rem; color:var(--text-muted);">Seguimiento en vivo de quién creó, movió o completó cada tarea.</p>
+        </div>
+        <button class="modal-close-btn" onclick="closeAuditModal()">&times;</button>
+      </div>
+
+      <div class="audit-filters-bar">
+        <span class="filter-label">Filtrar por:</span>
+        <button class="btn-filter active" onclick="filterAuditLogs('all', this)">Todos los Eventos</button>
+        <button class="btn-filter" onclick="filterAuditLogs('MOVE_TASK', this)">Movimientos de Tarjetas</button>
+        <button class="btn-filter" onclick="filterAuditLogs('TOGGLE_SUBTASK', this)">Subtareas</button>
+        <button class="btn-filter" onclick="filterAuditLogs('CREATE_TASK', this)">Nuevas Tareas</button>
+      </div>
+
+      <div class="audit-timeline" id="auditTimelineList">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="modal-footer">
+        <span style="font-size:0.75rem; color:var(--text-muted);" id="auditFooterCount">0 eventos registrados</span>
+        <button class="btn-action" onclick="closeAuditModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // 3-Month Comprehensive Plan Tasks (142 Hours Total)
-    const defaultTasks = [
-      // ==========================================
-      // MES 1: SPRINT 1 (Semanas 1 y 2)
-      // ==========================================
-      {
-        id: "TSK-01",
-        code: "M1-S1-LEV",
-        title: "Levantamiento Funcional y Matriz de Reglas de Posgrado",
-        month: "Mes 1",
-        sprint: "Sprint 1",
-        hours: 10,
-        resource: "Gary Rojas",
-        track: "Frontend & Funcional",
-        column: "todo",
-        source: "Excel Fila 3 (Expandido a S1)",
-        desc: "Relevamiento integral de particularidades de Posgrado (Maestría en bloque sin selección vs Doctorado con selección en portal vs Pregrado). Definición formal de calendario T-15, T-5, T-0, T+7 y reglas de corte de deudas.",
-        files: "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n01_Contexto_Matricula_Posgrado.md\nMatriz_Casos_Uso_Posgrado.xlsx",
-        subtasks: [
-          { title: "Mapeo comparativo de reglas de negocio: Pregrado vs Maestría (bloque) vs Doctorado", hours: 2.5, completed: false },
-          { title: "Definición técnica de precondiciones T-15 (programación cerrada) y T-5 (actas cerradas)", hours: 2.5, completed: false },
-          { title: "Validación de políticas financieras de deuda para habilitación automática vs retención", hours: 2.5, completed: false },
-          { title: "Elaboración de matriz de 15 casos de uso funcionales y criterios de aceptación QA", hours: 2.5, completed: false }
-        ]
+    // Corporate Users Directory
+    const corporateUsers = {
+      jaime: {
+        id: 'usr_jaime',
+        name: 'Jaime Alfaro Salazar',
+        shortName: 'Jaime',
+        email: 'jalfaro_ext@cientifica.edu.pe',
+        role: 'Arquitecto de Soluciones y Líder Técnico',
+        avatarInitials: 'JA',
+        color: '#059669',
+        avatarClass: 'jaime'
       },
-      {
-        id: "TSK-02",
-        code: "M1-S1-CAR",
-        title: "Implementación de Carga de Horarios y Turnos desde Portal (BO)",
-        month: "Mes 1",
-        sprint: "Sprint 1",
-        hours: 10,
-        resource: "Ilan Valdez",
-        track: "Backend & Integraciones",
-        column: "todo",
-        source: "Excel Fila 4",
-        desc: "Construcción del módulo administrativo en Back Office para la importación, validación y persistencia masiva de la oferta horaria y turnos especiales de posgrado (fines de semana, intensivos, quincenales).",
-        files: "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (massiveUpload)\nmiportal_cientifica_lumen/app/Models/OwnEnrollmentSchedule.php\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
-        subtasks: [
-          { title: "Diseño y migración de base de datos para turnos posgrado (own_enrollment_schedule)", hours: 2.0, completed: false },
-          { title: "Implementación de parser Excel/CSV en Lumen con validaciones de campos críticos", hours: 3.0, completed: false },
-          { title: "Procesamiento por lotes (Batch Insert) transaccional con rollback ante error", hours: 2.0, completed: false },
-          { title: "Interfaz Angular en Back Office con feedback de validación y resumen de carga", hours: 2.0, completed: false },
-          { title: "Pruebas de estrés y logs de auditoría (ScheduleLogs)", hours: 1.0, completed: false }
-        ]
+      ilan: {
+        id: 'usr_ilan',
+        name: 'Ilan Valdez',
+        shortName: 'Ilan',
+        email: 'ivaldez@cientifica.edu.pe',
+        role: 'Full Stack Developer (Backend, Frontend, QA, etc.)',
+        avatarInitials: 'IV',
+        color: '#0284c7',
+        avatarClass: 'ilan'
       },
-      {
-        id: "TSK-03",
-        code: "M1-S1-LEAD",
-        title: "Definición de Arquitectura, Contratos REST y Swagger",
-        month: "Mes 1",
-        sprint: "Sprint 1",
-        hours: 6,
-        resource: "Jaime Alfaro",
-        track: "Liderazgo & Arquitectura",
-        column: "inprogress",
-        source: "Asignación Propia (Liderazgo)",
-        desc: "Especificación formal de contratos Swagger/OpenAPI entre Lumen, Angular y PeopleSoft; homologación de tipos de datos, códigos de programa de Posgrado y llaves de idempotencia.",
-        files: "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n02_Propuesta_Tecnica_Matricula_Posgrado.md\nSwagger / Postman Collection",
-        subtasks: [
-          { title: "Modelado de interfaces REST y validación de esquema JSON", hours: 3.0, completed: true },
-          { title: "Alineación de estándares de desarrollo en paralelo con Ilan Valdez y Gary Rojas", hours: 3.0, completed: false }
-        ]
-      },
-
-      // ==========================================
-      // MES 1: SPRINT 2 (Semanas 3 y 4)
-      // ==========================================
-      {
-        id: "TSK-04",
-        code: "M1-S2-BO",
-        title: "Parametrización BO por Unidad Académica: POSGRADO y PREGRADO",
-        month: "Mes 1",
-        sprint: "Sprint 2",
-        hours: 5,
-        resource: "Ilan Valdez",
-        track: "Backend & Integraciones",
-        column: "backlog",
-        source: "Excel Fila 5",
-        desc: "Habilitar la segregación estricta de parámetros en el Back Office entre PREGRADO y POSGRADO (Maestría y Doctorado), permitiendo ventanas, fechas y reglas desacopladas.",
-        files: "miportal_cientifica_lumen/app/Http/Controllers/EnrollmentEntryConfigController.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getConfigBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-entry-config/",
-        subtasks: [
-          { title: "Actualización de tablas de configuración para flag UNIDAD_ACADEMICA", hours: 1.0, completed: false },
-          { title: "Refactorización de endpoints getConfigBO / getAllEnrollmentConfig con filtro por unidad", hours: 1.5, completed: false },
-          { title: "Pantalla Back Office en Angular para alternar y configurar PREGRADO vs POSGRADO", hours: 1.5, completed: false },
-          { title: "Pruebas de regresión para asegurar que la configuración de Pregrado no se altere", hours: 1.0, completed: false }
-        ]
-      },
-      {
-        id: "TSK-05",
-        code: "M1-S2-DOC",
-        title: "Desarrollo lógica de Matrícula Posgrado - Doctorado",
-        month: "Mes 1",
-        sprint: "Sprint 2",
-        hours: 5,
-        resource: "Ilan Valdez",
-        track: "Backend & Integraciones",
-        column: "backlog",
-        source: "Excel Fila 8",
-        desc: "Implementación del flujo de selección en portal para Doctorado, donde el estudiante mantiene capacidad de elección de asignaturas, investigación y turnos.",
-        files: "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/",
-        subtasks: [
-          { title: "Servicio Lumen de consulta de oferta académica filtrada para programas de Doctorado", hours: 1.5, completed: false },
-          { title: "Flujo de selección en Angular para cursos de investigación y créditos electivos", hours: 2.0, completed: false },
-          { title: "Validación de colisiones de turnos y cupos disponibles en tiempo real", hours: 1.0, completed: false },
-          { title: "Confirmación y reserva de vacantes de Doctorado", hours: 0.5, completed: false }
-        ]
-      },
-      {
-        id: "TSK-06",
-        code: "M1-S2-ALU",
-        title: "Parametrización POSGRADO en el lado del alumno y Guards",
-        month: "Mes 1",
-        sprint: "Sprint 2",
-        hours: 10,
-        resource: "Gary Rojas",
-        track: "Frontend & Funcional",
-        column: "backlog",
-        source: "Excel Fila 6 (Expandido con navegación)",
-        desc: "Adaptación del portal del alumno para detectar la unidad académica del estudiante autenticado y activar el flujo diferenciado de Posgrado en lugar del estándar de Pregrado.",
-        files: "miportal_cientifica/src/app/student/pages/enrollment/dashboard-enroll/\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php",
-        subtasks: [
-          { title: "Consumo de servicio de perfil y detección de carrera/modalidad Posgrado en Angular", hours: 2.0, completed: false },
-          { title: "Lógica de guard y redirección hacia flujo específico (Maestría vs Doctorado)", hours: 3.0, completed: false },
-          { title: "Visualización de ventana de matrícula, estatus de habilitación y semáforo de deudas", hours: 3.0, completed: false },
-          { title: "Pruebas funcionales con perfiles de prueba de Pregrado, Maestría y Doctorado", hours: 2.0, completed: false }
-        ]
-      },
-      {
-        id: "TSK-07",
-        code: "M1-S2-LEAD",
-        title: "Coordinación de Entorno PeopleSoft y Alineación con Posgrado",
-        month: "Mes 1",
-        sprint: "Sprint 2",
-        hours: 6,
-        resource: "Jaime Alfaro",
-        track: "Liderazgo & Coordinación",
-        column: "todo",
-        source: "Asignación Propia (Coordinación)",
-        desc: "Gestión con TI Central y DBAs de credenciales, certificados SSL y conectividad VPN para PeopleSoft Integration Broker; validación de políticas T-15/T-5 con Escuela de Posgrado.",
-        files: "Tickets TI Central / Conexión VPN & Gateway PeopleSoft / Actas Reunión",
-        subtasks: [
-          { title: "Gestión y pruebas de conectividad de credenciales PeopleSoft Integration Broker", hours: 3.0, completed: false },
-          { title: "Alineación y formalización de precondiciones T-15 y T-5 con Dirección de Posgrado", hours: 3.0, completed: false }
-        ]
-      },
-
-      // ==========================================
-      // MES 2: SPRINT 3 (Semanas 5 y 6)
-      // ==========================================
-      {
-        id: "TSK-08",
-        code: "M2-S3-PS",
-        title: "Integración PeopleSoft Integration Broker & Idempotencia",
-        month: "Mes 2",
-        sprint: "Sprint 3",
-        hours: 10,
-        resource: "Ilan Valdez",
-        track: "Backend & Integraciones",
-        column: "backlog",
-        source: "Excel Fila 10",
-        desc: "Conexión robusta e idempotente con PeopleSoft Integration Broker para asentar formalmente las matrículas de Posgrado (CLASS_NBR, EMPLID, STRM), manejo de fallos y auditoría.",
-        files: "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (saveInPeople)",
-        subtasks: [
-          { title: "Definición y mapeo de payloads XML/JSON de PeopleSoft Integration Broker para Posgrado", hours: 2.0, completed: false },
-          { title: "Refactorización de saveInPeople para admitir estructuras y planes de estudio de Posgrado", hours: 2.5, completed: false },
-          { title: "Implementación de clave de idempotencia Hash(Programa+Estudiante+Ciclo+Operación)", hours: 2.0, completed: false },
-          { title: "Gestión de excepciones, reintentos y bitácora de respuestas en ScheduleLogs", hours: 2.0, completed: false },
-          { title: "Pruebas de integración E2E con el ambiente PeopleSoft QA", hours: 1.5, completed: false }
-        ]
-      },
-      {
-        id: "TSK-09",
-        code: "M2-S3-MAE",
-        title: "Desarrollo Lógica Matrícula Posgrado - Maestría en Bloque",
-        month: "Mes 2",
-        sprint: "Sprint 3",
-        hours: 10,
-        resource: "Gary Rojas",
-        track: "Frontend & Funcional",
-        column: "backlog",
-        source: "Excel Fila 7 (Expandido)",
-        desc: "Construcción completa del flujo automático en bloque de Maestría: oferta única, turno único, sin selección individual de asignaturas, validación estricta de deuda y confirmación directa.",
-        files: "miportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/courses-enrollment.component.ts\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (processEnrollment)",
-        subtasks: [
-          { title: "Endpoint en Lumen para orquestación de asignación de bloque cerrado por ciclo", hours: 2.5, completed: false },
-          { title: "Validación de restricción financiera (bloqueo automático ante saldo pendiente)", hours: 2.5, completed: false },
-          { title: "Vista de confirmación de bloque de asignaturas predeterminadas en Angular", hours: 3.0, completed: false },
-          { title: "Generación de constancia y resumen de matrícula de Maestría", hours: 2.0, completed: false }
-        ]
-      },
-      {
-        id: "TSK-10",
-        code: "M2-S3-LEAD",
-        title: "Code Review de Integración y Pruebas de Estrés Idempotencia",
-        month: "Mes 2",
-        sprint: "Sprint 3",
-        hours: 6,
-        resource: "Jaime Alfaro",
-        track: "Liderazgo & Calidad",
-        column: "backlog",
-        source: "Asignación Propia (Revisión)",
-        desc: "Revisión arquitectónica de PRs de PeopleSoft y Frontend; ejecución de pruebas de estrés para validar que reintentos de red no generen dobles cargos ni matrículas duplicadas.",
-        files: "Pull Requests GitHub / GitLab\nSuite de Pruebas Postman / JMeter",
-        subtasks: [
-          { title: "Revisión técnica de código de integración PeopleSoft (Ilan Valdez)", hours: 3.0, completed: false },
-          { title: "Pruebas de estrés de idempotencia simulando concurrencia de reintentos", hours: 3.0, completed: false }
-        ]
-      },
-
-      // ==========================================
-      // MES 2: SPRINT 4 (Semanas 7 y 8)
-      // ==========================================
-      {
-        id: "TSK-11",
-        code: "M2-S4-DEM",
-        title: "Carga de Horarios y Turnos desde el Portal a Demanda",
-        month: "Mes 2",
-        sprint: "Sprint 4",
-        hours: 8,
-        resource: "Ilan Valdez",
-        track: "Backend & Integraciones",
-        column: "backlog",
-        source: "Excel Fila 13 (Expandido con Caché)",
-        desc: "Capacidad para que los administradores de Posgrado sincronicen o recarguen turnos y cupos de forma inmediata 'On-Demand', sin tener que esperar el batch nocturno, con caché inteligente.",
-        files: "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getScheduleNewBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
-        subtasks: [
-          { title: "Endpoint en Lumen para invalidación de caché y refresco bajo demanda", hours: 2.5, completed: false },
-          { title: "Lógica de actualización en tiempo real de cupos y vacantes", hours: 2.5, completed: false },
-          { title: "Botón de acción en UI de Back Office con modal de confirmación y log", hours: 3.0, completed: false }
-        ]
-      },
-      {
-        id: "TSK-12",
-        code: "M2-S4-HOR",
-        title: "Integrar con Horarios Nuevos y Ajustes de Diseño UX/UI",
-        month: "Mes 2",
-        sprint: "Sprint 4",
-        hours: 10,
-        resource: "Gary Rojas",
-        track: "Frontend & Funcional",
-        column: "backlog",
-        source: "Excel Filas 11 y 12",
-        desc: "Adaptar visualización del calendario semanal para esquemas atípicos (quincenales, sábados/domingos) y maquetación de modales de alerta para deudas y arrastres.",
-        files: "miportal_cientifica/src/app/student/pages/schedule/\nmiportal_cientifica/src/assets/styles/\nmiportal_cientifica/src/app/modals/modal-enrollment/",
-        subtasks: [
-          { title: "Adaptación del componente de horario semanal para sábados y domingos", hours: 3.0, completed: false },
-          { title: "Alineación de estilos institucionales de Posgrado (colores, badges, responsive)", hours: 3.0, completed: false },
-          { title: "Modales de alerta para desaprobados (con cobro) vs retirados (sin cobro)", hours: 2.0, completed: false },
-          { title: "Enlaces de ayuda hacia trámites académicos de posgrado", hours: 2.0, completed: false }
-        ]
-      },
-      {
-        id: "TSK-13",
-        code: "M2-S4-LEAD",
-        title: "Auditoría de Seguridad, Permisos y Plan de Pruebas E2E",
-        month: "Mes 2",
-        sprint: "Sprint 4",
-        hours: 6,
-        resource: "Jaime Alfaro",
-        track: "Liderazgo & Calidad",
-        column: "backlog",
-        source: "Asignación Propia (Seguridad)",
-        desc: "Auditoría de seguridad en endpoints administrativos de Back Office; validación de token JWT, control de roles y armado de batería de pruebas de aceptación UAT.",
-        files: "Plan_Pruebas_UAT_Posgrado.xlsx\nAuditoría Seguridad Lumen JWT",
-        subtasks: [
-          { title: "Auditoría de roles y permisos en endpoints masivos y on-demand", hours: 3.0, completed: false },
-          { title: "Elaboración de batería de pruebas integrales para certificación con usuarios", hours: 3.0, completed: false }
-        ]
-      },
-
-      // ==========================================
-      // MES 3: SPRINT 5 (Semanas 9 y 10)
-      // ==========================================
-      {
-        id: "TSK-14",
-        code: "M3-S5-INT",
-        title: "Pruebas Integrales de Carga, Resiliencia y Hardening Backend",
-        month: "Mes 3",
-        sprint: "Sprint 5",
-        hours: 8,
-        resource: "Ilan Valdez",
-        track: "Backend & Integraciones",
-        column: "backlog",
-        source: "Fase de Estabilización",
-        desc: "Pruebas de estrés y resiliencia en ambiente QA: simulación de carga masiva de horarios con 500 registros y 50 inscripciones concurrentes en PeopleSoft.",
-        files: "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nScripts de Carga masiva",
-        subtasks: [
-          { title: "Simulación de timeouts PeopleSoft y verificación de reintentos seguros", hours: 3.0, completed: false },
-          { title: "Optimización de consultas SQL en own_enrollment_schedule y logs", hours: 3.0, completed: false },
-          { title: "Resolución de incidencias técnicas detectadas en pruebas integrales", hours: 2.0, completed: false }
-        ]
-      },
-      {
-        id: "TSK-15",
-        code: "M3-S5-UX",
-        title: "Pulido UX, Accesibilidad y Feedback de Pre-UAT",
-        month: "Mes 3",
-        sprint: "Sprint 5",
-        hours: 7,
-        resource: "Gary Rojas",
-        track: "Frontend & Funcional",
-        column: "backlog",
-        source: "Fase de Pulido UX",
-        desc: "Incorporación de mejoras visuales a partir de sesiones preliminares con usuarios clave de Posgrado; verificación de usabilidad en móviles.",
-        files: "miportal_cientifica/src/app/student/pages/enrollment/\nmiportal_cientifica/src/assets/styles/",
-        subtasks: [
-          { title: "Ajuste de copy institucional y textos explicativos en portal de matrícula", hours: 2.5, completed: false },
-          { title: "Resolución de bugs visuales y alineación de componentes móviles", hours: 2.5, completed: false },
-          { title: "Soporte activo en sesiones de pre-certificación UAT", hours: 2.0, completed: false }
-        ]
-      },
-      {
-        id: "TSK-16",
-        code: "M3-S5-LEAD",
-        title: "Conducción de Sesiones UAT y Certificación con Posgrado",
-        month: "Mes 3",
-        sprint: "Sprint 5",
-        hours: 8,
-        resource: "Jaime Alfaro",
-        track: "Liderazgo & QA",
-        column: "backlog",
-        source: "Asignación Propia (UAT)",
-        desc: "Liderar las pruebas de aceptación con el equipo directivo de la Escuela de Posgrado y Registros Académicos; levantamiento de feedback y firma de conformidad.",
-        files: "Acta_Conformidad_UAT_Posgrado.pdf\nMatriz de Hallazgos y Cierres",
-        subtasks: [
-          { title: "Conducción de talleres de prueba guiada con usuarios de Posgrado", hours: 4.0, completed: false },
-          { title: "Consolidación de matriz de hallazgos y priorización de ajustes finales", hours: 2.0, completed: false },
-          { title: "Firma formal de certificación y pase a producción", hours: 2.0, completed: false }
-        ]
-      },
-
-      // ==========================================
-      // MES 3: SPRINT 6 (Semanas 11 y 12)
-      // ==========================================
-      {
-        id: "TSK-17",
-        code: "M3-S6-REL",
-        title: "Checklist de Pase a Producción, Variables .env y Despliegue",
-        month: "Mes 3",
-        sprint: "Sprint 6",
-        hours: 6,
-        resource: "Jaime Alfaro",
-        track: "Liderazgo & Release",
-        column: "backlog",
-        source: "Asignación Propia (Release)",
-        desc: "Preparación del checklist de despliegue a producción, configuración de variables de entorno `.env`, plan de contingencia/rollback y soporte post-lanzamiento.",
-        files: "Checklist_Despliegue_Produccion.md\n.env.production\nProcedimiento de Rollback",
-        subtasks: [
-          { title: "Elaboración de checklist técnico de despliegue y variables .env", hours: 2.0, completed: false },
-          { title: "Ejecución coordinada del despliegue en ventana de mantenimiento", hours: 2.0, completed: false },
-          { title: "Plan de contingencia, rollback y protocolo de contingencia", hours: 2.0, completed: false }
-        ]
-      },
-      {
-        id: "TSK-18",
-        code: "M3-S6-DEV",
-        title: "Soporte Hipercare Post-Lanzamiento y Monitoreo PeopleSoft",
-        month: "Mes 3",
-        sprint: "Sprint 6",
-        hours: 6,
-        resource: "Ilan Valdez",
-        track: "Backend & Integraciones",
-        column: "backlog",
-        source: "Hipercare Producción",
-        desc: "Guardia activa de monitoreo en tiempo real de colas de PeopleSoft, logs de carga masiva y atención prioritaria de incidencias en primeros días de matrícula.",
-        files: "Monitoreo Logs Producción / ScheduleLogs / Kibana / Datadog",
-        subtasks: [
-          { title: "Supervisión en vivo de transacciones PeopleSoft durante ventana T-0 a T+7", hours: 3.0, completed: false },
-          { title: "Atención inmediata a incidencias de integración o time-outs", hours: 3.0, completed: false }
-        ]
-      },
-      {
-        id: "TSK-19",
-        code: "M3-S6-UI",
-        title: "Soporte Hipercare Frontend y Estabilización Alumno",
-        month: "Mes 3",
-        sprint: "Sprint 6",
-        hours: 5,
-        resource: "Gary Rojas",
-        track: "Frontend & Funcional",
-        column: "backlog",
-        source: "Hipercare Producción",
-        desc: "Monitoreo de experiencia de usuario en portal del alumno, resolución de dudas de navegación y corrección en caliente de fallas menores reportadas.",
-        files: "Portal Alumno Producción / Sentry / Google Analytics",
-        subtasks: [
-          { title: "Monitoreo de tasa de éxito en confirmaciones de matrícula de Maestría", hours: 2.5, completed: false },
-          { title: "Soporte de frontend y resolución de reportes de visualización", hours: 2.5, completed: false }
-        ]
+      gary: {
+        id: 'usr_gary',
+        name: 'Gary Rojas',
+        shortName: 'Gary',
+        email: 'grojas@cientifica.edu.pe',
+        role: 'Full Stack Developer (Backend, Frontend, QA, etc.)',
+        avatarInitials: 'GR',
+        color: '#7c3aed',
+        avatarClass: 'gary'
       }
-    ];
+    };
 
     // State
-    const STORAGE_KEY = 'ucs_matricula_3meses_kanban_v2';
+    const STORAGE_KEY = 'ucs_matricula_3meses_kanban_v3';
+    const USER_SESSION_KEY = 'ucs_kanban_current_user_v1';
+    let currentUser = null;
     let tasks = [];
+    let auditLogs = [];
     let currentResourceFilter = 'all';
     let currentMonthFilter = 'all';
     let currentSearchTerm = '';
     let currentModalTaskId = null;
     let currentView = 'kanban'; // 'kanban' or 'swimlanes'
-    let fileHandle = null;
+    let currentAuditFilter = 'all';
     let isServerConnected = false;
 
+    // Columns config
     const columnsConfig = [
       { id: 'backlog', title: '📋 Backlog', color: '#64748b' },
       { id: 'todo', title: '⏳ Por Hacer (To Do)', color: '#3b82f6' },
@@ -1401,10 +1512,11 @@
       { id: 'done', title: '✅ Completado (Done)', color: '#10b981' }
     ];
 
+    // Resources definition with new Full Stack / Architect roles
     const resourcesConfig = [
-      { id: 'Ilan Valdez', label: '💻 Pista Backend (Ilan Valdez)', role: 'Backend & Integraciones', color: 'var(--ilan-color)' },
-      { id: 'Gary Rojas', label: '🎨 Pista Frontend (Gary Rojas)', role: 'Frontend & Lógica Alumno', color: 'var(--gary-color)' },
-      { id: 'Jaime Alfaro', label: '👔 Pista Liderazgo (Jaime Alfaro)', role: 'Tech Lead, Arquitectura & QA', color: 'var(--jaime-color)' }
+      { id: 'Ilan Valdez', label: '💻 Ilan Valdez', role: 'Full Stack Developer (Backend, Frontend, QA, etc.)', color: 'var(--ilan-color)' },
+      { id: 'Gary Rojas', label: '🎨 Gary Rojas', role: 'Full Stack Developer (Backend, Frontend, QA, etc.)', color: 'var(--gary-color)' },
+      { id: 'Jaime Alfaro', label: '🏛 Jaime Alfaro', role: 'Arquitecto de Soluciones y Líder Técnico', color: 'var(--jaime-color)' }
     ];
 
     // Notification Toast
@@ -1430,61 +1542,1514 @@
       if (mode === 'server') {
         pill.style.borderColor = '#10b981';
         dot.style.background = '#10b981';
-      } else if (mode === 'handle') {
-        pill.style.borderColor = '#38bdf8';
-        dot.style.background = '#38bdf8';
       } else {
         pill.style.borderColor = '#f59e0b';
         dot.style.background = '#f59e0b';
       }
     }
 
-    // Init with Server & Disk check
-    async function init() {
-      // 1. Try connecting to Node server (relative or localhost:3000)
-      const endpointsToTry = ['/api/tasks', 'http://localhost:3000/api/tasks'];
-      for (const endpoint of endpointsToTry) {
+    // =========================================
+    // AUTHENTICATION LOGIC
+    // =========================================
+    function checkUserSession() {
+      const savedUser = localStorage.getItem(USER_SESSION_KEY);
+      if (savedUser) {
         try {
-          const res = await fetch(endpoint);
-          if (res.ok) {
-            const data = await res.json();
-            if (Array.isArray(data) && data.length > 0) {
-              tasks = data;
-              isServerConnected = true;
-              setStorageStatus('server', '🟢 MongoDB Atlas (Cloud Conectado)');
-              renderBoard();
-              updateMetrics();
-              return;
-            }
-          }
+          currentUser = JSON.parse(savedUser);
+          applyUserSession();
+          document.getElementById('loginOverlay').style.display = 'none';
+          return true;
         } catch (e) {
-          // Continue to next check
+          currentUser = null;
         }
       }
+      document.getElementById('loginOverlay').style.display = 'flex';
+      return false;
+    }
 
-      // 2. Fallback to localStorage or default tasks
+    function loginAs(profileKey) {
+      const user = corporateUsers[profileKey];
+      if (user) {
+        currentUser = user;
+        localStorage.setItem(USER_SESSION_KEY, JSON.stringify(currentUser));
+        applyUserSession();
+        document.getElementById('loginOverlay').style.display = 'none';
+        logAuditAction('LOGIN', null, `Inició sesión con perfil corporativo ${currentUser.name}`);
+        showSaveToast(`Bienvenido/a, ${currentUser.name}`);
+      }
+    }
+
+    function loginWithMicrosoft() {
+      // Microsoft MSAL Simulation / Real flow
+      try {
+        const email = prompt("Ingresa tu correo institucional de Microsoft 365:", "jalfaro_ext@cientifica.edu.pe");
+        if (!email) return;
+        handleCorporateEmail(email);
+      } catch (err) {
+        alert("Error en autenticación Microsoft: " + err.message);
+      }
+    }
+
+    function loginWithCustomEmail() {
+      const emailInput = document.getElementById('customEmailInput');
+      const email = emailInput.value.trim().toLowerCase();
+      if (!email) {
+        alert('Por favor ingresa tu correo corporativo.');
+        return;
+      }
+      handleCorporateEmail(email);
+    }
+
+    function handleCorporateEmail(email) {
+      let matched = Object.values(corporateUsers).find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (!matched) {
+        // Create dynamic corporate profile
+        const parts = email.split('@')[0].split('.');
+        const firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+        const lastName = parts.length > 1 ? parts[1].charAt(0).toUpperCase() + parts[1].slice(1) : '';
+        const fullName = `${firstName} ${lastName}`.trim() || email.split('@')[0];
+
+        matched = {
+          id: 'usr_' + Date.now(),
+          name: fullName,
+          shortName: firstName,
+          email: email,
+          role: 'Colaborador UCS',
+          avatarInitials: firstName.charAt(0) + (lastName ? lastName.charAt(0) : 'U'),
+          color: '#3b82f6',
+          avatarClass: 'ilan'
+        };
+      }
+
+      currentUser = matched;
+      localStorage.setItem(USER_SESSION_KEY, JSON.stringify(currentUser));
+      applyUserSession();
+      document.getElementById('loginOverlay').style.display = 'none';
+      logAuditAction('LOGIN', null, `Inició sesión mediante Microsoft SSO: ${currentUser.email}`);
+      showSaveToast(`Bienvenido/a, ${currentUser.name}`);
+    }
+
+    function applyUserSession() {
+      if (!currentUser) return;
+      document.getElementById('headerUserAvatar').textContent = currentUser.avatarInitials;
+      document.getElementById('headerUserAvatar').style.background = currentUser.color;
+      document.getElementById('headerUserName').textContent = currentUser.name.split(' ')[0] + ' ' + (currentUser.name.split(' ')[1] || '');
+      document.getElementById('headerUserRole').textContent = currentUser.role;
+      document.getElementById('myTasksLabelName').textContent = currentUser.shortName || currentUser.name.split(' ')[0];
+    }
+
+    function logout() {
+      if (confirm("¿Deseas cerrar tu sesión actual?")) {
+        logAuditAction('LOGOUT', null, `Cerró sesión: ${currentUser ? currentUser.name : ''}`);
+        localStorage.removeItem(USER_SESSION_KEY);
+        currentUser = null;
+        document.getElementById('loginOverlay').style.display = 'flex';
+      }
+    }
+
+    function switchUserPrompt() {
+      if (confirm(`Sesión activa: ${currentUser.name} (${currentUser.role}). ¿Deseas cambiar de usuario?`)) {
+        logout();
+      }
+    }
+
+    // Dynamic Filter "Mis Asignaciones"
+    function filterMyTasks(btn) {
+      if (!currentUser) return;
+      // Filter by current user name or shortName
+      const searchKey = currentUser.shortName || currentUser.name.split(' ')[0];
+      currentResourceFilter = searchKey;
+
+      document.querySelectorAll('.filter-group:nth-child(1) .btn-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      renderBoard();
+      if (currentView === 'swimlanes') renderSwimlanes();
+      showSaveToast(`Filtrando tareas de: ${currentUser.name}`);
+    }
+
+    // =========================================
+    // AUDIT TRAIL LOGGING
+    // =========================================
+    async function logAuditAction(action, task, details, fromCol, toCol) {
+      const auditItem = {
+        id: 'AUD-' + Date.now(),
+        timestamp: new Date().toISOString(),
+        userName: currentUser ? currentUser.name : 'Usuario Anónimo',
+        userEmail: currentUser ? currentUser.email : 'desconocido@cientifica.edu.pe',
+        userRole: currentUser ? currentUser.role : 'Colaborador',
+        action: action,
+        taskId: task ? task.id : null,
+        taskCode: task ? task.code : null,
+        taskTitle: task ? task.title : null,
+        details: details,
+        fromCol: fromCol || null,
+        toCol: toCol || null
+      };
+
+      auditLogs.unshift(auditItem);
+      updateAuditBadge();
+
+      // Post to MongoDB Atlas via /api/audit
+      if (isServerConnected) {
+        try {
+          await fetch('/api/audit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(auditItem)
+          });
+        } catch (e) {
+          console.warn('No se pudo persistir auditoría en Atlas:', e);
+        }
+      }
+    }
+
+    async function loadAuditLogs() {
+      if (isServerConnected) {
+        try {
+          const res = await fetch('/api/audit');
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) {
+              auditLogs = data;
+              updateAuditBadge();
+            }
+          }
+        } catch (e) {}
+      }
+    }
+
+    function updateAuditBadge() {
+      const badge = document.getElementById('auditCountBadge');
+      if (badge) badge.textContent = auditLogs.length;
+    }
+
+    function openAuditModal() {
+      renderAuditTimeline();
+      document.getElementById('auditModalOverlay').classList.add('open');
+    }
+
+    function closeAuditModal() {
+      document.getElementById('auditModalOverlay').classList.remove('open');
+    }
+
+    function filterAuditLogs(action, btn) {
+      currentAuditFilter = action;
+      document.querySelectorAll('.audit-filters-bar .btn-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderAuditTimeline();
+    }
+
+    function renderAuditTimeline() {
+      const listEl = document.getElementById('auditTimelineList');
+      listEl.innerHTML = '';
+
+      let filtered = auditLogs;
+      if (currentAuditFilter !== 'all') {
+        filtered = auditLogs.filter(a => a.action === currentAuditFilter);
+      }
+
+      document.getElementById('auditFooterCount').textContent = `${filtered.length} eventos mostrados`;
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:0.85rem;">No hay registros de auditoría para este filtro.</div>`;
+        return;
+      }
+
+      filtered.forEach(log => {
+        const card = document.createElement('div');
+        card.className = 'audit-card';
+
+        let badgeClass = 'move';
+        let badgeLabel = 'MOVIMIENTO';
+        if (log.action === 'TOGGLE_SUBTASK') { badgeClass = 'subtask'; badgeLabel = 'SUBTAREA'; }
+        if (log.action === 'CREATE_TASK') { badgeClass = 'create'; badgeLabel = 'NUEVA TAREA'; }
+        if (log.action === 'LOGIN' || log.action === 'LOGOUT') { badgeClass = 'login'; badgeLabel = 'SESIÓN'; }
+
+        const dateStr = new Date(log.timestamp).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'medium' });
+
+        card.innerHTML = `
+          <div class="audit-header">
+            <div class="audit-user-group">
+              <span class="audit-badge ${badgeClass}">${badgeLabel}</span>
+              <strong style="font-size:0.82rem;">${log.userName}</strong>
+              <span style="font-size:0.72rem; color:var(--text-muted);">(${log.userRole})</span>
+            </div>
+            <span class="audit-time">⏱ ${dateStr}</span>
+          </div>
+          <div class="audit-body">
+            ${log.taskCode ? `<strong style="color:var(--accent-blue);">[${log.taskCode}]</strong> ` : ''}
+            ${log.details}
+          </div>
+        `;
+        listEl.appendChild(card);
+      });
+    }
+
+    // =========================================
+    // INITIALIZATION & MONGODB SYNC
+    // =========================================
+    async function init() {
+      checkUserSession();
+
+      // Try fetching from /api/tasks
+      try {
+        const res = await fetch('/api/tasks');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            tasks = data;
+            isServerConnected = true;
+            setStorageStatus('server', '🟢 MongoDB Atlas (Cloud Conectado)');
+            renderBoard();
+            updateMetrics();
+            loadAuditLogs();
+            return;
+          }
+        }
+      } catch (e) {}
+
+      // Fallback to local storage or embedded state
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         try {
           tasks = JSON.parse(saved);
         } catch (e) {
-          tasks = JSON.parse(JSON.stringify(defaultTasks));
+          tasks = [
+  {
+    "id": "TSK-01",
+    "code": "M1-S1-LEV",
+    "title": "Levantamiento Funcional y Matriz de Reglas de Posgrado",
+    "month": "Mes 1",
+    "sprint": "Sprint 1",
+    "hours": 10,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "inprogress",
+    "source": "Excel Fila 3 (Expandido a S1)",
+    "desc": "Relevamiento integral de particularidades de Posgrado (Maestr�a en bloque sin selecci�n vs Doctorado con selecci�n en portal vs Pregrado). Definici�n formal de calendario T-15, T-5, T-0, T+7 y reglas de corte de deudas.",
+    "files": "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n01_Contexto_Matricula_Posgrado.md\nMatriz_Casos_Uso_Posgrado.xlsx",
+    "subtasks": [
+      {
+        "title": "Mapeo comparativo de reglas de negocio: Pregrado vs Maestr�a (bloque) vs Doctorado",
+        "hours": 2.5,
+        "completed": true
+      },
+      {
+        "title": "Definici�n t�cnica de precondiciones T-15 (programaci�n cerrada) y T-5 (actas cerradas)",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Validaci�n de pol�ticas financieras de deuda para habilitaci�n autom�tica vs retenci�n",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Elaboraci�n de matriz de 15 casos de uso funcionales y criterios de aceptaci�n QA",
+        "hours": 2.5,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-02",
+    "code": "M1-S1-CAR",
+    "title": "Implementaci�n de Carga de Horarios y Turnos desde Portal (BO)",
+    "month": "Mes 1",
+    "sprint": "Sprint 1",
+    "hours": 10,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "todo",
+    "source": "Excel Fila 4",
+    "desc": "Construcci�n del m�dulo administrativo en Back Office para la importaci�n, validaci�n y persistencia masiva de la oferta horaria y turnos especiales de posgrado (fines de semana, intensivos, quincenales).",
+    "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (massiveUpload)\nmiportal_cientifica_lumen/app/Models/OwnEnrollmentSchedule.php\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
+    "subtasks": [
+      {
+        "title": "Dise�o y migraci�n de base de datos para turnos posgrado (own_enrollment_schedule)",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Implementaci�n de parser Excel/CSV en Lumen con validaciones de campos cr�ticos",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Procesamiento por lotes (Batch Insert) transaccional con rollback ante error",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Interfaz Angular en Back Office con feedback de validaci�n y resumen de carga",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Pruebas de estr�s y logs de auditor�a (ScheduleLogs)",
+        "hours": 1,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-03",
+    "code": "M1-S1-LEAD",
+    "title": "Definici�n de Arquitectura, Contratos REST y Swagger",
+    "month": "Mes 1",
+    "sprint": "Sprint 1",
+    "hours": 6,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "inprogress",
+    "source": "Asignaci�n Propia (Liderazgo)",
+    "desc": "Especificaci�n formal de contratos Swagger/OpenAPI entre Lumen, Angular y PeopleSoft; homologaci�n de tipos de datos, c�digos de programa de Posgrado y llaves de idempotencia.",
+    "files": "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n02_Propuesta_Tecnica_Matricula_Posgrado.md\nSwagger / Postman Collection",
+    "subtasks": [
+      {
+        "title": "Modelado de interfaces REST y validaci�n de esquema JSON",
+        "hours": 3,
+        "completed": true
+      },
+      {
+        "title": "Alineaci�n de est�ndares de desarrollo en paralelo con Ilan Valdez y Gary Rojas",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-04",
+    "code": "M1-S2-BO",
+    "title": "Parametrizaci�n BO por Unidad Acad�mica: POSGRADO y PREGRADO",
+    "month": "Mes 1",
+    "sprint": "Sprint 2",
+    "hours": 5,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 5",
+    "desc": "Habilitar la segregaci�n estricta de par�metros en el Back Office entre PREGRADO y POSGRADO (Maestr�a y Doctorado), permitiendo ventanas, fechas y reglas desacopladas.",
+    "files": "miportal_cientifica_lumen/app/Http/Controllers/EnrollmentEntryConfigController.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getConfigBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-entry-config/",
+    "subtasks": [
+      {
+        "title": "Actualizaci�n de tablas de configuraci�n para flag UNIDAD_ACADEMICA",
+        "hours": 1,
+        "completed": false
+      },
+      {
+        "title": "Refactorizaci�n de endpoints getConfigBO / getAllEnrollmentConfig con filtro por unidad",
+        "hours": 1.5,
+        "completed": false
+      },
+      {
+        "title": "Pantalla Back Office en Angular para alternar y configurar PREGRADO vs POSGRADO",
+        "hours": 1.5,
+        "completed": false
+      },
+      {
+        "title": "Pruebas de regresi�n para asegurar que la configuraci�n de Pregrado no se altere",
+        "hours": 1,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-05",
+    "code": "M1-S2-DOC",
+    "title": "Desarrollo l�gica de Matr�cula Posgrado - Doctorado",
+    "month": "Mes 1",
+    "sprint": "Sprint 2",
+    "hours": 5,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 8",
+    "desc": "Implementaci�n del flujo de selecci�n en portal para Doctorado, donde el estudiante mantiene capacidad de elecci�n de asignaturas, investigaci�n y turnos.",
+    "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/",
+    "subtasks": [
+      {
+        "title": "Servicio Lumen de consulta de oferta acad�mica filtrada para programas de Doctorado",
+        "hours": 1.5,
+        "completed": false
+      },
+      {
+        "title": "Flujo de selecci�n en Angular para cursos de investigaci�n y cr�ditos electivos",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Validaci�n de colisiones de turnos y cupos disponibles en tiempo real",
+        "hours": 1,
+        "completed": false
+      },
+      {
+        "title": "Confirmaci�n y reserva de vacantes de Doctorado",
+        "hours": 0.5,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-06",
+    "code": "M1-S2-ALU",
+    "title": "Parametrizaci�n POSGRADO en el lado del alumno y Guards",
+    "month": "Mes 1",
+    "sprint": "Sprint 2",
+    "hours": 10,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 6 (Expandido con navegaci�n)",
+    "desc": "Adaptaci�n del portal del alumno para detectar la unidad acad�mica del estudiante autenticado y activar el flujo diferenciado de Posgrado en lugar del est�ndar de Pregrado.",
+    "files": "miportal_cientifica/src/app/student/pages/enrollment/dashboard-enroll/\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php",
+    "subtasks": [
+      {
+        "title": "Consumo de servicio de perfil y detecci�n de carrera/modalidad Posgrado en Angular",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "L�gica de guard y redirecci�n hacia flujo espec�fico (Maestr�a vs Doctorado)",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Visualizaci�n de ventana de matr�cula, estatus de habilitaci�n y sem�foro de deudas",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Pruebas funcionales con perfiles de prueba de Pregrado, Maestr�a y Doctorado",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-07",
+    "code": "M1-S2-LEAD",
+    "title": "Coordinaci�n de Entorno PeopleSoft y Alineaci�n con Posgrado",
+    "month": "Mes 1",
+    "sprint": "Sprint 2",
+    "hours": 6,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "todo",
+    "source": "Asignaci�n Propia (Coordinaci�n)",
+    "desc": "Gesti�n con TI Central y DBAs de credenciales, certificados SSL y conectividad VPN para PeopleSoft Integration Broker; validaci�n de pol�ticas T-15/T-5 con Escuela de Posgrado.",
+    "files": "Tickets TI Central / Conexi�n VPN & Gateway PeopleSoft / Actas Reuni�n",
+    "subtasks": [
+      {
+        "title": "Gesti�n y pruebas de conectividad de credenciales PeopleSoft Integration Broker",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Alineaci�n y formalizaci�n de precondiciones T-15 y T-5 con Direcci�n de Posgrado",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-08",
+    "code": "M2-S3-PS",
+    "title": "Integraci�n PeopleSoft Integration Broker & Idempotencia",
+    "month": "Mes 2",
+    "sprint": "Sprint 3",
+    "hours": 10,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 10",
+    "desc": "Conexi�n robusta e idempotente con PeopleSoft Integration Broker para asentar formalmente las matr�culas de Posgrado (CLASS_NBR, EMPLID, STRM), manejo de fallos y auditor�a.",
+    "files": "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (saveInPeople)",
+    "subtasks": [
+      {
+        "title": "Definici�n y mapeo de payloads XML/JSON de PeopleSoft Integration Broker para Posgrado",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Refactorizaci�n de saveInPeople para admitir estructuras y planes de estudio de Posgrado",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Implementaci�n de clave de idempotencia Hash(Programa+Estudiante+Ciclo+Operaci�n)",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Gesti�n de excepciones, reintentos y bit�cora de respuestas en ScheduleLogs",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Pruebas de integraci�n E2E con el ambiente PeopleSoft QA",
+        "hours": 1.5,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-09",
+    "code": "M2-S3-MAE",
+    "title": "Desarrollo L�gica Matr�cula Posgrado - Maestr�a en Bloque",
+    "month": "Mes 2",
+    "sprint": "Sprint 3",
+    "hours": 10,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 7 (Expandido)",
+    "desc": "Construcci�n completa del flujo autom�tico en bloque de Maestr�a: oferta �nica, turno �nico, sin selecci�n individual de asignaturas, validaci�n estricta de deuda y confirmaci�n directa.",
+    "files": "miportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/courses-enrollment.component.ts\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (processEnrollment)",
+    "subtasks": [
+      {
+        "title": "Endpoint en Lumen para orquestaci�n de asignaci�n de bloque cerrado por ciclo",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Validaci�n de restricci�n financiera (bloqueo autom�tico ante saldo pendiente)",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Vista de confirmaci�n de bloque de asignaturas predeterminadas en Angular",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Generaci�n de constancia y resumen de matr�cula de Maestr�a",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-10",
+    "code": "M2-S3-LEAD",
+    "title": "Code Review de Integraci�n y Pruebas de Estr�s Idempotencia",
+    "month": "Mes 2",
+    "sprint": "Sprint 3",
+    "hours": 6,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "backlog",
+    "source": "Asignaci�n Propia (Revisi�n)",
+    "desc": "Revisi�n arquitect�nica de PRs de PeopleSoft y Frontend; ejecuci�n de pruebas de estr�s para validar que reintentos de red no generen dobles cargos ni matr�culas duplicadas.",
+    "files": "Pull Requests GitHub / GitLab\nSuite de Pruebas Postman / JMeter",
+    "subtasks": [
+      {
+        "title": "Revisi�n t�cnica de c�digo de integraci�n PeopleSoft (Ilan Valdez)",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Pruebas de estr�s de idempotencia simulando concurrencia de reintentos",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-11",
+    "code": "M2-S4-DEM",
+    "title": "Carga de Horarios y Turnos desde el Portal a Demanda",
+    "month": "Mes 2",
+    "sprint": "Sprint 4",
+    "hours": 8,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 13 (Expandido con Cach�)",
+    "desc": "Capacidad para que los administradores de Posgrado sincronicen o recarguen turnos y cupos de forma inmediata 'On-Demand', sin tener que esperar el batch nocturno, con cach� inteligente.",
+    "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getScheduleNewBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
+    "subtasks": [
+      {
+        "title": "Endpoint en Lumen para invalidaci�n de cach� y refresco bajo demanda",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "L�gica de actualizaci�n en tiempo real de cupos y vacantes",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Bot�n de acci�n en UI de Back Office con modal de confirmaci�n y log",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-12",
+    "code": "M2-S4-HOR",
+    "title": "Integrar con Horarios Nuevos y Ajustes de Dise�o UX/UI",
+    "month": "Mes 2",
+    "sprint": "Sprint 4",
+    "hours": 10,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Filas 11 y 12",
+    "desc": "Adaptar visualizaci�n del calendario semanal para esquemas at�picos (quincenales, s�bados/domingos) y maquetaci�n de modales de alerta para deudas y arrastres.",
+    "files": "miportal_cientifica/src/app/student/pages/schedule/\nmiportal_cientifica/src/assets/styles/\nmiportal_cientifica/src/app/modals/modal-enrollment/",
+    "subtasks": [
+      {
+        "title": "Adaptaci�n del componente de horario semanal para s�bados y domingos",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Alineaci�n de estilos institucionales de Posgrado (colores, badges, responsive)",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Modales de alerta para desaprobados (con cobro) vs retirados (sin cobro)",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Enlaces de ayuda hacia tr�mites acad�micos de posgrado",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-13",
+    "code": "M2-S4-LEAD",
+    "title": "Auditor�a de Seguridad, Permisos y Plan de Pruebas E2E",
+    "month": "Mes 2",
+    "sprint": "Sprint 4",
+    "hours": 6,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "backlog",
+    "source": "Asignaci�n Propia (Seguridad)",
+    "desc": "Auditor�a de seguridad en endpoints administrativos de Back Office; validaci�n de token JWT, control de roles y armado de bater�a de pruebas de aceptaci�n UAT.",
+    "files": "Plan_Pruebas_UAT_Posgrado.xlsx\nAuditor�a Seguridad Lumen JWT",
+    "subtasks": [
+      {
+        "title": "Auditor�a de roles y permisos en endpoints masivos y on-demand",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Elaboraci�n de bater�a de pruebas integrales para certificaci�n con usuarios",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-14",
+    "code": "M3-S5-INT",
+    "title": "Pruebas Integrales de Carga, Resiliencia y Hardening Backend",
+    "month": "Mes 3",
+    "sprint": "Sprint 5",
+    "hours": 8,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Fase de Estabilizaci�n",
+    "desc": "Pruebas de estr�s y resiliencia en ambiente QA: simulaci�n de carga masiva de horarios con 500 registros y 50 inscripciones concurrentes en PeopleSoft.",
+    "files": "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nScripts de Carga masiva",
+    "subtasks": [
+      {
+        "title": "Simulaci�n de timeouts PeopleSoft y verificaci�n de reintentos seguros",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Optimizaci�n de consultas SQL en own_enrollment_schedule y logs",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Resoluci�n de incidencias t�cnicas detectadas en pruebas integrales",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-15",
+    "code": "M3-S5-UX",
+    "title": "Pulido UX, Accesibilidad y Feedback de Pre-UAT",
+    "month": "Mes 3",
+    "sprint": "Sprint 5",
+    "hours": 7,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Fase de Pulido UX",
+    "desc": "Incorporaci�n de mejoras visuales a partir de sesiones preliminares con usuarios clave de Posgrado; verificaci�n de usabilidad en m�viles.",
+    "files": "miportal_cientifica/src/app/student/pages/enrollment/\nmiportal_cientifica/src/assets/styles/",
+    "subtasks": [
+      {
+        "title": "Ajuste de copy institucional y textos explicativos en portal de matr�cula",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Resoluci�n de bugs visuales y alineaci�n de componentes m�viles",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Soporte activo en sesiones de pre-certificaci�n UAT",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-16",
+    "code": "M3-S5-LEAD",
+    "title": "Conducci�n de Sesiones UAT y Certificaci�n con Posgrado",
+    "month": "Mes 3",
+    "sprint": "Sprint 5",
+    "hours": 8,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "backlog",
+    "source": "Asignaci�n Propia (UAT)",
+    "desc": "Liderar las pruebas de aceptaci�n con el equipo directivo de la Escuela de Posgrado y Registros Acad�micos; levantamiento de feedback y firma de conformidad.",
+    "files": "Acta_Conformidad_UAT_Posgrado.pdf\nMatriz de Hallazgos y Cierres",
+    "subtasks": [
+      {
+        "title": "Conducci�n de talleres de prueba guiada con usuarios de Posgrado",
+        "hours": 4,
+        "completed": false
+      },
+      {
+        "title": "Consolidaci�n de matriz de hallazgos y priorizaci�n de ajustes finales",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Firma formal de certificaci�n y pase a producci�n",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-17",
+    "code": "M3-S6-REL",
+    "title": "Checklist de Pase a Producci�n, Variables .env y Despliegue",
+    "month": "Mes 3",
+    "sprint": "Sprint 6",
+    "hours": 6,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "backlog",
+    "source": "Asignaci�n Propia (Release)",
+    "desc": "Preparaci�n del checklist de despliegue a producci�n, configuraci�n de variables de entorno `.env`, plan de contingencia/rollback y soporte post-lanzamiento.",
+    "files": "Checklist_Despliegue_Produccion.md\n.env.production\nProcedimiento de Rollback",
+    "subtasks": [
+      {
+        "title": "Elaboraci�n de checklist t�cnico de despliegue y variables .env",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Ejecuci�n coordinada del despliegue en ventana de mantenimiento",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Plan de contingencia, rollback y protocolo de contingencia",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-18",
+    "code": "M3-S6-DEV",
+    "title": "Soporte Hipercare Post-Lanzamiento y Monitoreo PeopleSoft",
+    "month": "Mes 3",
+    "sprint": "Sprint 6",
+    "hours": 6,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Hipercare Producci�n",
+    "desc": "Guardia activa de monitoreo en tiempo real de colas de PeopleSoft, logs de carga masiva y atenci�n prioritaria de incidencias en primeros d�as de matr�cula.",
+    "files": "Monitoreo Logs Producci�n / ScheduleLogs / Kibana / Datadog",
+    "subtasks": [
+      {
+        "title": "Supervisi�n en vivo de transacciones PeopleSoft durante ventana T-0 a T+7",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Atenci�n inmediata a incidencias de integraci�n o time-outs",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-19",
+    "code": "M3-S6-UI",
+    "title": "Soporte Hipercare Frontend y Estabilizaci�n Alumno",
+    "month": "Mes 3",
+    "sprint": "Sprint 6",
+    "hours": 5,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Hipercare Producci�n",
+    "desc": "Monitoreo de experiencia de usuario en portal del alumno, resoluci�n de dudas de navegaci�n y correcci�n en caliente de fallas menores reportadas.",
+    "files": "Portal Alumno Producci�n / Sentry / Google Analytics",
+    "subtasks": [
+      {
+        "title": "Monitoreo de tasa de �xito en confirmaciones de matr�cula de Maestr�a",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Soporte de frontend y resoluci�n de reportes de visualizaci�n",
+        "hours": 2.5,
+        "completed": false
+      }
+    ]
+  }
+];
         }
       } else {
-        tasks = JSON.parse(JSON.stringify(defaultTasks));
+        tasks = [
+  {
+    "id": "TSK-01",
+    "code": "M1-S1-LEV",
+    "title": "Levantamiento Funcional y Matriz de Reglas de Posgrado",
+    "month": "Mes 1",
+    "sprint": "Sprint 1",
+    "hours": 10,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "inprogress",
+    "source": "Excel Fila 3 (Expandido a S1)",
+    "desc": "Relevamiento integral de particularidades de Posgrado (Maestr�a en bloque sin selecci�n vs Doctorado con selecci�n en portal vs Pregrado). Definici�n formal de calendario T-15, T-5, T-0, T+7 y reglas de corte de deudas.",
+    "files": "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n01_Contexto_Matricula_Posgrado.md\nMatriz_Casos_Uso_Posgrado.xlsx",
+    "subtasks": [
+      {
+        "title": "Mapeo comparativo de reglas de negocio: Pregrado vs Maestr�a (bloque) vs Doctorado",
+        "hours": 2.5,
+        "completed": true
+      },
+      {
+        "title": "Definici�n t�cnica de precondiciones T-15 (programaci�n cerrada) y T-5 (actas cerradas)",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Validaci�n de pol�ticas financieras de deuda para habilitaci�n autom�tica vs retenci�n",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Elaboraci�n de matriz de 15 casos de uso funcionales y criterios de aceptaci�n QA",
+        "hours": 2.5,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-02",
+    "code": "M1-S1-CAR",
+    "title": "Implementaci�n de Carga de Horarios y Turnos desde Portal (BO)",
+    "month": "Mes 1",
+    "sprint": "Sprint 1",
+    "hours": 10,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "todo",
+    "source": "Excel Fila 4",
+    "desc": "Construcci�n del m�dulo administrativo en Back Office para la importaci�n, validaci�n y persistencia masiva de la oferta horaria y turnos especiales de posgrado (fines de semana, intensivos, quincenales).",
+    "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (massiveUpload)\nmiportal_cientifica_lumen/app/Models/OwnEnrollmentSchedule.php\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
+    "subtasks": [
+      {
+        "title": "Dise�o y migraci�n de base de datos para turnos posgrado (own_enrollment_schedule)",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Implementaci�n de parser Excel/CSV en Lumen con validaciones de campos cr�ticos",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Procesamiento por lotes (Batch Insert) transaccional con rollback ante error",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Interfaz Angular en Back Office con feedback de validaci�n y resumen de carga",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Pruebas de estr�s y logs de auditor�a (ScheduleLogs)",
+        "hours": 1,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-03",
+    "code": "M1-S1-LEAD",
+    "title": "Definici�n de Arquitectura, Contratos REST y Swagger",
+    "month": "Mes 1",
+    "sprint": "Sprint 1",
+    "hours": 6,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "inprogress",
+    "source": "Asignaci�n Propia (Liderazgo)",
+    "desc": "Especificaci�n formal de contratos Swagger/OpenAPI entre Lumen, Angular y PeopleSoft; homologaci�n de tipos de datos, c�digos de programa de Posgrado y llaves de idempotencia.",
+    "files": "00_PROPUESTA_ARQUITECTURA_MATRICULA_POSGRADO.md\n02_Propuesta_Tecnica_Matricula_Posgrado.md\nSwagger / Postman Collection",
+    "subtasks": [
+      {
+        "title": "Modelado de interfaces REST y validaci�n de esquema JSON",
+        "hours": 3,
+        "completed": true
+      },
+      {
+        "title": "Alineaci�n de est�ndares de desarrollo en paralelo con Ilan Valdez y Gary Rojas",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-04",
+    "code": "M1-S2-BO",
+    "title": "Parametrizaci�n BO por Unidad Acad�mica: POSGRADO y PREGRADO",
+    "month": "Mes 1",
+    "sprint": "Sprint 2",
+    "hours": 5,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 5",
+    "desc": "Habilitar la segregaci�n estricta de par�metros en el Back Office entre PREGRADO y POSGRADO (Maestr�a y Doctorado), permitiendo ventanas, fechas y reglas desacopladas.",
+    "files": "miportal_cientifica_lumen/app/Http/Controllers/EnrollmentEntryConfigController.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getConfigBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-entry-config/",
+    "subtasks": [
+      {
+        "title": "Actualizaci�n de tablas de configuraci�n para flag UNIDAD_ACADEMICA",
+        "hours": 1,
+        "completed": false
+      },
+      {
+        "title": "Refactorizaci�n de endpoints getConfigBO / getAllEnrollmentConfig con filtro por unidad",
+        "hours": 1.5,
+        "completed": false
+      },
+      {
+        "title": "Pantalla Back Office en Angular para alternar y configurar PREGRADO vs POSGRADO",
+        "hours": 1.5,
+        "completed": false
+      },
+      {
+        "title": "Pruebas de regresi�n para asegurar que la configuraci�n de Pregrado no se altere",
+        "hours": 1,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-05",
+    "code": "M1-S2-DOC",
+    "title": "Desarrollo l�gica de Matr�cula Posgrado - Doctorado",
+    "month": "Mes 1",
+    "sprint": "Sprint 2",
+    "hours": 5,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 8",
+    "desc": "Implementaci�n del flujo de selecci�n en portal para Doctorado, donde el estudiante mantiene capacidad de elecci�n de asignaturas, investigaci�n y turnos.",
+    "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/",
+    "subtasks": [
+      {
+        "title": "Servicio Lumen de consulta de oferta acad�mica filtrada para programas de Doctorado",
+        "hours": 1.5,
+        "completed": false
+      },
+      {
+        "title": "Flujo de selecci�n en Angular para cursos de investigaci�n y cr�ditos electivos",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Validaci�n de colisiones de turnos y cupos disponibles en tiempo real",
+        "hours": 1,
+        "completed": false
+      },
+      {
+        "title": "Confirmaci�n y reserva de vacantes de Doctorado",
+        "hours": 0.5,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-06",
+    "code": "M1-S2-ALU",
+    "title": "Parametrizaci�n POSGRADO en el lado del alumno y Guards",
+    "month": "Mes 1",
+    "sprint": "Sprint 2",
+    "hours": 10,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 6 (Expandido con navegaci�n)",
+    "desc": "Adaptaci�n del portal del alumno para detectar la unidad acad�mica del estudiante autenticado y activar el flujo diferenciado de Posgrado en lugar del est�ndar de Pregrado.",
+    "files": "miportal_cientifica/src/app/student/pages/enrollment/dashboard-enroll/\nmiportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentController.php",
+    "subtasks": [
+      {
+        "title": "Consumo de servicio de perfil y detecci�n de carrera/modalidad Posgrado en Angular",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "L�gica de guard y redirecci�n hacia flujo espec�fico (Maestr�a vs Doctorado)",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Visualizaci�n de ventana de matr�cula, estatus de habilitaci�n y sem�foro de deudas",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Pruebas funcionales con perfiles de prueba de Pregrado, Maestr�a y Doctorado",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-07",
+    "code": "M1-S2-LEAD",
+    "title": "Coordinaci�n de Entorno PeopleSoft y Alineaci�n con Posgrado",
+    "month": "Mes 1",
+    "sprint": "Sprint 2",
+    "hours": 6,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "todo",
+    "source": "Asignaci�n Propia (Coordinaci�n)",
+    "desc": "Gesti�n con TI Central y DBAs de credenciales, certificados SSL y conectividad VPN para PeopleSoft Integration Broker; validaci�n de pol�ticas T-15/T-5 con Escuela de Posgrado.",
+    "files": "Tickets TI Central / Conexi�n VPN & Gateway PeopleSoft / Actas Reuni�n",
+    "subtasks": [
+      {
+        "title": "Gesti�n y pruebas de conectividad de credenciales PeopleSoft Integration Broker",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Alineaci�n y formalizaci�n de precondiciones T-15 y T-5 con Direcci�n de Posgrado",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-08",
+    "code": "M2-S3-PS",
+    "title": "Integraci�n PeopleSoft Integration Broker & Idempotencia",
+    "month": "Mes 2",
+    "sprint": "Sprint 3",
+    "hours": 10,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 10",
+    "desc": "Conexi�n robusta e idempotente con PeopleSoft Integration Broker para asentar formalmente las matr�culas de Posgrado (CLASS_NBR, EMPLID, STRM), manejo de fallos y auditor�a.",
+    "files": "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (saveInPeople)",
+    "subtasks": [
+      {
+        "title": "Definici�n y mapeo de payloads XML/JSON de PeopleSoft Integration Broker para Posgrado",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Refactorizaci�n de saveInPeople para admitir estructuras y planes de estudio de Posgrado",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Implementaci�n de clave de idempotencia Hash(Programa+Estudiante+Ciclo+Operaci�n)",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Gesti�n de excepciones, reintentos y bit�cora de respuestas en ScheduleLogs",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Pruebas de integraci�n E2E con el ambiente PeopleSoft QA",
+        "hours": 1.5,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-09",
+    "code": "M2-S3-MAE",
+    "title": "Desarrollo L�gica Matr�cula Posgrado - Maestr�a en Bloque",
+    "month": "Mes 2",
+    "sprint": "Sprint 3",
+    "hours": 10,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 7 (Expandido)",
+    "desc": "Construcci�n completa del flujo autom�tico en bloque de Maestr�a: oferta �nica, turno �nico, sin selecci�n individual de asignaturas, validaci�n estricta de deuda y confirmaci�n directa.",
+    "files": "miportal_cientifica/src/app/student/pages/enrollment/courses-enrollment/courses-enrollment.component.ts\nmiportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (processEnrollment)",
+    "subtasks": [
+      {
+        "title": "Endpoint en Lumen para orquestaci�n de asignaci�n de bloque cerrado por ciclo",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Validaci�n de restricci�n financiera (bloqueo autom�tico ante saldo pendiente)",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Vista de confirmaci�n de bloque de asignaturas predeterminadas en Angular",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Generaci�n de constancia y resumen de matr�cula de Maestr�a",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-10",
+    "code": "M2-S3-LEAD",
+    "title": "Code Review de Integraci�n y Pruebas de Estr�s Idempotencia",
+    "month": "Mes 2",
+    "sprint": "Sprint 3",
+    "hours": 6,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "backlog",
+    "source": "Asignaci�n Propia (Revisi�n)",
+    "desc": "Revisi�n arquitect�nica de PRs de PeopleSoft y Frontend; ejecuci�n de pruebas de estr�s para validar que reintentos de red no generen dobles cargos ni matr�culas duplicadas.",
+    "files": "Pull Requests GitHub / GitLab\nSuite de Pruebas Postman / JMeter",
+    "subtasks": [
+      {
+        "title": "Revisi�n t�cnica de c�digo de integraci�n PeopleSoft (Ilan Valdez)",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Pruebas de estr�s de idempotencia simulando concurrencia de reintentos",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-11",
+    "code": "M2-S4-DEM",
+    "title": "Carga de Horarios y Turnos desde el Portal a Demanda",
+    "month": "Mes 2",
+    "sprint": "Sprint 4",
+    "hours": 8,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Fila 13 (Expandido con Cach�)",
+    "desc": "Capacidad para que los administradores de Posgrado sincronicen o recarguen turnos y cupos de forma inmediata 'On-Demand', sin tener que esperar el batch nocturno, con cach� inteligente.",
+    "files": "miportal_cientifica_lumen/app/Http/Controllers/OwnEnrollmentControllerBO.php (getScheduleNewBO)\nmiportal_cientifica/src/app/admin/dashboard/enrollment-config/",
+    "subtasks": [
+      {
+        "title": "Endpoint en Lumen para invalidaci�n de cach� y refresco bajo demanda",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "L�gica de actualizaci�n en tiempo real de cupos y vacantes",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Bot�n de acci�n en UI de Back Office con modal de confirmaci�n y log",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-12",
+    "code": "M2-S4-HOR",
+    "title": "Integrar con Horarios Nuevos y Ajustes de Dise�o UX/UI",
+    "month": "Mes 2",
+    "sprint": "Sprint 4",
+    "hours": 10,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Excel Filas 11 y 12",
+    "desc": "Adaptar visualizaci�n del calendario semanal para esquemas at�picos (quincenales, s�bados/domingos) y maquetaci�n de modales de alerta para deudas y arrastres.",
+    "files": "miportal_cientifica/src/app/student/pages/schedule/\nmiportal_cientifica/src/assets/styles/\nmiportal_cientifica/src/app/modals/modal-enrollment/",
+    "subtasks": [
+      {
+        "title": "Adaptaci�n del componente de horario semanal para s�bados y domingos",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Alineaci�n de estilos institucionales de Posgrado (colores, badges, responsive)",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Modales de alerta para desaprobados (con cobro) vs retirados (sin cobro)",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Enlaces de ayuda hacia tr�mites acad�micos de posgrado",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-13",
+    "code": "M2-S4-LEAD",
+    "title": "Auditor�a de Seguridad, Permisos y Plan de Pruebas E2E",
+    "month": "Mes 2",
+    "sprint": "Sprint 4",
+    "hours": 6,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "backlog",
+    "source": "Asignaci�n Propia (Seguridad)",
+    "desc": "Auditor�a de seguridad en endpoints administrativos de Back Office; validaci�n de token JWT, control de roles y armado de bater�a de pruebas de aceptaci�n UAT.",
+    "files": "Plan_Pruebas_UAT_Posgrado.xlsx\nAuditor�a Seguridad Lumen JWT",
+    "subtasks": [
+      {
+        "title": "Auditor�a de roles y permisos en endpoints masivos y on-demand",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Elaboraci�n de bater�a de pruebas integrales para certificaci�n con usuarios",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-14",
+    "code": "M3-S5-INT",
+    "title": "Pruebas Integrales de Carga, Resiliencia y Hardening Backend",
+    "month": "Mes 3",
+    "sprint": "Sprint 5",
+    "hours": 8,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Fase de Estabilizaci�n",
+    "desc": "Pruebas de estr�s y resiliencia en ambiente QA: simulaci�n de carga masiva de horarios con 500 registros y 50 inscripciones concurrentes en PeopleSoft.",
+    "files": "miportal_cientifica_lumen/app/Services/EnrollmentService.php\nScripts de Carga masiva",
+    "subtasks": [
+      {
+        "title": "Simulaci�n de timeouts PeopleSoft y verificaci�n de reintentos seguros",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Optimizaci�n de consultas SQL en own_enrollment_schedule y logs",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Resoluci�n de incidencias t�cnicas detectadas en pruebas integrales",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-15",
+    "code": "M3-S5-UX",
+    "title": "Pulido UX, Accesibilidad y Feedback de Pre-UAT",
+    "month": "Mes 3",
+    "sprint": "Sprint 5",
+    "hours": 7,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Fase de Pulido UX",
+    "desc": "Incorporaci�n de mejoras visuales a partir de sesiones preliminares con usuarios clave de Posgrado; verificaci�n de usabilidad en m�viles.",
+    "files": "miportal_cientifica/src/app/student/pages/enrollment/\nmiportal_cientifica/src/assets/styles/",
+    "subtasks": [
+      {
+        "title": "Ajuste de copy institucional y textos explicativos en portal de matr�cula",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Resoluci�n de bugs visuales y alineaci�n de componentes m�viles",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Soporte activo en sesiones de pre-certificaci�n UAT",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-16",
+    "code": "M3-S5-LEAD",
+    "title": "Conducci�n de Sesiones UAT y Certificaci�n con Posgrado",
+    "month": "Mes 3",
+    "sprint": "Sprint 5",
+    "hours": 8,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "backlog",
+    "source": "Asignaci�n Propia (UAT)",
+    "desc": "Liderar las pruebas de aceptaci�n con el equipo directivo de la Escuela de Posgrado y Registros Acad�micos; levantamiento de feedback y firma de conformidad.",
+    "files": "Acta_Conformidad_UAT_Posgrado.pdf\nMatriz de Hallazgos y Cierres",
+    "subtasks": [
+      {
+        "title": "Conducci�n de talleres de prueba guiada con usuarios de Posgrado",
+        "hours": 4,
+        "completed": false
+      },
+      {
+        "title": "Consolidaci�n de matriz de hallazgos y priorizaci�n de ajustes finales",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Firma formal de certificaci�n y pase a producci�n",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-17",
+    "code": "M3-S6-REL",
+    "title": "Checklist de Pase a Producci�n, Variables .env y Despliegue",
+    "month": "Mes 3",
+    "sprint": "Sprint 6",
+    "hours": 6,
+    "resource": "Jaime Alfaro",
+    "track": "Arquitecto de Soluciones y Líder Técnico",
+    "column": "backlog",
+    "source": "Asignaci�n Propia (Release)",
+    "desc": "Preparaci�n del checklist de despliegue a producci�n, configuraci�n de variables de entorno `.env`, plan de contingencia/rollback y soporte post-lanzamiento.",
+    "files": "Checklist_Despliegue_Produccion.md\n.env.production\nProcedimiento de Rollback",
+    "subtasks": [
+      {
+        "title": "Elaboraci�n de checklist t�cnico de despliegue y variables .env",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Ejecuci�n coordinada del despliegue en ventana de mantenimiento",
+        "hours": 2,
+        "completed": false
+      },
+      {
+        "title": "Plan de contingencia, rollback y protocolo de contingencia",
+        "hours": 2,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-18",
+    "code": "M3-S6-DEV",
+    "title": "Soporte Hipercare Post-Lanzamiento y Monitoreo PeopleSoft",
+    "month": "Mes 3",
+    "sprint": "Sprint 6",
+    "hours": 6,
+    "resource": "Ilan Valdez",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Hipercare Producci�n",
+    "desc": "Guardia activa de monitoreo en tiempo real de colas de PeopleSoft, logs de carga masiva y atenci�n prioritaria de incidencias en primeros d�as de matr�cula.",
+    "files": "Monitoreo Logs Producci�n / ScheduleLogs / Kibana / Datadog",
+    "subtasks": [
+      {
+        "title": "Supervisi�n en vivo de transacciones PeopleSoft durante ventana T-0 a T+7",
+        "hours": 3,
+        "completed": false
+      },
+      {
+        "title": "Atenci�n inmediata a incidencias de integraci�n o time-outs",
+        "hours": 3,
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "TSK-19",
+    "code": "M3-S6-UI",
+    "title": "Soporte Hipercare Frontend y Estabilizaci�n Alumno",
+    "month": "Mes 3",
+    "sprint": "Sprint 6",
+    "hours": 5,
+    "resource": "Gary Rojas",
+    "track": "Full Stack Developer",
+    "column": "backlog",
+    "source": "Hipercare Producci�n",
+    "desc": "Monitoreo de experiencia de usuario en portal del alumno, resoluci�n de dudas de navegaci�n y correcci�n en caliente de fallas menores reportadas.",
+    "files": "Portal Alumno Producci�n / Sentry / Google Analytics",
+    "subtasks": [
+      {
+        "title": "Monitoreo de tasa de �xito en confirmaciones de matr�cula de Maestr�a",
+        "hours": 2.5,
+        "completed": false
+      },
+      {
+        "title": "Soporte de frontend y resoluci�n de reportes de visualizaci�n",
+        "hours": 2.5,
+        "completed": false
+      }
+    ]
+  }
+];
       }
 
-      setStorageStatus('local', '🟡 Modo local (Ejecuta iniciar_tablero.bat para conectar a MongoDB)');
+      setStorageStatus('local', '🟡 Modo local (Offline)');
       renderBoard();
       updateMetrics();
     }
 
-    // Save state directly to disk (Server or File System API)
     async function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
       updateMetrics();
 
-      // Priority 1: Save via Node Server if connected
       if (isServerConnected) {
         try {
           const res = await fetch('/api/tasks', {
@@ -1501,108 +3066,7 @@
           console.warn('Fallo guardado en servidor:', err);
         }
       }
-
-      // Priority 2: Save directly via File System Access API handle
-      if (fileHandle) {
-        try {
-          const writable = await fileHandle.createWritable();
-          await writable.write(JSON.stringify(tasks, null, 2));
-          await writable.close();
-          showSaveToast('✔ Guardado directamente en archivo vinculado');
-          setStorageStatus('handle', `🔵 Vinculado a: ${fileHandle.name}`);
-          return;
-        } catch (err) {
-          console.error('Error al escribir en archivo con File System API:', err);
-        }
-      }
-
-      // Fallback notification
       showSaveToast('ℹ Guardado temporalmente en navegador');
-    }
-
-    // File System Access API: Link direct JSON file on disk
-    async function linkLocalFile() {
-      if (!('showOpenFilePicker' in window)) {
-        alert('Tu navegador no cuenta con File System Access API. Te recomendamos hacer doble clic en iniciar_tablero.bat para sincronización automática en disco con Node.js.');
-        return;
-      }
-      try {
-        const [handle] = await window.showOpenFilePicker({
-          types: [{
-            description: 'Archivo de estado Kanban JSON',
-            accept: { 'application/json': ['.json'] }
-          }]
-        });
-        fileHandle = handle;
-        const file = await fileHandle.getFile();
-        const text = await file.text();
-        if (text && text.trim()) {
-          const parsed = JSON.parse(text);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            tasks = parsed;
-            renderBoard();
-            updateMetrics();
-            if (currentView === 'swimlanes') renderSwimlanes();
-          }
-        }
-        setStorageStatus('handle', `🔵 Vinculado a: ${handle.name}`);
-        showSaveToast(`✔ Vinculado con ${handle.name}`);
-        alert(`¡Archivo ${handle.name} vinculado con éxito!\nCada movimiento, subtarea marcada o tarea nueva se guardará directamente en este archivo en tu disco.`);
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          console.error(err);
-          alert('No se pudo vincular el archivo: ' + err.message);
-        }
-      }
-    }
-
-    // Export JSON to disk
-    function exportJSON() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "kanban_state.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      showSaveToast('✔ Copia kanban_state.json descargada');
-    }
-
-    // Import JSON from disk
-    function triggerImportJSON() {
-      document.getElementById('importFileInput').click();
-    }
-
-    function handleImportJSON(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const imported = JSON.parse(e.target.result);
-          if (Array.isArray(imported)) {
-            tasks = imported;
-            saveState();
-            renderBoard();
-            if (currentView === 'swimlanes') renderSwimlanes();
-            showSaveToast(`✔ Importadas ${tasks.length} tareas desde ${file.name}`);
-          } else {
-            alert('El archivo JSON debe contener una lista de tareas.');
-          }
-        } catch (err) {
-          alert('Error al leer el archivo JSON: ' + err.message);
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function resetToDefaultData() {
-      if (confirm("¿Deseas reiniciar todas las tareas del plan trimestral a su estado original?")) {
-        tasks = JSON.parse(JSON.stringify(defaultTasks));
-        saveState();
-        renderBoard();
-        if (currentView === 'swimlanes') renderSwimlanes();
-      }
     }
 
     function toggleTheme() {
@@ -1629,7 +3093,6 @@
       }
     }
 
-    // Filter functions
     function setResourceFilter(resource, btn) {
       currentResourceFilter = resource;
       document.querySelectorAll('.filter-group:nth-child(1) .btn-filter').forEach(b => b.classList.remove('active'));
@@ -1654,15 +3117,14 @@
 
     function getFilteredTasks() {
       return tasks.filter(task => {
-        // Resource filter
-        if (currentResourceFilter !== 'all' && task.resource !== currentResourceFilter) {
-          return false;
+        if (currentResourceFilter !== 'all') {
+          if (!task.resource.toLowerCase().includes(currentResourceFilter.toLowerCase())) {
+            return false;
+          }
         }
-        // Month filter
         if (currentMonthFilter !== 'all' && task.month !== currentMonthFilter) {
           return false;
         }
-        // Search term
         if (currentSearchTerm) {
           const matchCode = task.code.toLowerCase().includes(currentSearchTerm);
           const matchTitle = task.title.toLowerCase().includes(currentSearchTerm);
@@ -1677,7 +3139,6 @@
       });
     }
 
-    // Render Traditional Kanban Board
     function renderBoard() {
       const container = document.getElementById('boardContainer');
       container.innerHTML = '';
@@ -1715,7 +3176,6 @@
       });
     }
 
-    // Render Parallel Swimlanes View
     function renderSwimlanes() {
       const container = document.getElementById('swimlanesContainer');
       container.innerHTML = '';
@@ -1723,11 +3183,11 @@
       const filtered = getFilteredTasks();
 
       resourcesConfig.forEach(res => {
-        if (currentResourceFilter !== 'all' && currentResourceFilter !== res.id) {
+        if (currentResourceFilter !== 'all' && !res.id.toLowerCase().includes(currentResourceFilter.toLowerCase())) {
           return;
         }
 
-        const resTasks = filtered.filter(t => t.resource === res.id);
+        const resTasks = filtered.filter(t => t.resource.includes(res.id));
         const resHours = resTasks.reduce((sum, t) => sum + (t.hours || 0), 0);
         const completedHours = resTasks.filter(t => t.column === 'done').reduce((sum, t) => sum + (t.hours || 0), 0);
 
@@ -1753,7 +3213,7 @@
         const scrollBox = rowEl.querySelector('.swimlane-cards-scroll');
 
         if (resTasks.length === 0) {
-          scrollBox.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:12px;">No hay tareas que coincidan con los filtros para este carril.</div>`;
+          scrollBox.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:12px;">No hay tareas asignadas que coincidan con los filtros.</div>`;
         } else {
           resTasks.forEach(task => {
             const cardEl = createCardElement(task);
@@ -1773,14 +3233,17 @@
       card.ondragstart = (e) => handleDragStart(e, task.id);
       card.ondragend = handleDragEnd;
 
-      // Month & Sprint Badges
       let monthClass = 'm1';
       if (task.month === 'Mes 2') monthClass = 'm2';
       if (task.month === 'Mes 3') monthClass = 'm3';
 
-      let leadBadge = task.resource.includes('Jaime') ? '<span class="badge lead">LEAD</span>' : '';
+      let roleBadge = '';
+      if (task.resource.includes('Jaime')) {
+        roleBadge = '<span class="badge lead">LÍDER TÉCNICO</span>';
+      } else {
+        roleBadge = '<span class="badge fullstack">FULL STACK</span>';
+      }
 
-      // Resource avatar
       let avatarClass = 'ilan';
       let initials = 'IV';
       if (task.resource.includes('Gary')) {
@@ -1791,7 +3254,6 @@
         initials = 'JA';
       }
 
-      // Subtask progress
       const totalSub = task.subtasks ? task.subtasks.length : 0;
       const completedSub = task.subtasks ? task.subtasks.filter(s => s.completed).length : 0;
       const percentSub = totalSub > 0 ? Math.round((completedSub / totalSub) * 100) : (task.column === 'done' ? 100 : 0);
@@ -1800,7 +3262,7 @@
         <div class="card-top">
           <div class="card-tags">
             <span class="badge ${monthClass}">${task.month} &middot; ${task.sprint}</span>
-            ${leadBadge}
+            ${roleBadge}
           </div>
           <span class="card-hours">⏱ ${task.hours}h</span>
         </div>
@@ -1876,6 +3338,7 @@
     function moveTaskToColumn(taskId, targetColId) {
       const task = tasks.find(t => t.id === taskId);
       if (task && task.column !== targetColId) {
+        const fromCol = task.column;
         task.column = targetColId;
         if (targetColId === 'done' && task.subtasks) {
           task.subtasks.forEach(s => s.completed = true);
@@ -1883,10 +3346,14 @@
         saveState();
         renderBoard();
         if (currentView === 'swimlanes') renderSwimlanes();
+
+        const fromTitle = columnsConfig.find(c => c.id === fromCol)?.title || fromCol;
+        const toTitle = columnsConfig.find(c => c.id === targetColId)?.title || targetColId;
+        logAuditAction('MOVE_TASK', task, `Movió la tarea de "${fromTitle}" a "${toTitle}"`, fromCol, targetColId);
       }
     }
 
-    // Task Modal
+    // Modal Details
     function openTaskModal(taskId) {
       currentModalTaskId = taskId;
       const task = tasks.find(t => t.id === taskId);
@@ -1896,7 +3363,12 @@
       document.getElementById('modalId').textContent = task.code;
       document.getElementById('modalHours').textContent = `⏱ ${task.hours}h Estimadas`;
       document.getElementById('modalAssignee').textContent = task.resource;
-      document.getElementById('modalTrack').textContent = task.track || 'Desarrollo';
+
+      let roleLabel = 'Full Stack Developer (Backend, Frontend, QA, etc.)';
+      if (task.resource.includes('Jaime')) {
+        roleLabel = 'Arquitecto de Soluciones y Líder Técnico';
+      }
+      document.getElementById('modalTrack').textContent = roleLabel;
 
       const colName = columnsConfig.find(c => c.id === task.column)?.title || task.column;
       document.getElementById('modalColumn').textContent = colName;
@@ -1906,12 +3378,10 @@
       badgeEl.className = 'badge ' + (task.month === 'Mes 2' ? 'm2' : (task.month === 'Mes 3' ? 'm3' : 'm1'));
 
       document.getElementById('modalSprintBadge').textContent = task.sprint;
-
       document.getElementById('modalDesc').textContent = task.desc;
       document.getElementById('modalFiles').innerHTML = (task.files || 'No especificado').replace(/\n/g, '<br>');
 
       renderModalSubtasks(task);
-
       document.getElementById('taskModalOverlay').classList.add('open');
     }
 
@@ -1948,7 +3418,8 @@
       const task = tasks.find(t => t.id === currentModalTaskId);
       if (!task || !task.subtasks || !task.subtasks[subtaskIdx]) return;
 
-      task.subtasks[subtaskIdx].completed = !task.subtasks[subtaskIdx].completed;
+      const wasCompleted = task.subtasks[subtaskIdx].completed;
+      task.subtasks[subtaskIdx].completed = !wasCompleted;
 
       const allDone = task.subtasks.every(s => s.completed);
       if (allDone && task.column !== 'done') {
@@ -1961,6 +3432,9 @@
       renderModalSubtasks(task);
       renderBoard();
       if (currentView === 'swimlanes') renderSwimlanes();
+
+      const actionText = !wasCompleted ? 'Marcó como completada la subtarea' : 'Desmarcó la subtarea';
+      logAuditAction('TOGGLE_SUBTASK', task, `${actionText}: "${task.subtasks[subtaskIdx].title}" (${task.subtasks[subtaskIdx].hours}h)`);
     }
 
     function closeTaskModal() {
@@ -1984,7 +3458,6 @@
       }
     }
 
-    // Metrics Calculation
     function updateMetrics() {
       let totalH = 0;
       let ilanH = 0;
@@ -2017,15 +3490,18 @@
       document.getElementById('progressFillBar').style.width = `${pct}%`;
     }
 
-    // Modal to add custom task
     function openAddTaskModal() {
       const title = prompt("Título de la nueva tarea:");
       if (!title) return;
-      const resource = prompt("Asignar a (Ilan Valdez, Gary Rojas, Jaime Alfaro):", "Jaime Alfaro");
+      const resource = prompt("Asignar a (Ilan Valdez, Gary Rojas, Jaime Alfaro):", currentUser ? currentUser.name : "Jaime Alfaro");
       const hoursStr = prompt("Horas estimadas:", "3");
       const hours = parseFloat(hoursStr) || 2;
       const month = prompt("Mes (Mes 1, Mes 2, Mes 3):", "Mes 1");
       const sprint = prompt("Sprint (Sprint 1 a Sprint 6):", "Sprint 1");
+
+      const roleTrack = (resource && (resource.includes('Ilan') || resource.includes('Gary'))) 
+        ? 'Full Stack Developer (Backend, Frontend, QA, etc.)' 
+        : 'Arquitecto de Soluciones y Líder Técnico';
 
       const newTask = {
         id: "TSK-" + (tasks.length + 1),
@@ -2034,10 +3510,10 @@
         month: month || "Mes 1",
         sprint: sprint || "Sprint 1",
         hours: hours,
-        resource: resource || "Jaime Alfaro",
-        track: resource && resource.includes('Ilan') ? 'Backend' : (resource && resource.includes('Gary') ? 'Frontend' : 'Liderazgo'),
+        resource: resource || (currentUser ? currentUser.name : "Jaime Alfaro"),
+        track: roleTrack,
         column: "todo",
-        source: "Añadida manualmente",
+        source: `Creada por ${currentUser ? currentUser.name : 'Usuario'}`,
         desc: "Tarea ad-hoc incorporada al plan trimestral para seguimiento en vivo.",
         files: "Por definir",
         subtasks: [
@@ -2049,16 +3525,17 @@
       saveState();
       renderBoard();
       if (currentView === 'swimlanes') renderSwimlanes();
+
+      logAuditAction('CREATE_TASK', newTask, `Creó la nueva tarea "${newTask.title}" (${newTask.hours}h) asignada a ${newTask.resource}`);
     }
 
-    // Keyboard navigation
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeTaskModal();
+        closeAuditModal();
       }
     });
 
-    // Start
     init();
   </script>
 </body>

@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 const tasksHandler = require('./api/tasks');
+const auditHandler = require('./api/audit');
 
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -13,24 +14,35 @@ const server = http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const pathname = parsedUrl.pathname;
 
-  // Delegate /api/tasks to our serverless handler
-  if (pathname === '/api/tasks' || pathname.startsWith('/api/tasks/')) {
-    // Adapter for serverless handler
-    req.query = parsedUrl.query;
-    res.status = (code) => {
-      res.statusCode = code;
-      return res;
-    };
-    res.json = (data) => {
-      res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.end(JSON.stringify(data));
-    };
+  // Adapter for serverless handlers
+  req.query = parsedUrl.query;
+  res.status = (code) => {
+    res.statusCode = code;
+    return res;
+  };
+  res.json = (data) => {
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.end(JSON.stringify(data));
+  };
 
+  // Route /api/tasks
+  if (pathname === '/api/tasks' || pathname.startsWith('/api/tasks/')) {
     let body = '';
     req.on('data', chunk => body += chunk.toString());
     req.on('end', () => {
       req.body = body;
       tasksHandler(req, res);
+    });
+    return;
+  }
+
+  // Route /api/audit
+  if (pathname === '/api/audit' || pathname.startsWith('/api/audit/')) {
+    let body = '';
+    req.on('data', chunk => body += chunk.toString());
+    req.on('end', () => {
+      req.body = body;
+      auditHandler(req, res);
     });
     return;
   }
